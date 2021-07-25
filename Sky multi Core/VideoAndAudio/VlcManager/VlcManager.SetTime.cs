@@ -1,0 +1,15 @@
+﻿using System;
+using Sky_multi_Core.Signatures;
+
+namespace Sky_multi_Core
+{
+    public sealed partial class VlcManager
+    {
+        public void SetTime(IntPtr mediaInstance, long timeInMs)
+        {
+            if (mediaInstance == IntPtr.Zero)
+                throw new ArgumentException("Media instance is not initialized.");
+            myLibraryLoader.GetInteropDelegate<SetTime>().Invoke(mediaInstance, timeInMs);
+        }
+    }
+}

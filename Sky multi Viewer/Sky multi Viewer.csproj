@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>Sky_multi_Viewer</RootNamespace>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Version>3.0.0</Version>
+    <Authors>Sacha Himber</Authors>
+    <NeutralLanguage>fr-FR</NeutralLanguage>
+    <Copyright>Copyright © Himber Sacha 2021</Copyright>
+    <Description>C'est un composant de Sky multi.</Description>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Sky_multi_Viewer_3_SH.pfx</AssemblyOriginatorKeyFile>
+    <Platforms>AnyCPU;x64;x86;ARM64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sky multi Core\Sky multi Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Chargement.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
