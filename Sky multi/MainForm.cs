@@ -27,6 +27,7 @@ namespace Sky_multi
         private Sky_framework.Button ButtonMediaLeft;
         private MenuDeroulant MenuDeroulantMore;
         private MenuDeroulant MenuDeroulantExt = new MenuDeroulant();
+        private MenuDeroulant menuDeroulantLink;
         private Sky_multi_Viewer.MultiMediaViewer multiMediaViewer;
         private Label label1;
         private Label label2;
@@ -50,6 +51,7 @@ namespace Sky_multi
         {
             DataSettings = ReadSettings();
             MenuDeroulantMore = new MenuDeroulant((byte)DataSettings.Language);
+            menuDeroulantLink = new MenuDeroulant((byte)DataSettings.Language);
 
             InitializeComponent();
 
@@ -81,7 +83,6 @@ namespace Sky_multi
             MenuDeroulantMore.BorderRadius = 15;
             MenuDeroulantMore.Location = new Point(350, 60);
             MenuDeroulantMore.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            MenuDeroulantMore.ShowSide = Side.Top;
             MenuDeroulantMore.Width = 300;
             //MenuDeroulantMore.SizeHeight = 20;
             //MenuDeroulantMore.SizeWidth = 150;
@@ -101,6 +102,17 @@ namespace Sky_multi
             MenuDeroulantMore.SetButtonClique(5, new MouseEventHandler(VideoAudioReader_Click));
             MenuDeroulantMore.SetButtonClique(6, new MouseEventHandler(ImageReader_Click));
             MenuDeroulantMore.SetButtonClique(7, new MouseEventHandler(Quitter_Click));
+
+            menuDeroulantLink.BackColor = Color.FromArgb(64, 64, 64);
+            menuDeroulantLink.Border = 0;
+            menuDeroulantLink.BorderColor = Color.FromArgb(224, 224, 224);
+            menuDeroulantLink.BorderRadius = 15;
+            menuDeroulantLink.Anchor = AnchorStyles.None;
+            menuDeroulantLink.ShowSide = Side.Top;
+            menuDeroulantLink.Width = 300;
+            menuDeroulantLink.Visible = false;
+            Controls.Add(menuDeroulantLink);
+            this.Controls.SetChildIndex(this.menuDeroulantLink, 0);
 
             MenuDeroulantExt.BackColor = Color.FromArgb(64, 64, 64);
             MenuDeroulantExt.Border = 0;
@@ -127,6 +139,11 @@ namespace Sky_multi
                 else
                 {
                     this.Controls[index].MouseDown += new MouseEventHandler(CloseMenuderoulantExt);
+                }
+
+                if (this.Controls[index] != menuDeroulantLink)
+                {
+                    this.Controls[index].MouseDown += new MouseEventHandler(CloseMenuderoulantLink);
                 }
             }
 
@@ -278,25 +295,39 @@ namespace Sky_multi
 
         private void CloseMenuderoulant(object sender, MouseEventArgs e)
         {
-            MenuDeroulantMore.Hide();
-            MenuDeroulantExt.Hide();
-
-            if (SoundVolumeControl != null)
+            if (e.Button == MouseButtons.Left)
             {
-                SoundVolumeControl.HideDispose();
-                SoundVolumeControl = null;
-            }
+                MenuDeroulantMore.Hide();
+                MenuDeroulantExt.Hide();
 
-            if (ChoiceSpeed != null)
-            {
-                ChoiceSpeed.HideDispose();
-                ChoiceSpeed = null;
+                if (SoundVolumeControl != null)
+                {
+                    SoundVolumeControl.HideDispose();
+                    SoundVolumeControl = null;
+                }
+
+                if (ChoiceSpeed != null)
+                {
+                    ChoiceSpeed.HideDispose();
+                    ChoiceSpeed = null;
+                }
             }
         }
 
         private void CloseMenuderoulantExt(object sender, MouseEventArgs e)
         {
-            MenuDeroulantExt.Hide();
+            if (e.Button == MouseButtons.Left)
+            {
+                MenuDeroulantExt.Hide();
+            }
+        }
+
+        private void CloseMenuderoulantLink(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                menuDeroulantLink.Hide();
+            }
         }
 
         private async void MouseAndButtonShowAndHide()
@@ -914,9 +945,84 @@ namespace Sky_multi
 
         private void multiMediaViewer_MouseClick(object sender, MouseEventArgs e)
         {
-            if (DataSettings.CliqueMadiaPause == true)
+            if (DataSettings.CliqueMadiaPause == true && e.Button == MouseButtons.Left)
             {
                 multiMediaViewer.Pause();
+            }
+
+            if (e.Button == MouseButtons.Right && string.IsNullOrEmpty(MediaLoaded) == false)
+            {
+                string[] Buttons;
+
+                if (multiMediaViewer.ItIsAImage == false)
+                {
+                    if (DataSettings.Language == Language.French)
+                    {
+                        Buttons = new string[5]
+                        {
+                   "Aller à un temps spécifié", "Rapport largeur/hauteur de la vidéo", "Piste(s) vidéo", "Piste(s) audio", "Piste(s) de sous titres"
+                        };
+                    }
+                    else
+                    {
+                        Buttons = new string[5]
+                        {
+                   "Go to a specified time", "Video aspect ratio", "Video track(s)", "Audio track(s)", "Sub titles track(s)"
+                        };
+                    }
+                }
+                else
+                {
+                    if (DataSettings.Language == Language.French)
+                    {
+                        Buttons = new string[4]
+                        {
+                   "Imprimer", "Convertir image", "Définir en tant qu'arrière plan", "Faire pivoter l'image"
+                        };
+                    }
+                    else
+                    {
+                        Buttons = new string[4]
+                        {
+                   "Print", "Convert image", "Set as background", "Rotate image"
+                        };
+                    }
+                }
+
+                menuDeroulantLink.Location = e.Location;
+                menuDeroulantLink.AddButton(Buttons);
+                if (e.Y + 20 * menuDeroulantLink.NbButton > multiMediaViewer.Height)
+                {
+                    menuDeroulantLink.ShowSide = Side.Bottom;
+                }
+                else
+                {
+                    menuDeroulantLink.ShowSide = Side.Top;
+                }
+
+                if (e.X + menuDeroulantLink.Width >= multiMediaViewer.Width - 1)
+                {
+                    menuDeroulantLink.Location = new Point(multiMediaViewer.Width - 301, menuDeroulantLink.Location.Y);
+                }
+
+                if (multiMediaViewer.ItIsAImage == false)
+                {
+                    menuDeroulantLink.SetButtonClique(0, new MouseEventHandler(SpecifiqueTime));
+                    menuDeroulantLink.SetButtonClique(1, new MouseEventHandler(RatioMDLink));
+                    menuDeroulantLink.SetButtonClique(2, new MouseEventHandler(VideoTracks));
+                    menuDeroulantLink.SetButtonClique(3, new MouseEventHandler(AudioTracks));
+                    menuDeroulantLink.SetButtonClique(4, new MouseEventHandler(SubtitlesTracks));
+                }
+                else
+                {
+                    menuDeroulantLink.SetButtonClique(0, new MouseEventHandler(Print));
+                    menuDeroulantLink.SetButtonClique(1, new MouseEventHandler(ConvertImage));
+                    menuDeroulantLink.SetButtonClique(2, new MouseEventHandler(DefineBackground));
+                    menuDeroulantLink.SetButtonClique(3, new MouseEventHandler(RotateImage));
+                }
+
+                menuDeroulantLink.Show();
+                menuDeroulantLink.BringToFront();
             }
         }
 
@@ -1905,6 +2011,22 @@ namespace Sky_multi
         {
             multiMediaViewer.Time = VlcTime;
             SetTimeDialog = null;
+        }
+
+        private void RatioMDLink(object sender, MouseEventArgs e)
+        {
+            string[] RatioList;
+
+            if (DataSettings.Language == Language.French)
+            {
+                RatioList = new string[17] { "Automatique", "16:9", "16:10", "3:2", "4:3", "1:1", "5:4", "5:3", "21:9", "31:9", "7:5", "2:1", "48:9", "9:5", "8:5", "9:10", "16:5" };
+            }
+            else
+            {
+                RatioList = new string[17] { "Automatic", "16:9", "16:10", "3:2", "4:3", "1:1", "5:4", "5:3", "21:9", "31:9", "7:5", "2:1", "48:9", "9:5", "8:5", "9:10", "16:5" };
+            }
+
+            menuDeroulantLink.NewPage(RatioList, new MouseEventNameHandler(SetRatio), true);
         }
 
         private void Ratio(object sender, MouseEventArgs e)

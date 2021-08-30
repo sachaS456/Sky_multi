@@ -20,7 +20,7 @@ namespace Sky_multi_Core
         {
             get
             {
-                var versionString = this.VlcVersion;
+                string versionString = this.VlcVersion;
                 versionString = versionString.Split('-', ' ')[0];
 
                 return new Version(versionString);
@@ -34,21 +34,27 @@ namespace Sky_multi_Core
             IntPtr[] utf8Args = new IntPtr[args?.Length ?? 0];
             try
             {
-                for (var i = 0; i < utf8Args.Length; i++)
+                for (int i = 0; i < utf8Args.Length; i++)
                 {
                     byte[] bytes = Encoding.UTF8.GetBytes(args[i]);
-                    var buffer = Marshal.AllocHGlobal(bytes.Length + 1);
+                    IntPtr buffer = Marshal.AllocHGlobal(bytes.Length + 1);
                     Marshal.Copy(bytes, 0, buffer, bytes.Length);
                     Marshal.WriteByte(buffer, bytes.Length, 0);
                     utf8Args[i] = buffer;
                 }
 
-                myVlcInstance = new VlcInstance(this, myLibraryLoader.GetInteropDelegate<CreateNewInstance>().Invoke(utf8Args.Length, utf8Args));
-                myMediaPlayerInstance = this.CreateMediaPlayer();
+                lock (utf8Args)
+                {
+                    lock (myLibraryLoader)
+                    {
+                        myVlcInstance = new VlcInstance(this, myLibraryLoader.GetInteropDelegate<CreateNewInstance>().Invoke(utf8Args.Length, utf8Args));
+                        myMediaPlayerInstance = this.CreateMediaPlayer();
+                    }
+                }
             }
             finally
             {
-                foreach (var arg in utf8Args)
+                foreach (IntPtr arg in utf8Args)
                 {
                     if (arg != IntPtr.Zero)
                     {
@@ -72,10 +78,10 @@ namespace Sky_multi_Core
             IntPtr[] utf8Args = new IntPtr[args?.Length ?? 0];
             try
             {
-                for (var i = 0; i < utf8Args.Length; i++)
+                for (int i = 0; i < utf8Args.Length; i++)
                 {
                     byte[] bytes = Encoding.UTF8.GetBytes(args[i]);
-                    var buffer = Marshal.AllocHGlobal(bytes.Length + 1);
+                    IntPtr buffer = Marshal.AllocHGlobal(bytes.Length + 1);
                     Marshal.Copy(bytes, 0, buffer, bytes.Length);
                     Marshal.WriteByte(buffer, bytes.Length, 0);
                     utf8Args[i] = buffer;
@@ -86,7 +92,7 @@ namespace Sky_multi_Core
             }
             finally
             {
-                foreach (var arg in utf8Args)
+                foreach (IntPtr arg in utf8Args)
                 {
                     if (arg != IntPtr.Zero)
                     {

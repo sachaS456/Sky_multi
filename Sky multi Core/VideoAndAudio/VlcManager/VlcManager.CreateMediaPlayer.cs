@@ -7,7 +7,13 @@ namespace Sky_multi_Core
     {
         internal VlcMediaPlayerInstance CreateMediaPlayer()
         {
-            return new VlcMediaPlayerInstance(this, myLibraryLoader.GetInteropDelegate<CreateMediaPlayer>().Invoke(myVlcInstance));
+            lock (myVlcInstance)
+            {
+                lock (myLibraryLoader)
+                {
+                    return new VlcMediaPlayerInstance(this, myLibraryLoader.GetInteropDelegate<CreateMediaPlayer>().Invoke(myVlcInstance));
+                }
+            }
         }
     }
 }
