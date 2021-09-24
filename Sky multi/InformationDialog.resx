@@ -332,7 +332,7 @@
     <value>True</value>
   </data>
   <data name="label2FR.Text" xml:space="preserve">
-    <value>Version : 3.0.0 (Beta3-30-08-2021)
+    <value>Version : 3.0.0 (Beta4-22-09-2021)
 
 Développée par Sacha Himber
 
@@ -340,8 +340,8 @@ Sky multi est une application libre qui permet de lire
 des vidéos, des audios et des images il peut lire un grand
 nombre de format de fichier.
 
-Librairies utilisés : Net 5.0.9, Sky Framework 3.0.0, 
-LibVlc 3.0.16, LibRaw 0.20.2, LibWebp 1.2.0.</value>
+Librairies utilisés : Net 5.0.10, Sky Framework 3.0.0, 
+LibVlc 3.0.16, LibRaw 0.20.2, LibWebp 1.2.1.</value>
   </data>
   <data name="rectangle3.Locked" type="System.Boolean, System.Runtime">
     <value>True</value>
@@ -5448,7 +5448,7 @@ LibVlc 3.0.16, LibRaw 0.20.2, LibWebp 1.2.0.</value>
 </value>
   </data>
   <data name="label2EN.Text" xml:space="preserve">
-    <value>Version : 3.0.0 (Beta3-30-08-2021)
+    <value>Version : 3.0.0 (Beta4-22-09-2021)
 
 Developed by Sacha Himber
 
@@ -5456,7 +5456,7 @@ Sky multi is a free application that allows you to read
 videos, audios and pictures it can play a great
 number of file format.
 
-Libraries used : Net 5.0.9, Sky Framework 3.0.0, 
-LibVlc 3.0.16, LibRaw 0.20.2, LibWebp 1.2.0.</value>
+Libraries used : Net 5.0.10, Sky Framework 3.0.0, 
+LibVlc 3.0.16, LibRaw 0.20.2, LibWebp 1.2.1.</value>
   </data>
 </root>

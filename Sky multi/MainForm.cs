@@ -372,7 +372,6 @@ namespace Sky_multi
                         ButtonMediaRight.Location = new Point(ButtonMediaRight.Location.X - 6, ButtonMediaRight.Location.Y);
                         ButtonMediaRight.Width += 5;
                         ButtonMediaLeft.Width += 5;
-                        this.Update();
 
                         await Task.Delay(10);
                     }
@@ -435,18 +434,19 @@ namespace Sky_multi
                         Cursor.Hide();
                         MouseShow = false;
 
-                        while (buttonFullScreen.Height > 0)
+                        while (ButtonMediaRight.Width > 0)
                         {
-                            buttonFullScreen.Height -= 5;
-                            buttonInfo.Height -= 5;
-                            buttonMore.Height -= 5;
-                            buttonSettings.Height -= 5;
-
+                            if (buttonFullScreen.Height > 0)
+                            {
+                                buttonFullScreen.Height -= 5;
+                                buttonInfo.Height -= 5;
+                                buttonMore.Height -= 5;
+                                buttonSettings.Height -= 5;
+                            }
 
                             ButtonMediaRight.Width -= 5;
                             ButtonMediaRight.Location = new Point(ButtonMediaRight.Location.X + 5, ButtonMediaRight.Location.Y);
                             ButtonMediaLeft.Width -= 5;
-                            this.Update();
 
                             await Task.Delay(10);
                         }
@@ -580,7 +580,7 @@ namespace Sky_multi
             // 
             this.buttonMore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonMore.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.buttonMore.Border = false;
+            this.buttonMore.Border = true;
             this.buttonMore.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonMore.Location = new System.Drawing.Point(615, 26);
             this.buttonMore.Name = "buttonMore";
@@ -590,13 +590,15 @@ namespace Sky_multi
             this.buttonMore.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonMore")));
             this.buttonMore.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonMore.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.buttonMore.BorderColor = Color.Black;
+            this.buttonMore.BorderSize = 2;
             this.buttonMore.Click += new System.EventHandler(this.buttonMore_Click);
             // 
             // buttonInfo
             // 
             this.buttonInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.buttonInfo.Border = false;
+            this.buttonInfo.Border = true;
             this.buttonInfo.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonInfo.Location = new System.Drawing.Point(579, 26);
             this.buttonInfo.Name = "buttonInfo";
@@ -606,12 +608,14 @@ namespace Sky_multi
             this.buttonInfo.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonInfo")));
             this.buttonInfo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.buttonInfo.BorderColor = Color.Black;
+            this.buttonInfo.BorderSize = 2;
             this.buttonInfo.Click += new System.EventHandler(this.buttonInfo_Click);
             // 
             // buttonFullScreen
             // 
             this.buttonFullScreen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.buttonFullScreen.Border = false;
+            this.buttonFullScreen.Border = true;
             this.buttonFullScreen.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonFullScreen.Location = new System.Drawing.Point(13, 26);
             this.buttonFullScreen.Name = "buttonFullScreen";
@@ -621,12 +625,14 @@ namespace Sky_multi
             this.buttonFullScreen.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonFullScreen")));
             this.buttonFullScreen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonFullScreen.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.buttonFullScreen.BorderColor = Color.Black;
+            this.buttonFullScreen.BorderSize = 2;
             this.buttonFullScreen.Click += new System.EventHandler(this.buttonFullScreen_Click);
             // 
             // buttonSettings
             // 
             this.buttonSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.buttonSettings.Border = false;
+            this.buttonSettings.Border = true;
             this.buttonSettings.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonSettings.Location = new System.Drawing.Point(49, 26);
             this.buttonSettings.Name = "buttonSettings";
@@ -636,6 +642,8 @@ namespace Sky_multi
             this.buttonSettings.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonSettings")));
             this.buttonSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonSettings.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.buttonSettings.BorderColor = Color.Black;
+            this.buttonSettings.BorderSize = 2;
             this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
             // 
             // label1
@@ -689,7 +697,7 @@ namespace Sky_multi
             // ButtonMediaRight
             // 
             this.ButtonMediaRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ButtonMediaRight.Border = false;
+            this.ButtonMediaRight.Border = true;
             this.ButtonMediaRight.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.ButtonMediaRight.Location = new System.Drawing.Point(615, 150);
             this.ButtonMediaRight.Name = "buttonSettings";
@@ -700,12 +708,14 @@ namespace Sky_multi
             this.ButtonMediaRight.Anchor = AnchorStyles.Right;
             this.ButtonMediaRight.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("NextMedia")));
             this.ButtonMediaRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.ButtonMediaRight.BorderColor = Color.Black;
+            this.ButtonMediaRight.BorderSize = 2;
             this.ButtonMediaRight.Click += new System.EventHandler(this.ButtonMediaRight_Click);
             // 
             // ButtonMediaLeft
             // 
             this.ButtonMediaLeft.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ButtonMediaLeft.Border = false;
+            this.ButtonMediaLeft.Border = true;
             this.ButtonMediaLeft.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.ButtonMediaLeft.Location = new System.Drawing.Point(3, 150);
             this.ButtonMediaLeft.Name = "buttonSettings";
@@ -716,6 +726,8 @@ namespace Sky_multi
             this.ButtonMediaLeft.Anchor = AnchorStyles.Left;
             this.ButtonMediaLeft.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("BackMedia")));
             this.ButtonMediaLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.ButtonMediaLeft.BorderColor = Color.Black;
+            this.ButtonMediaLeft.BorderSize = 2;
             this.ButtonMediaLeft.Click += new System.EventHandler(this.ButtonMediaLeft_Click);
             // 
             // VideoPreview
@@ -1078,7 +1090,6 @@ namespace Sky_multi
                 ChoiceSpeed.BringToFront();
                 this.Controls.Add(ChoiceSpeed);
                 ChoiceSpeed.Show();
-                this.Update();
             }
             else
             {
@@ -1141,7 +1152,6 @@ namespace Sky_multi
                     panel1.Location = new Point(panel1.Location.X, this.Height - this.Border);
                     panel1.Visible = false;
                     multiMediaViewer.Height = this.Height - this.Border * 2 - 20;
-                    this.Update();
                 }
 
                 multiMediaViewer.BackColor = Color.FromArgb(30, 30, 30);
@@ -1189,7 +1199,6 @@ namespace Sky_multi
                     panel1.Height = 71;
                     multiMediaViewer.Height = multiMediaViewerHeight - 71;
                     panel1.Location = new Point(panel1.Location.X, multiMediaViewer.Height + multiMediaViewer.Location.Y + 3);
-                    this.Update();
                 }
 
                 multiMediaViewer.BackColor = Color.Black;
@@ -1335,13 +1344,8 @@ namespace Sky_multi
 
                     while (panel1.Location.Y > PanelY - panel1.Height)
                     {
-                        panel1.Location = new Point(panel1.Location.X, panel1.Location.Y - 5);
-                        await Task.Delay(10);
-
                         if (this.FullScreen == false)
                         {
-                            panel1.Location = new Point(3, 405);
-                            this.Update();
                             return;
                         }
 
@@ -1349,6 +1353,19 @@ namespace Sky_multi
                         {
                             return;
                         }
+
+                        panel1.Location = new Point(panel1.Location.X, panel1.Location.Y - 5);
+                        await Task.Delay(10);
+                    }
+
+                    if (this.FullScreen == false)
+                    {
+                        return;
+                    }
+
+                    if (multiMediaViewer.ItIsAImage == true)
+                    {
+                        return;
                     }
 
                     panel1.Location = new Point(panel1.Location.X, PanelY - panel1.Height);
@@ -1361,8 +1378,6 @@ namespace Sky_multi
                         await Task.Delay(400);
                         if (this.FullScreen == false)
                         {
-                            panel1.Location = new Point(3, 405);
-                            this.Update();
                             return;
                         }
 
@@ -1379,8 +1394,6 @@ namespace Sky_multi
                         await Task.Delay(400);
                         if (this.FullScreen == false)
                         {
-                            panel1.Location = new Point(3, 405);
-                            this.Update();
                             return;
                         }
 
@@ -1397,8 +1410,6 @@ namespace Sky_multi
                         await Task.Delay(400);
                         if (this.FullScreen == false)
                         {
-                            panel1.Location = new Point(3, 405);
-                            this.Update();
                             return;
                         }
 
@@ -1415,8 +1426,6 @@ namespace Sky_multi
                         await Task.Delay(400);
                         if (this.FullScreen == false)
                         {
-                            panel1.Location = new Point(3, 405);
-                            this.Update();
                             return;
                         }
 
@@ -1433,8 +1442,6 @@ namespace Sky_multi
                         await Task.Delay(400);
                         if (this.FullScreen == false)
                         {
-                            panel1.Location = new Point(3, 405);
-                            this.Update();
                             return;
                         }
 
@@ -1455,13 +1462,8 @@ namespace Sky_multi
                 {
                     while (panel1.Location.Y < PanelY)
                     {
-                        panel1.Location = new Point(panel1.Location.X, panel1.Location.Y + 5);
-                        await Task.Delay(10);
-
                         if (this.FullScreen == false)
                         {
-                            panel1.Location = new Point(3, 405);
-                            this.Update();
                             return;
                         }
 
@@ -1469,6 +1471,19 @@ namespace Sky_multi
                         {
                             return;
                         }
+
+                        panel1.Location = new Point(panel1.Location.X, panel1.Location.Y + 5);
+                        await Task.Delay(10);
+                    }
+
+                    if (this.FullScreen == false)
+                    {
+                        return;
+                    }
+
+                    if (multiMediaViewer.ItIsAImage == true)
+                    {
+                        return;
                     }
 
                     panel1.Location = new Point(panel1.Location.X, PanelY);
@@ -1692,7 +1707,6 @@ namespace Sky_multi
             }
 
             this.Visible = true;
-            this.Update();
 
             using (SaveFileDialog dialog = new SaveFileDialog())
             {
@@ -1714,7 +1728,6 @@ namespace Sky_multi
                 zoneCapture.ShowDialog();
 
                 this.Visible = true;
-                this.Update();
 
                 using (SaveFileDialog dialog = new SaveFileDialog())
                 {
@@ -1728,7 +1741,6 @@ namespace Sky_multi
             }
 
             this.Visible = true;
-            this.Update();
         }
 
         private void SnapshotVideo(object sender, MouseEventArgs e)
@@ -1784,7 +1796,6 @@ namespace Sky_multi
 
             this.Controls.Remove(c);
             c.BackgroundImage = null;
-            this.Update();
         }
 
         private void RenameFile_Click(object sender, EventArgs e)
@@ -2552,7 +2563,6 @@ namespace Sky_multi
                 {
                     VideoPreview.Location = new Point(e.X - VideoPreview.Width / 2, VideoPreview.Location.Y);
                     VideoPreview.SetTime((long)((double)progressBar.GetValuePixels() / progressBar.Width * multiMediaViewer.Length));
-                    this.Update();
                 }
             }
         }

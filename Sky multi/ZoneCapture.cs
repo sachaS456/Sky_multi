@@ -62,7 +62,7 @@ namespace Sky_multi
         private void ZoneCapture_MouseUp(object sender, MouseEventArgs e)
         {
             panel1.Visible = false;
-            if (panel1.Width <= 0 && panel1.Height <= 0)
+            if (panel1.Width <= 0 || panel1.Height <= 0)
             {
                 return;
             }

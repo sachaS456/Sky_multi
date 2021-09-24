@@ -23,6 +23,7 @@ namespace Sky_multi_Viewer
         {
             this.BackgroundImageLayout = ImageLayout.Center;
             this.Resize += new EventHandler(this_Resize);
+            this.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer, true);
         }
 
         public void OpenFile(string FilePath)
@@ -109,11 +110,17 @@ namespace Sky_multi_Viewer
             {
                 if (this.BackgroundImage.Width <= this.Width && this.BackgroundImage.Height <= this.Height)
                 {
-                    this.BackgroundImageLayout = ImageLayout.Center;
+                    if (this.BackgroundImageLayout != ImageLayout.Center)
+                    {
+                        this.BackgroundImageLayout = ImageLayout.Center;
+                    }
                 }
                 else
                 {
-                    this.BackgroundImageLayout = ImageLayout.Zoom;
+                    if (this.BackgroundImageLayout != ImageLayout.Zoom)
+                    {
+                        this.BackgroundImageLayout = ImageLayout.Zoom;
+                    }
                 }
             }
         }

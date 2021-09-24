@@ -202,7 +202,7 @@ namespace Sky_multi
             this.buttonOK.Border = false;
             this.buttonOK.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonOK.borderRadius = 5;
-            this.buttonOK.Location = new System.Drawing.Point(573, 365);
+            this.buttonOK.Location = new System.Drawing.Point(553, 327);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(93, 30);
             this.buttonOK.TabIndex = 3;
@@ -323,7 +323,7 @@ namespace Sky_multi
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.ButtonMaximizedVisible = true;
-            this.ClientSize = new System.Drawing.Size(678, 407);
+            this.ClientSize = new System.Drawing.Size(660, 368);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.rectangle4);
             this.Controls.Add(this.rectangle3);
