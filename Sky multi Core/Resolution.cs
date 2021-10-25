@@ -1,4 +1,4 @@
-/*--------------------------------------------------------------------------------------------------------------------
+﻿/*--------------------------------------------------------------------------------------------------------------------
  Copyright (C) 2021 Himber Sacha
 
  This program is free software: you can redistribute it and/or modify
@@ -16,18 +16,17 @@
 
 --------------------------------------------------------------------------------------------------------------------*/
 
-using System;
-using System.IO;
-
-namespace Sky_multi_Viewer
+namespace Sky_multi_Core
 {
-    public sealed class VlcLibDirectoryNeededEventArgs : EventArgs
-    {
-        public DirectoryInfo VlcLibDirectory { get; set; }
+	public class Resolution
+	{
+		public int width { get; private set; }
+		public int Height { get; private set; }
 
-        public VlcLibDirectoryNeededEventArgs()
-        {
-            
-        }
-    }
+		public Resolution(int width, int Height)
+		{
+			this.width = width;
+			this.Height = Height;
+		}
+	}
 }

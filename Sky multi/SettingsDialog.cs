@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*--------------------------------------------------------------------------------------------------------------------
+ Copyright (C) 2021 Himber Sacha
+
+ This program is free software: you can redistribute it and/or modify
+ it under the +terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 2 of the License, or
+ any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see https://www.gnu.org/licenses/gpl-2.0.html. 
+
+--------------------------------------------------------------------------------------------------------------------*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -431,7 +449,7 @@ namespace Sky_multi
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.ButtonMaximizedVisible = true;
-            this.ClientSize = new System.Drawing.Size(573, 388);
+            this.ClientSize = new System.Drawing.Size(573, 348);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label4);

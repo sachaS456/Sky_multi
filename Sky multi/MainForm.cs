@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*--------------------------------------------------------------------------------------------------------------------
+ Copyright (C) 2021 Himber Sacha
+
+ This program is free software: you can redistribute it and/or modify
+ it under the +terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 2 of the License, or
+ any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see https://www.gnu.org/licenses/gpl-2.0.html. 
+
+--------------------------------------------------------------------------------------------------------------------*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,6 +64,7 @@ namespace Sky_multi
         private DataSettings DataSettings;
         private bool MediaEnd = false;
         private string subTitlePath = null;
+        private bool ButtonMEdiaChangeClicked = false;
 
         internal MainForm() : base()
         {
@@ -88,7 +107,7 @@ namespace Sky_multi
             //MenuDeroulantMore.SizeWidth = 150;
             MenuDeroulantMore.TabIndex = 13;
             MenuDeroulantMore.Visible = false;
-            MenuDeroulantMore.AddButton(Buttons);
+            MenuDeroulantMore.SetButton(Buttons);
             MenuDeroulantMore.AddBar(5);
             MenuDeroulantMore.AddBar(7);
             Controls.Add(MenuDeroulantMore);
@@ -348,7 +367,7 @@ namespace Sky_multi
                     continue;
                 }
 
-                if (Cursor.Position.X != X || Cursor.Position.Y != Y)
+                if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
                 {
                     if (MouseShow == false)
                     {
@@ -384,42 +403,43 @@ namespace Sky_multi
                     ButtonMediaRight.Location = new Point(this.Width - ButtonMediaRight.Width - Border, ButtonMediaRight.Location.Y);
                     ButtonMediaLeft.Width = 40;
 
-                    while (Cursor.Position.X != X || Cursor.Position.Y != Y)
+                    while (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
                     {
+                        ButtonMEdiaChangeClicked = false;
                         X = Cursor.Position.X;
                         Y = Cursor.Position.Y;
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
                         {
                             continue;
                         }
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
                         {
                             continue;
                         }
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
                         {
                             continue;
                         }
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
                         {
                             continue;
                         }
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
                         {
                             continue;
                         }
@@ -510,6 +530,7 @@ namespace Sky_multi
             this.multiMediaViewer.ItIsPicture += new Sky_multi_Viewer.EventMediaTypedHandler(multiMediaViewer_ItIsPicture);
             this.multiMediaViewer.ItIsAudioOrVideo += new Sky_multi_Viewer.EventMediaTypedHandler(multiMediaViewer_ItIsAudioOrVideo);
             this.multiMediaViewer.MouseClick += new MouseEventHandler(multiMediaViewer_MouseClick);
+            this.multiMediaViewer.DoubleClick += new EventHandler(multiMediaViewer_DoubleClick);
             // 
             // progressBar
             // 
@@ -584,7 +605,7 @@ namespace Sky_multi
             this.buttonMore.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonMore.Location = new System.Drawing.Point(615, 26);
             this.buttonMore.Name = "buttonMore";
-            this.buttonMore.Size = new System.Drawing.Size(30, 30);
+            this.buttonMore.Size = new System.Drawing.Size(32, 32);
             this.buttonMore.borderRadius = 15;
             this.buttonMore.TabIndex = 9;
             this.buttonMore.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonMore")));
@@ -602,7 +623,7 @@ namespace Sky_multi
             this.buttonInfo.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonInfo.Location = new System.Drawing.Point(579, 26);
             this.buttonInfo.Name = "buttonInfo";
-            this.buttonInfo.Size = new System.Drawing.Size(30, 30);
+            this.buttonInfo.Size = new System.Drawing.Size(32, 32);
             this.buttonInfo.borderRadius = 15;
             this.buttonInfo.TabIndex = 10;
             this.buttonInfo.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonInfo")));
@@ -619,7 +640,7 @@ namespace Sky_multi
             this.buttonFullScreen.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonFullScreen.Location = new System.Drawing.Point(13, 26);
             this.buttonFullScreen.Name = "buttonFullScreen";
-            this.buttonFullScreen.Size = new System.Drawing.Size(30, 30);
+            this.buttonFullScreen.Size = new System.Drawing.Size(32, 32);
             this.buttonFullScreen.borderRadius = 15;
             this.buttonFullScreen.TabIndex = 12;
             this.buttonFullScreen.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonFullScreen")));
@@ -636,7 +657,7 @@ namespace Sky_multi
             this.buttonSettings.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonSettings.Location = new System.Drawing.Point(49, 26);
             this.buttonSettings.Name = "buttonSettings";
-            this.buttonSettings.Size = new System.Drawing.Size(30, 30);
+            this.buttonSettings.Size = new System.Drawing.Size(32, 32);
             this.buttonSettings.borderRadius = 15;
             this.buttonSettings.TabIndex = 11;
             this.buttonSettings.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonSettings")));
@@ -701,7 +722,7 @@ namespace Sky_multi
             this.ButtonMediaRight.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.ButtonMediaRight.Location = new System.Drawing.Point(615, 150);
             this.ButtonMediaRight.Name = "buttonSettings";
-            this.ButtonMediaRight.Size = new System.Drawing.Size(40, 100);
+            this.ButtonMediaRight.Size = new System.Drawing.Size(42, 102);
             this.ButtonMediaRight.borderRadius = 15;
             this.ButtonMediaRight.TabIndex = 11;
             this.ButtonMediaRight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -719,7 +740,7 @@ namespace Sky_multi
             this.ButtonMediaLeft.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.ButtonMediaLeft.Location = new System.Drawing.Point(3, 150);
             this.ButtonMediaLeft.Name = "buttonSettings";
-            this.ButtonMediaLeft.Size = new System.Drawing.Size(40, 100);
+            this.ButtonMediaLeft.Size = new System.Drawing.Size(42, 102);
             this.ButtonMediaLeft.borderRadius = 15;
             this.ButtonMediaLeft.TabIndex = 11;
             this.ButtonMediaLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -789,7 +810,7 @@ namespace Sky_multi
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "MainForm";
             this.Text = "Sky multi";
-            this.MinimumSize = new Size(350, 400);
+            this.MinimumSize = new Size(550, 400);
             this.KeyPreview = true;
             this.KeyDown += new KeyEventHandler(This_KeyDown);
             this.Controls.SetChildIndex(this.panel1, 0);
@@ -1002,7 +1023,7 @@ namespace Sky_multi
                 }
 
                 menuDeroulantLink.Location = e.Location;
-                menuDeroulantLink.AddButton(Buttons);
+                menuDeroulantLink.SetButton(Buttons);
                 if (e.Y + 20 * menuDeroulantLink.NbButton > multiMediaViewer.Height)
                 {
                     menuDeroulantLink.ShowSide = Side.Bottom;
@@ -1021,9 +1042,9 @@ namespace Sky_multi
                 {
                     menuDeroulantLink.SetButtonClique(0, new MouseEventHandler(SpecifiqueTime));
                     menuDeroulantLink.SetButtonClique(1, new MouseEventHandler(RatioMDLink));
-                    menuDeroulantLink.SetButtonClique(2, new MouseEventHandler(VideoTracks));
-                    menuDeroulantLink.SetButtonClique(3, new MouseEventHandler(AudioTracks));
-                    menuDeroulantLink.SetButtonClique(4, new MouseEventHandler(SubtitlesTracks));
+                    menuDeroulantLink.SetButtonClique(2, new MouseEventHandler(VideoTracksMDLink));
+                    menuDeroulantLink.SetButtonClique(3, new MouseEventHandler(AudioTracksMDLink));
+                    menuDeroulantLink.SetButtonClique(4, new MouseEventHandler(SubtitlesTracksMDLink));
                 }
                 else
                 {
@@ -1125,6 +1146,8 @@ namespace Sky_multi
         {
             if (DifferentBackMedia == true)
             {
+                MenuDeroulantMore.MainPage();
+
                 if (this.FullScreen == true)
                 {
                     while (panel1.Height > 0)
@@ -1162,6 +1185,7 @@ namespace Sky_multi
         {
             if (DifferentBackMedia == true)
             {
+                MenuDeroulantMore.MainPage();
                 panel1.Visible = true;
 
                 if (this.FullScreen == true)
@@ -1212,6 +1236,8 @@ namespace Sky_multi
 
         private void ButtonMediaRight_Click(object sender, EventArgs e)
         {
+            ButtonMEdiaChangeClicked = true;
+
             if (MediaLoaded == string.Empty)
             {
                 if (DataSettings.Language == Language.French)
@@ -1230,6 +1256,8 @@ namespace Sky_multi
 
         private void ButtonMediaLeft_Click(object sender, EventArgs e)
         {
+            ButtonMEdiaChangeClicked = true;
+
             if (MediaLoaded == string.Empty)
             {
                 if (DataSettings.Language == Language.French)
@@ -1267,7 +1295,7 @@ namespace Sky_multi
                 multiMediaViewer.Location = new Point(0, 0);
                 multiMediaViewer.Size = this.Size;
 
-                if (DataSettings.UsingDefinitionMax == true && ResolutionMonitor.ResolutionGestioner.SetResolutionMax() == true)
+                if (DataSettings.UsingDefinitionMax == true && Sky_multi_Core.ResolutionMonitor.SetResolutionMax() == true)
                 {
                     if (DataSettings.Language == Language.French)
                     {
@@ -1538,7 +1566,7 @@ namespace Sky_multi
                 //MenuDeroulantMore.SizeWidth = 150;
                 MenuDeroulantMore.TabIndex = 13;
                 MenuDeroulantMore.Visible = false;
-                MenuDeroulantMore.AddButton(Buttons);
+                MenuDeroulantMore.SetButton(Buttons);
                 MenuDeroulantMore.AddBar(5);
                 MenuDeroulantMore.AddBar(7);
                 Controls.Add(MenuDeroulantMore);
@@ -2053,7 +2081,7 @@ namespace Sky_multi
                 RatioList = new string[17] { "Automatic", "16:9", "16:10", "3:2", "4:3", "1:1", "5:4", "5:3", "21:9", "31:9", "7:5", "2:1", "48:9", "9:5", "8:5", "9:10", "16:5" };
             }
 
-            MenuDeroulantExt.AddButton(ref RatioList, new MouseEventNameHandler(SetRatio), true);
+            MenuDeroulantExt.SetButton(ref RatioList, new MouseEventNameHandler(SetRatio), true);
             MenuDeroulantExt.Show();
         }
 
@@ -2067,6 +2095,18 @@ namespace Sky_multi
             multiMediaViewer.Video.AspectRatio = Text;
         }
 
+        private void VideoTracksMDLink(object sender, MouseEventArgs e)
+        {
+            List<string> VideoTrackList = new List<string>();
+
+            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.Video.Tracks.All)
+            {
+                VideoTrackList.Add(i.Name);
+            }
+
+            menuDeroulantLink.NewPage(VideoTrackList.ToArray(), new MouseEventNameHandler(SetVideoTracks), false);
+        }
+
         private void VideoTracks(object sender, MouseEventArgs e)
         {
             List<string> VideoTrackList = new List<string>();
@@ -2076,7 +2116,7 @@ namespace Sky_multi
                 VideoTrackList.Add(i.Name);
             }
 
-            MenuDeroulantExt.AddButton(VideoTrackList.ToArray(), new MouseEventNameHandler(SetVideoTracks));
+            MenuDeroulantExt.SetButton(VideoTrackList.ToArray(), new MouseEventNameHandler(SetVideoTracks));
             MenuDeroulantExt.Show();
         }
 
@@ -2092,6 +2132,18 @@ namespace Sky_multi
             }
         }
 
+        private void AudioTracksMDLink(object sender, MouseEventArgs e)
+        {
+            List<string> AudioTrackList = new List<string>();
+
+            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.Audio.Tracks.All)
+            {
+                AudioTrackList.Add(i.Name);
+            }
+
+            menuDeroulantLink.NewPage(AudioTrackList.ToArray(), new MouseEventNameHandler(SetAudioTracks), false);
+        }
+
         private void AudioTracks(object sender, MouseEventArgs e)
         {
             List<string> AudioTrackList = new List<string>();
@@ -2101,7 +2153,7 @@ namespace Sky_multi
                 AudioTrackList.Add(i.Name);
             }
 
-            MenuDeroulantExt.AddButton(AudioTrackList.ToArray(), new MouseEventNameHandler(SetAudioTracks));
+            MenuDeroulantExt.SetButton(AudioTrackList.ToArray(), new MouseEventNameHandler(SetAudioTracks));
             MenuDeroulantExt.Show();
         }
 
@@ -2115,6 +2167,18 @@ namespace Sky_multi
                     return;
                 }
             }
+        }
+
+        private void SubtitlesTracksMDLink(object sender, MouseEventArgs e)
+        {
+            List<string> SubtitlesTrackList = new List<string>();
+
+            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.SubTitles.All)
+            {
+                SubtitlesTrackList.Add(i.Name);
+            }
+
+            menuDeroulantLink.NewPage(SubtitlesTrackList.ToArray(), new MouseEventNameHandler(SetSubtitlesTracks), false);
         }
 
         private void SubtitlesTracks(object sender, MouseEventArgs e)
@@ -2135,7 +2199,7 @@ namespace Sky_multi
                 SubtitlesTrackList.Add(i.Name);
             }
 
-            MenuDeroulantExt.AddButton(SubtitlesTrackList.ToArray(), new MouseEventNameHandler(SetSubtitlesTracks));
+            MenuDeroulantExt.SetButton(SubtitlesTrackList.ToArray(), new MouseEventNameHandler(SetSubtitlesTracks));
             MenuDeroulantExt.Show();
         }
 
@@ -2561,7 +2625,21 @@ namespace Sky_multi
                 if (DataSettings.VideoPreviewOnProgressBar == true && GetVideo() == true && 
                     VideoPreview.GetTime() != (long)((double)progressBar.GetValuePixels() / progressBar.Width * multiMediaViewer.Length))
                 {
-                    VideoPreview.Location = new Point(e.X - VideoPreview.Width / 2, VideoPreview.Location.Y);
+                    if (e.X >= progressBar.Width)
+                    {
+                        VideoPreview.Location = new Point(progressBar.Width + progressBar.Location.X + panel1.Location.X, VideoPreview.Location.Y);
+                        return;
+                    }
+
+                    if (this.FullScreen == false)
+                    {
+                        VideoPreview.Location = new Point(e.X - VideoPreview.Width / 2, VideoPreview.Location.Y);
+                    }
+                    else
+                    {
+                        VideoPreview.Location = new Point(e.X + (panel1.Location.X + progressBar.Location.X) - VideoPreview.Width / 2, VideoPreview.Location.Y);
+                    }
+
                     VideoPreview.SetTime((long)((double)progressBar.GetValuePixels() / progressBar.Width * multiMediaViewer.Length));
                 }
             }
@@ -2801,7 +2879,6 @@ namespace Sky_multi
                 }
                 else
                 {
-                    CodecAudio = string.Empty;
                     CodecAudio = null;
                     return true;
                 }
@@ -2833,7 +2910,6 @@ namespace Sky_multi
                 }
                 else
                 {
-                    CodecVideo = string.Empty;
                     CodecVideo = null;
                     return true;
                 }
@@ -2842,6 +2918,11 @@ namespace Sky_multi
             {
                 return false;
             }
+        }
+
+        private void multiMediaViewer_DoubleClick(object sender, EventArgs e)
+        {
+            FullScreen_M();
         }
     }
 }
