@@ -28,6 +28,8 @@ using System.IO;
 using System.Xml.Serialization;
 using Microsoft.Win32;
 using Sky_Updater;
+using Sky_multi_Core.VlcWrapper;
+using Sky_multi_Core.ImageReader;
 
 namespace Sky_multi
 {
@@ -76,6 +78,9 @@ namespace Sky_multi
 
             this.Location = new Point(Screen.FromControl(this).WorkingArea.Width / 2 - this.Width / 2, Screen.FromControl(this).WorkingArea.Height / 2 - this.Height / 2);
             Panel1Region = panel1.Region;
+
+            multiMediaViewer.HardwareAcceleration = DataSettings.HardwareAcceleration;
+            VideoPreview.HardwareAcceleration = DataSettings.HardwareAcceleration;
 
             string[] Buttons;
 
@@ -277,11 +282,11 @@ namespace Sky_multi
             }
         }
 
-        private async void OpenMediaOnStarting()
+        private void OpenMediaOnStarting()
         {
             if (Environment.GetCommandLineArgs().Last() != Application.ExecutablePath && Environment.GetCommandLineArgs().Last() != Application.StartupPath + @"Sky multi.dll")
             {
-                while (multiMediaViewer.Chargement == false || this.Opacity < 1)
+                /*while (multiMediaViewer.Chargement == false || this.Opacity < 1)
                 {
                     await Task.Delay(1);
 
@@ -289,7 +294,7 @@ namespace Sky_multi
                     {
                         break;
                     }
-                }
+                }*/
 
                 if (File.Exists(Environment.GetCommandLineArgs().Last()))
                 {
@@ -524,9 +529,9 @@ namespace Sky_multi
             this.multiMediaViewer.VlcLibDirectory = null;
             this.multiMediaViewer.VlcMediaplayerOptions = null;
             this.multiMediaViewer.VlcLibDirectoryNeeded += new System.EventHandler<Sky_multi_Viewer.VlcLibDirectoryNeededEventArgs>(this.vlcControl1_VlcLibDirectoryNeeded);
-            this.multiMediaViewer.Paused += new System.EventHandler<Sky_multi_Core.VlcMediaPlayerPausedEventArgs>(this.vlcControl1_Paused);
-            this.multiMediaViewer.Playing += new System.EventHandler<Sky_multi_Core.VlcMediaPlayerPlayingEventArgs>(this.vlcControl1_Playing);
-            this.multiMediaViewer.EndReached += new EventHandler<Sky_multi_Core.VlcMediaPlayerEndReachedEventArgs>(this.vlcControl1_EndReached);
+            this.multiMediaViewer.Paused += new System.EventHandler<VlcMediaPlayerPausedEventArgs>(this.vlcControl1_Paused);
+            this.multiMediaViewer.Playing += new System.EventHandler<VlcMediaPlayerPlayingEventArgs>(this.vlcControl1_Playing);
+            this.multiMediaViewer.EndReached += new EventHandler<VlcMediaPlayerEndReachedEventArgs>(this.vlcControl1_EndReached);
             this.multiMediaViewer.ItIsPicture += new Sky_multi_Viewer.EventMediaTypedHandler(multiMediaViewer_ItIsPicture);
             this.multiMediaViewer.ItIsAudioOrVideo += new Sky_multi_Viewer.EventMediaTypedHandler(multiMediaViewer_ItIsAudioOrVideo);
             this.multiMediaViewer.MouseClick += new MouseEventHandler(multiMediaViewer_MouseClick);
@@ -1533,6 +1538,9 @@ namespace Sky_multi
                 this.DataSettings = settingsDialog.DataSettings;
                 SaveSettings(this.DataSettings);
 
+                multiMediaViewer.HardwareAcceleration = DataSettings.HardwareAcceleration;
+                VideoPreview.HardwareAcceleration = DataSettings.HardwareAcceleration;
+
                 MenuDeroulantMore.Dispose();
                 MenuDeroulantMore = new MenuDeroulant((byte)DataSettings.Language);
                 string[] Buttons;
@@ -1673,7 +1681,7 @@ namespace Sky_multi
 
         private void OpenFile()
         {
-            if (multiMediaViewer.Chargement == true)
+            /*if (multiMediaViewer.Chargement == true)
             {
                 if (DataSettings.Language == Language.French)
                 {
@@ -1684,7 +1692,7 @@ namespace Sky_multi
                     MessageBox.Show("Sky multi Viewer is loading please wait.", "Sky multi", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 return;
-            }
+            }*/
 
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
@@ -2099,7 +2107,7 @@ namespace Sky_multi
         {
             List<string> VideoTrackList = new List<string>();
 
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.Video.Tracks.All)
+            foreach (TrackDescription i in multiMediaViewer.Video.Tracks.All)
             {
                 VideoTrackList.Add(i.Name);
             }
@@ -2111,7 +2119,7 @@ namespace Sky_multi
         {
             List<string> VideoTrackList = new List<string>();
 
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.Video.Tracks.All)
+            foreach (TrackDescription i in multiMediaViewer.Video.Tracks.All)
             {
                 VideoTrackList.Add(i.Name);
             }
@@ -2122,7 +2130,7 @@ namespace Sky_multi
 
         private void SetVideoTracks(string Text, int ID, MouseEventArgs e)
         {
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.Video.Tracks.All)
+            foreach (TrackDescription i in multiMediaViewer.Video.Tracks.All)
             {
                 if (i.Name == Text)
                 {
@@ -2136,7 +2144,7 @@ namespace Sky_multi
         {
             List<string> AudioTrackList = new List<string>();
 
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.Audio.Tracks.All)
+            foreach (TrackDescription i in multiMediaViewer.Audio.Tracks.All)
             {
                 AudioTrackList.Add(i.Name);
             }
@@ -2148,7 +2156,7 @@ namespace Sky_multi
         {
             List<string> AudioTrackList = new List<string>();
 
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.Audio.Tracks.All)
+            foreach (TrackDescription i in multiMediaViewer.Audio.Tracks.All)
             {
                 AudioTrackList.Add(i.Name);
             }
@@ -2159,7 +2167,7 @@ namespace Sky_multi
 
         private void SetAudioTracks(string Text, int ID, MouseEventArgs e)
         {
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.Audio.Tracks.All)
+            foreach (TrackDescription i in multiMediaViewer.Audio.Tracks.All)
             {
                 if (i.Name == Text)
                 {
@@ -2173,7 +2181,7 @@ namespace Sky_multi
         {
             List<string> SubtitlesTrackList = new List<string>();
 
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.SubTitles.All)
+            foreach (TrackDescription i in multiMediaViewer.SubTitles.All)
             {
                 SubtitlesTrackList.Add(i.Name);
             }
@@ -2194,7 +2202,7 @@ namespace Sky_multi
                 SubtitlesTrackList.Add("Select a file");
             }
 
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.SubTitles.All)
+            foreach (TrackDescription i in multiMediaViewer.SubTitles.All)
             {
                 SubtitlesTrackList.Add(i.Name);
             }
@@ -2232,7 +2240,7 @@ namespace Sky_multi
                 return;
             }
 
-            foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.SubTitles.All)
+            foreach (TrackDescription i in multiMediaViewer.SubTitles.All)
             {
                 if (i.Name == Text)
                 {
@@ -2430,7 +2438,7 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            Sky_multi_Core.WebPEncoder.EncodeWebp((Bitmap)multiMediaViewer.BackgroundImage, dialog.FileName);
+                            WebPEncoder.EncodeWebp((Bitmap)multiMediaViewer.BackgroundImage, dialog.FileName);
                             break;
 
                         default:
@@ -2500,7 +2508,7 @@ namespace Sky_multi
             multiMediaViewer.Pause();
         }
 
-        private void vlcControl1_Paused(object sender, Sky_multi_Core.VlcMediaPlayerPausedEventArgs e)
+        private void vlcControl1_Paused(object sender, VlcMediaPlayerPausedEventArgs e)
         {
             //buttonPlay.BackgroundImage.Dispose();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
@@ -2508,7 +2516,7 @@ namespace Sky_multi
             resources = null;
         }
 
-        private void vlcControl1_Playing(object sender, Sky_multi_Core.VlcMediaPlayerPlayingEventArgs e)
+        private void vlcControl1_Playing(object sender, VlcMediaPlayerPlayingEventArgs e)
         {
             //buttonPlay.BackgroundImage.Dispose();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
@@ -2655,7 +2663,7 @@ namespace Sky_multi
             multiMediaViewer.Time -= 60000;
         }
 
-        private void vlcControl1_EndReached(object sender, Sky_multi_Core.VlcMediaPlayerEndReachedEventArgs e)
+        private void vlcControl1_EndReached(object sender, VlcMediaPlayerEndReachedEventArgs e)
         {
             MediaEnd = true;
         }
@@ -2864,11 +2872,11 @@ namespace Sky_multi
             {
                 string CodecAudio = string.Empty;
 
-                foreach (Sky_multi_Core.MediaTrack i in multiMediaViewer.GetCurrentMedia().Tracks)
+                foreach (MediaTrack i in multiMediaViewer.GetCurrentMedia().Tracks)
                 {
-                    if (i.Type == Sky_multi_Core.Signatures.MediaTrackTypes.Audio)
+                    if (i.Type == Sky_multi_Core.VlcWrapper.Core.MediaTrackTypes.Audio)
                     {
-                        CodecAudio = Sky_multi_Core.FourCCConverter.FromFourCC(i.CodecFourcc);
+                        CodecAudio = FourCCConverter.FromFourCC(i.CodecFourcc);
                     }
                 }
 
@@ -2895,11 +2903,11 @@ namespace Sky_multi
             {
                 string CodecVideo = string.Empty;
 
-                foreach (Sky_multi_Core.MediaTrack i in multiMediaViewer.GetCurrentMedia().Tracks)
+                foreach (MediaTrack i in multiMediaViewer.GetCurrentMedia().Tracks)
                 {
-                    if (i.Type == Sky_multi_Core.Signatures.MediaTrackTypes.Video)
+                    if (i.Type == Sky_multi_Core.VlcWrapper.Core.MediaTrackTypes.Video)
                     {
-                        CodecVideo = Sky_multi_Core.FourCCConverter.FromFourCC(i.CodecFourcc);
+                        CodecVideo = FourCCConverter.FromFourCC(i.CodecFourcc);
                     }
                 }
 

@@ -36,7 +36,7 @@ namespace Sky_multi
         private Sky_framework.ButtonCircular buttonCircular5;
         private Sky_framework.ButtonCircular buttonCircular6;
         private System.Windows.Forms.Label label3;
-        private Sky_multi_Viewer.VlcControl vlcControl1;
+        private Sky_multi_Viewer.VideoView vlcControl1;
         private Sky_framework.Button button1;
         private Sky_framework.Button button2;
         private long hours = 0;
@@ -84,10 +84,10 @@ namespace Sky_multi
 
         private async void SetVideo(string MultiMedia)
         {
-            while (vlcControl1.Chargement == true)
+            /*while (vlcControl1.Chargement == true)
             {
                 await Task.Delay(5);
-            }
+            }*/
 
             vlcControl1.Play("File:///" + MultiMedia);
             await Task.Delay(200);
@@ -107,7 +107,7 @@ namespace Sky_multi
             this.buttonCircular5 = new Sky_framework.ButtonCircular();
             this.buttonCircular6 = new Sky_framework.ButtonCircular();
             this.label3 = new System.Windows.Forms.Label();
-            this.vlcControl1 = new Sky_multi_Viewer.VlcControl();
+            this.vlcControl1 = new Sky_multi_Viewer.VideoView();
             this.button1 = new Sky_framework.Button();
             this.button2 = new Sky_framework.Button();
             ((System.ComponentModel.ISupportInitialize)(this.vlcControl1)).BeginInit();

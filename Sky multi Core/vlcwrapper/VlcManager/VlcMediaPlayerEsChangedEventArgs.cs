@@ -1,0 +1,17 @@
+﻿using System;
+using Sky_multi_Core.VlcWrapper.Core;
+
+namespace Sky_multi_Core.VlcWrapper
+{
+    public class VlcMediaPlayerEsChangedEventArgs : EventArgs
+    {
+        public VlcMediaPlayerEsChangedEventArgs(MediaTrackTypes trackType, int id)
+        {
+            this.TrackType = trackType;
+            this.Id = id;
+        }
+
+        public MediaTrackTypes TrackType;
+        public int Id;
+    }
+}

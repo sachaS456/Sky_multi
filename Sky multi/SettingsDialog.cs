@@ -47,6 +47,11 @@ namespace Sky_multi
         private Sky_framework.Button button1;
         private Sky_framework.Button button2;
         private Sky_framework.Rectangle rectangle1;
+        private Sky_framework.Rectangle rectangle3;
+        private Label label5;
+        private RadioButton radioButton4;
+        private RadioButton radioButton5;
+        private RadioButton radioButton6;
 
         internal DataSettings DataSettings { get; private set; }
 
@@ -95,6 +100,27 @@ namespace Sky_multi
                     comboBox1.SelectedIndex = 1;
                     break;
             }
+
+            switch (DataSettings.HardwareAcceleration)
+            {
+                case Sky_multi_Core.VlcWrapper.HardwareAccelerationType.d3d11:
+                    radioButton4.Checked = true;
+                    radioButton5.Checked = false;
+                    radioButton6.Checked = false;
+                    break;
+
+                case Sky_multi_Core.VlcWrapper.HardwareAccelerationType.dxva2:
+                    radioButton4.Checked = false;
+                    radioButton5.Checked = true;
+                    radioButton6.Checked = false;
+                    break;
+
+                case Sky_multi_Core.VlcWrapper.HardwareAccelerationType.none:
+                    radioButton4.Checked = false;
+                    radioButton5.Checked = false;
+                    radioButton6.Checked = true;
+                    break;
+            }
         }
 
         private void InitializeComponent()
@@ -118,6 +144,11 @@ namespace Sky_multi
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new Sky_framework.Button();
             this.button2 = new Sky_framework.Button();
+            this.rectangle3 = new Sky_framework.Rectangle();
+            this.label5 = new Label();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.radioButton5 = new System.Windows.Forms.RadioButton();
+            this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // rectangle1
@@ -408,7 +439,7 @@ namespace Sky_multi
             this.button1.Border = false;
             this.button1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.button1.borderRadius = 5;
-            this.button1.Location = new System.Drawing.Point(465, 341);
+            this.button1.Location = new System.Drawing.Point(465, 386);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(98, 36);
             this.button1.TabIndex = 19;
@@ -429,7 +460,7 @@ namespace Sky_multi
             this.button2.Border = false;
             this.button2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.button2.borderRadius = 5;
-            this.button2.Location = new System.Drawing.Point(361, 341);
+            this.button2.Location = new System.Drawing.Point(361, 386);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(98, 36);
             this.button2.TabIndex = 20;
@@ -443,13 +474,85 @@ namespace Sky_multi
             }
             this.button2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            //
+            // rectangle3
+            //
+            this.rectangle3.Border = true;
+            this.rectangle3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
+            this.rectangle3.BorderRadius = 10;
+            this.rectangle3.BorderWidth = 1;
+            this.rectangle3.Location = new System.Drawing.Point(291, 286);
+            this.rectangle3.Name = "rectangle3";
+            this.rectangle3.Size = new System.Drawing.Size(272, 91);
+            this.rectangle3.TabIndex = 11;
+            //
+            // label5
+            //
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label5.Location = new System.Drawing.Point(320, 291);
+            this.label5.Name = "label5";
+            this.label5.TabIndex = 4;
+            if (DataSettings.Language == Language.French)
+            {
+                this.label5.Text = "Accélération matérielle :";
+            }
+            else
+            {
+                this.label5.Text = "Hardware acceleration :";
+            }
+            // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.radioButton4.Location = new System.Drawing.Point(10, 41);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(89, 19);
+            this.radioButton4.TabIndex = 9;
+            this.radioButton4.TabStop = true;
+            this.radioButton4.Text = "Direct3D 11";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            // 
+            // radioButton5
+            // 
+            this.radioButton5.AutoSize = true;
+            this.radioButton5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.radioButton5.Location = new System.Drawing.Point(110, 41);
+            this.radioButton5.Name = "radioButton5";
+            this.radioButton5.Size = new System.Drawing.Size(89, 19);
+            this.radioButton5.TabIndex = 9;
+            this.radioButton5.TabStop = true;
+            this.radioButton5.Text = "Directx (DXVA) 2.0";
+            this.radioButton5.UseVisualStyleBackColor = true;
+            // 
+            // radioButton6
+            // 
+            this.radioButton6.AutoSize = true;
+            this.radioButton6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.radioButton6.Location = new System.Drawing.Point(10, 61);
+            this.radioButton6.Name = "radioButton6";
+            this.radioButton6.Size = new System.Drawing.Size(89, 19);
+            this.radioButton6.TabIndex = 9;
+            this.radioButton6.TabStop = true;
+            if (DataSettings.Language == Language.French)
+            {
+                this.radioButton6.Text = "Désactiver";
+            }
+            else
+            {
+                this.radioButton6.Text = "Disable";
+            }
+            this.radioButton6.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.ButtonMaximizedVisible = true;
-            this.ClientSize = new System.Drawing.Size(573, 348);
+            this.ClientSize = new System.Drawing.Size(573, 395);
+            this.Controls.Add(this.rectangle3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label4);
@@ -468,11 +571,16 @@ namespace Sky_multi
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.rectangle1);
+            this.Controls.Add(this.label5);
+            this.rectangle3.Controls.Add(this.radioButton4);
+            this.rectangle3.Controls.Add(this.radioButton5);
+            this.rectangle3.Controls.Add(this.radioButton6);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "SettingsDialog";
             this.Redimensionnable = false;
             this.ButtonMaximizedVisible = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
             if (DataSettings.Language == Language.French)
             {
                 this.Text = "Sky multi - Réglages";
@@ -499,6 +607,11 @@ namespace Sky_multi
             this.Controls.SetChildIndex(this.label4, 0);
             this.Controls.SetChildIndex(this.button1, 0);
             this.Controls.SetChildIndex(this.button2, 0);
+            this.Controls.SetChildIndex(this.rectangle3, 0);
+            this.Controls.SetChildIndex(this.label5, 0);
+            this.rectangle3.Controls.SetChildIndex(this.radioButton4, 0);
+            this.rectangle3.Controls.SetChildIndex(this.radioButton5, 0);
+            this.rectangle3.Controls.SetChildIndex(this.radioButton6, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -540,6 +653,21 @@ namespace Sky_multi
             else
             {
                 DataSettings.Language = Language.English;
+            }
+
+            if (radioButton4.Checked == true)
+            {
+                DataSettings.HardwareAcceleration = Sky_multi_Core.VlcWrapper.HardwareAccelerationType.d3d11;
+            }
+
+            if (radioButton5.Checked == true)
+            {
+                DataSettings.HardwareAcceleration = Sky_multi_Core.VlcWrapper.HardwareAccelerationType.dxva2;
+            }
+
+            if (radioButton6.Checked == true)
+            {
+                DataSettings.HardwareAcceleration = Sky_multi_Core.VlcWrapper.HardwareAccelerationType.none;
             }
 
             this.DialogResult = DialogResult.OK;

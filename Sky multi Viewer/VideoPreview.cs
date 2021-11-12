@@ -28,7 +28,7 @@ namespace Sky_multi_Viewer
 {
     public sealed class VideoPreview : Control
     {
-        private VlcControl VlcControl;
+        private VideoView VideoView;
         private Label labeTime = new Label();
         //private byte CanSetTime = 0;
 
@@ -37,39 +37,39 @@ namespace Sky_multi_Viewer
             this.BackColor = Color.FromArgb(64, 64, 64);
             this.Size = new Size(128, 86);
 
-            this.VlcControl = new VlcControl();
-            ((System.ComponentModel.ISupportInitialize)(this.VlcControl)).BeginInit();
+            this.VideoView = new VideoView();
+            ((System.ComponentModel.ISupportInitialize)(this.VideoView)).BeginInit();
 
-            this.VlcControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            this.VlcControl.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
-            this.VlcControl.Location = new System.Drawing.Point(0, 0);
-            this.VlcControl.Name = "vlcControl1";
-            this.VlcControl.Size = new System.Drawing.Size(128, 72);
-            this.VlcControl.Spu = -1;
-            this.VlcControl.TabIndex = 2;
-            this.VlcControl.Text = "vlcControl1";
-            this.VlcControl.VlcLibDirectory = null;
-            this.VlcControl.VlcMediaplayerOptions = null;
-            this.VlcControl.VlcLibDirectoryNeeded += new EventHandler<VlcLibDirectoryNeededEventArgs>(this.vlcControl1_VlcLibDirectoryNeeded);
+            this.VideoView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.VideoView.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
+            this.VideoView.Location = new System.Drawing.Point(0, 0);
+            this.VideoView.Name = "vlcControl1";
+            this.VideoView.Size = new System.Drawing.Size(128, 72);
+            this.VideoView.Spu = -1;
+            this.VideoView.TabIndex = 2;
+            this.VideoView.Text = "vlcControl1";
+            this.VideoView.VlcLibDirectory = null;
+            this.VideoView.VlcMediaplayerOptions = null;
+            this.VideoView.VlcLibDirectoryNeeded += new EventHandler<VlcLibDirectoryNeededEventArgs>(this.vlcControl1_VlcLibDirectoryNeeded);
 
             this.labeTime.AutoSize = true;
             this.labeTime.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             this.labeTime.ForeColor = Color.FromArgb(224, 224, 224);
             this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 72);
 
-            ((System.ComponentModel.ISupportInitialize)(this.VlcControl)).EndInit();
-            this.Controls.Add(this.VlcControl);
+            ((System.ComponentModel.ISupportInitialize)(this.VideoView)).EndInit();
+            this.Controls.Add(this.VideoView);
             this.Controls.Add(this.labeTime);
-            this.Controls.SetChildIndex(this.VlcControl, 0);
+            this.Controls.SetChildIndex(this.VideoView, 0);
             this.Controls.SetChildIndex(this.labeTime, 0);
         }
 
         public void LoadMedia(string Media, long VlcTime)
         {
-            VlcControl.Play("File:///" + Media);
+            VideoView.Play("File:///" + Media);
             //await Task.Delay(100);
-            VlcControl.Time = VlcTime;
-            VlcControl.SetPause(true);
+            VideoView.Time = VlcTime;
+            VideoView.SetPause(true);
             labeTime.Text = ConvertVlcTimeToString(VlcTime);
             this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 72);
         }
@@ -102,7 +102,7 @@ namespace Sky_multi_Viewer
 
             //if (CanSetTime == 0)
             {
-                VlcControl.Time = VlcTime;
+                VideoView.Time = VlcTime;
                 labeTime.Text = ConvertVlcTimeToString(VlcTime);
                 this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 72);
                 //CanSetTime++;
@@ -119,12 +119,25 @@ namespace Sky_multi_Viewer
 
         public long GetTime()
         {
-            return VlcControl.Time;
+            return VideoView.Time;
         }
 
         public void Stop()
         {
-            VlcControl.Stop();
+            VideoView.Stop();
+            VideoView.VlcMediaPlayer.ResetMedia();
+        }
+
+        public Sky_multi_Core.VlcWrapper.HardwareAccelerationType HardwareAcceleration
+        {
+            get
+            {
+                return VideoView.HardwareAcceleration;
+            }
+            set
+            {
+                VideoView.HardwareAcceleration = value;
+            }
         }
 
         private void vlcControl1_VlcLibDirectoryNeeded(object sender, VlcLibDirectoryNeededEventArgs e)

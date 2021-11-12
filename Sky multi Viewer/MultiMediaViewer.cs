@@ -1,106 +1,89 @@
-﻿/*--------------------------------------------------------------------------------------------------------------------
- Copyright (C) 2021 Himber Sacha
-
- This program is free software: you can redistribute it and/or modify
- it under the +terms of the GNU General Public License as published by
- the Free Software Foundation, either version 2 of the License, or
- any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see https://www.gnu.org/licenses/gpl-2.0.html. 
-
---------------------------------------------------------------------------------------------------------------------*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using System.IO;
+using Sky_multi_Core.ImageReader;
 
 namespace Sky_multi_Viewer
 {
     public delegate void EventMediaTypedHandler(bool DifferentBackMedia);
 
-    public sealed class MultiMediaViewer : VlcControl
+    public class MultiMediaViewer: VideoView
     {
+        private ImageView imageView = new ImageView();
+
         public EventMediaTypedHandler ItIsPicture = null;
         public EventMediaTypedHandler ItIsAudioOrVideo = null;
 
         public bool ItIsAImage { get; private set; } = false;
         public bool RawImage { get; private set; } = false;
 
-        public MultiMediaViewer()
+        public MultiMediaViewer(): base()
         {
-            this.BackgroundImageLayout = ImageLayout.Center;
-            this.Resize += new EventHandler(this_Resize);
-            this.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer, true);
+            imageView.Location = new Point(0, 0);
+            imageView.Size = this.Size;
+            imageView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            imageView.Visible = false;
+            this.Controls.Add(imageView);
         }
 
-        public void OpenFile(string FilePath)
+        public void OpenCD(string CDPath)
         {
-            OpenFile(FilePath, null);
+            imageView.Visible = false;
+
+            if (imageView.Image != null)
+            {
+                imageView.Image.Dispose();
+                imageView.Image = null;
+            }
+
+            if (ItIsAudioOrVideo != null)
+            {
+                ItIsAudioOrVideo(ItIsAImage);
+            }
+
+            ItIsAImage = false;
+            this.SetMedia("dvd:///" + CDPath);
+            this.Play();
         }
 
-        public void OpenFile(string FilePath, params string[] Option)
+        public void OpenDirectory(string DirectoryPath)
         {
-            if (File.Exists(FilePath) == false)
-            {
-                MessageBox.Show("File not found!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
 
-            while (Chargement == true)
-            {
-                System.Threading.Thread.Sleep(1);
-            }
+        }
 
-            try // test png, jpeg, gif, tiff, ico ...
+        public void OpenFile(string FilePath, params string[] options)
+        {
+            try
             {
-                this.BackgroundImage = new Bitmap(FilePath);
-                RawImage = false;
+                imageView.DecodeImageFile(FilePath);
             }
             catch
             {
-                try // test webp
+                imageView.Visible = false;
+
+                if (imageView.Image != null)
                 {
-                    this.BackgroundImage = Sky_multi_Core.WebPDecoder.DecodeWebp(FilePath);
-                    RawImage = false;
+                    imageView.Image.Dispose();
+                    imageView.Image = null;
                 }
-                catch
+
+                if (ItIsAudioOrVideo != null)
                 {
-                    // test raw                    
-
-                    this.BackgroundImage = Sky_multi_Core.RawDecoder.RawToBitmap(FilePath);
-                    RawImage = true;
-
-                    if (this.BackgroundImage == null)
-                    {
-                        this.BackgroundImage = null;
-
-                        if (ItIsAudioOrVideo != null)
-                        {
-                            ItIsAudioOrVideo(ItIsAImage);
-                        }
-
-                        ItIsAImage = false;
-                        RawImage = false;
-
-                        this.Play("File:///" + FilePath, Option);
-                        return;
-                    }
+                    ItIsAudioOrVideo(ItIsAImage);
                 }
+
+                ItIsAImage = false;
+                this.SetMedia("File:///" + FilePath, options);
+                this.Play();
+                return;
             }
 
+            imageView.Visible = true;
             this.Stop();
-            PictureManager();
 
             if (ItIsPicture != null)
             {
@@ -110,37 +93,10 @@ namespace Sky_multi_Viewer
             ItIsAImage = true;
         }
 
-        private void this_Resize(object sender, EventArgs e)
-        {
-            PictureManager();
-        }
-
         public void RotateImage()
         {
-            this.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-            PictureManager();
-            this.Refresh();
-        }
-
-        private void PictureManager()
-        {
-            if (this.BackgroundImage != null)
-            {
-                if (this.BackgroundImage.Width <= this.Width && this.BackgroundImage.Height <= this.Height)
-                {
-                    if (this.BackgroundImageLayout != ImageLayout.Center)
-                    {
-                        this.BackgroundImageLayout = ImageLayout.Center;
-                    }
-                }
-                else
-                {
-                    if (this.BackgroundImageLayout != ImageLayout.Zoom)
-                    {
-                        this.BackgroundImageLayout = ImageLayout.Zoom;
-                    }
-                }
-            }
+            imageView.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            imageView.Refresh();
         }
     }
 }

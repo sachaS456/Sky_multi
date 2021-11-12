@@ -1,0 +1,7 @@
+﻿Changes between 3.0.x and 3.1.0:
+----------------------------------
+
+-Redesign of part of the wrapper of libvlc.dll and libvlccore.dll
+-New feature that allow change hardware acceleration
+
+----------------------------------

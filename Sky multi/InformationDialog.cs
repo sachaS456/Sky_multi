@@ -25,7 +25,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Sky_framework;
 using System.IO;
-using Sky_multi_Core;
+using Sky_multi_Core.VlcWrapper;
 
 namespace Sky_multi
 {
@@ -144,7 +144,7 @@ namespace Sky_multi
 
             foreach (MediaTrack i in ListTracks)
             {
-                if (i.Type == Sky_multi_Core.Signatures.MediaTrackTypes.Video)
+                if (i.Type == Sky_multi_Core.VlcWrapper.Core.MediaTrackTypes.Video)
                 {
                     nbVideo++;
                     VideoTrack videoTrack = i.TrackInfo as VideoTrack;
@@ -162,7 +162,7 @@ namespace Sky_multi
                     panel1.Controls.Add(panelInfoCodecVideo);
                     nbFlux++;
                 }
-                else if (i.Type == Sky_multi_Core.Signatures.MediaTrackTypes.Audio)
+                else if (i.Type == Sky_multi_Core.VlcWrapper.Core.MediaTrackTypes.Audio)
                 {
                     nbAudio++;
                     AudioTrack audioTrack = i.TrackInfo as AudioTrack;
@@ -179,7 +179,7 @@ namespace Sky_multi
                     panel1.Controls.Add(panelInfoCodecAudio);
                     nbFlux++;
                 }
-                else if (i.Type == Sky_multi_Core.Signatures.MediaTrackTypes.Text)
+                else if (i.Type == Sky_multi_Core.VlcWrapper.Core.MediaTrackTypes.Text)
                 {
                     nbText++;
                     SubtitleTrack subtitleTrack = i.TrackInfo as SubtitleTrack;
