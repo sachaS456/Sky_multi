@@ -78,14 +78,19 @@ namespace Sky_multi_Core.ImageReader
             g.CompositingQuality = CompositingQuality;
 
             int width;
-            int height;
+            int height = 0;
             int x;
-            int y;
+            int y = 0;
+            bool SizeSet = false;
 
             if (Image.Width > this.Width)
             {
-                width = this.Width;
-                x = 0;
+                SizeSet = true;
+                Size resize = ResizeImageW(Image.Width, Image.Height);
+                width = resize.Width;
+                height = resize.Height;
+                x = this.Width / 2 - width / 2;
+                y = this.Height / 2 - height / 2;
             }
             else
             {
@@ -93,19 +98,78 @@ namespace Sky_multi_Core.ImageReader
                 x = this.Width / 2 - Image.Width / 2;
             }
 
-            if (Image.Height > this.Height)
+            if (SizeSet == false)
             {
-                height = this.Height;
-                y = 0;
-            }
-            else
-            {
-                height = Image.Height;
-                y = this.Height / 2 - Image.Height / 2;
+                if (Image.Height > this.Height)
+                {
+                    Size resize = ResizeImageH(Image.Width, Image.Height);
+                    width = resize.Width;
+                    height = resize.Height;
+                    x = this.Width / 2 - width / 2;
+                    y = this.Height / 2 - height / 2;
+                }
+                else
+                {
+                    height = Image.Height;
+                    y = this.Height / 2 - Image.Height / 2;
+                }
             }
 
             g.Clear(this.BackColor);
             g.DrawImage(Image, x, y, width, height);
+        }
+
+        private void SimplifiedFractions(ref float num, ref float den)
+        {
+            int remNum, remDen, counter;
+
+            if (num > den)
+            {
+                counter = (int)den;
+            }
+            else
+            {
+                counter = (int)num;
+            }
+
+            for (int i = 2; i <= counter; i++)
+            {
+                remNum = (int)num % i;
+                if (remNum == 0)
+                {
+                    remDen = (int)den % i;
+                    if (remDen == 0)
+                    {
+                        num = num / i;
+                        den = den / i;
+                        i--;
+                    }
+                }
+            }
+        }
+
+        private Size ResizeImageW(int imagewith, int imageheight)
+        {
+            float rw = imagewith;
+            float rh = imageheight;
+
+            SimplifiedFractions(ref rw, ref rh);
+
+            imagewith = this.Width;
+            imageheight = (this.Width / (int)rw) * (int)rh;
+            return new Size(imagewith, imageheight);
+        }
+
+        private Size ResizeImageH(int imagewith, int imageheight)
+        {
+            float rw = imagewith;
+            float rh = imageheight;
+
+            SimplifiedFractions(ref rw, ref rh);
+
+            imageheight = this.Height;
+            imagewith = (int)(float)((float)(this.Height / rh) * rw);
+            return new Size(imagewith, imageheight);
         }
 
         protected override void OnPaint(PaintEventArgs e)

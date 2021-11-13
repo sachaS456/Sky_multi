@@ -28,6 +28,55 @@ namespace Sky_multi_Viewer
             imageView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             imageView.Visible = false;
             this.Controls.Add(imageView);
+
+            imageView.MouseClick += new MouseEventHandler(MouseClickEvent);
+            imageView.MouseDoubleClick += new MouseEventHandler(MouseDoubleClickEvent);
+            imageView.MouseDown += new MouseEventHandler(MouseDownEvent);
+            imageView.MouseUp += new MouseEventHandler(MouseUpEvent);
+            imageView.MouseMove += new MouseEventHandler(MouseMoveEvent);
+            imageView.MouseLeave += new EventHandler(MouseLeaveEvent);
+            imageView.MouseEnter += new EventHandler(MouseEnterEvent);
+            imageView.MouseWheel += new MouseEventHandler(MouseWheelEvent);
+            imageView.MouseHover += new EventHandler(MouseHoverEvent);
+        }
+
+        private void MouseClickEvent(object sender, MouseEventArgs e)
+        {
+            OnMouseClick(e);
+        }
+        private void MouseDoubleClickEvent(object sender, MouseEventArgs e)
+        {
+            OnMouseDoubleClick(e);
+        }
+        private void MouseDownEvent(object sender, MouseEventArgs e)
+        {
+            OnMouseDown(e);
+        }
+        private void MouseUpEvent(object sender, MouseEventArgs e)
+        {
+            OnMouseUp(e);
+        }
+        private void MouseMoveEvent(object sender, MouseEventArgs e)
+        {
+            OnMouseMove(e);
+        }
+        private void MouseLeaveEvent(object sender, EventArgs e)
+        {
+            OnMouseLeave(e);
+        }
+        private void MouseEnterEvent(object sender, EventArgs e)
+        {
+            OnMouseEnter(e);
+        }
+
+        private void MouseWheelEvent(object sender, MouseEventArgs e)
+        {
+            OnMouseWheel(e);
+        }
+
+        private void MouseHoverEvent(object sender, EventArgs e)
+        {
+            OnMouseHover(e);
         }
 
         public void OpenCD(string CDPath)

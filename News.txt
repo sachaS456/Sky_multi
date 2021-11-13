@@ -3,5 +3,6 @@
 
 -Redesign of part of the wrapper of libvlc.dll and libvlccore.dll
 -New feature that allow change hardware acceleration
+-Redesign of image viewer
 
 ----------------------------------
