@@ -15,7 +15,10 @@ namespace Sky_multi_Core.ImageReader
         public SmoothingMode SmoothingMode = SmoothingMode.HighQuality;
         public PixelOffsetMode PixelOffsetMode = PixelOffsetMode.HighQuality;
         public CompositingQuality CompositingQuality = CompositingQuality.HighQuality;
-        public Image Image = null;
+        public Image Image { get; private set; } = null;
+
+        private int ImageWidth = 0;
+        private int ImageHeight = 0;
 
         public ImageView()
         {
@@ -29,6 +32,32 @@ namespace Sky_multi_Core.ImageReader
             DecodeImageFile(ref FilePath);
         }
 
+        public void SetImage(Image image)
+        {
+            SetImage(ref image);
+        }
+
+        public void SetImage(ref Image image)
+        {
+            this.SuspendLayout();
+            Image.Dispose();
+            Image = image;
+            ImageWidth = Image.Width;
+            ImageHeight = Image.Height;
+            this.ResumeLayout(false);
+        }
+
+        public void RemoveImage()
+        {
+            this.SuspendLayout();
+            Image.Dispose();
+            Image = null;
+            ImageWidth = 0;
+            ImageHeight = 0;
+            this.ResumeLayout(false);
+            this.Refresh();
+        }
+
         public void DecodeImageFile(ref string FilePath)
         {
             if (!File.Exists(FilePath))
@@ -39,6 +68,8 @@ namespace Sky_multi_Core.ImageReader
             try
             {
                 Image = Bitmap.FromFile(FilePath);
+                ImageWidth = Image.Width;
+                ImageHeight = Image.Height;
                 this.Refresh();
                 return;
             }
@@ -47,6 +78,8 @@ namespace Sky_multi_Core.ImageReader
                 try 
                 {
                     Image = RawDecoder.RawToBitmap(FilePath);
+                    ImageWidth = Image.Width;
+                    ImageHeight = Image.Height;
                     this.Refresh();
                     return;
                 }
@@ -55,6 +88,8 @@ namespace Sky_multi_Core.ImageReader
                     try
                     {
                         Image = WebPDecoder.DecodeWebp(FilePath);
+                        ImageWidth = Image.Width;
+                        ImageHeight = Image.Height;
                         this.Refresh();
                         return;
                     }
@@ -77,46 +112,38 @@ namespace Sky_multi_Core.ImageReader
             g.PixelOffsetMode = PixelOffsetMode;
             g.CompositingQuality = CompositingQuality;
 
-            int width;
-            int height = 0;
             int x;
-            int y = 0;
-            bool SizeSet = false;
+            int y;
+            bool isresize = false;
 
-            if (Image.Width > this.Width)
+            if (ImageWidth > this.Width || Image.Width > this.Width)
             {
-                SizeSet = true;
                 Size resize = ResizeImageW(Image.Width, Image.Height);
-                width = resize.Width;
-                height = resize.Height;
-                x = this.Width / 2 - width / 2;
-                y = this.Height / 2 - height / 2;
+                ImageWidth = resize.Width;
+                ImageHeight = resize.Height;
+                isresize = true;
             }
             else
             {
-                width = Image.Width;
-                x = this.Width / 2 - Image.Width / 2;
+                ImageWidth = Image.Width;
             }
 
-            if (SizeSet == false)
+            if (ImageHeight > this.Height || Image.Height > this.Height && isresize == false)
             {
-                if (Image.Height > this.Height)
-                {
-                    Size resize = ResizeImageH(Image.Width, Image.Height);
-                    width = resize.Width;
-                    height = resize.Height;
-                    x = this.Width / 2 - width / 2;
-                    y = this.Height / 2 - height / 2;
-                }
-                else
-                {
-                    height = Image.Height;
-                    y = this.Height / 2 - Image.Height / 2;
-                }
+                Size resize = ResizeImageH(Image.Width, Image.Height);
+                ImageWidth = resize.Width;
+                ImageHeight = resize.Height;
             }
+            else if (isresize == false)
+            {
+                ImageHeight = Image.Height;
+            }
+
+            x = this.Width / 2 - ImageWidth / 2;
+            y = this.Height / 2 - ImageHeight / 2;
 
             g.Clear(this.BackColor);
-            g.DrawImage(Image, x, y, width, height);
+            g.DrawImage(Image, x, y, ImageWidth, ImageHeight);
         }
 
         private void SimplifiedFractions(ref float num, ref float den)
@@ -156,7 +183,7 @@ namespace Sky_multi_Core.ImageReader
             SimplifiedFractions(ref rw, ref rh);
 
             imagewith = this.Width;
-            imageheight = (this.Width / (int)rw) * (int)rh;
+            imageheight = (int)(float)((float)(this.Width / rw) * rh);
             return new Size(imagewith, imageheight);
         }
 

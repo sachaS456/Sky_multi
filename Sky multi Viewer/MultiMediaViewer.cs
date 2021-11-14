@@ -85,8 +85,7 @@ namespace Sky_multi_Viewer
 
             if (imageView.Image != null)
             {
-                imageView.Image.Dispose();
-                imageView.Image = null;
+                imageView.RemoveImage();
             }
 
             if (ItIsAudioOrVideo != null)
@@ -116,8 +115,7 @@ namespace Sky_multi_Viewer
 
                 if (imageView.Image != null)
                 {
-                    imageView.Image.Dispose();
-                    imageView.Image = null;
+                    imageView.RemoveImage();
                 }
 
                 if (ItIsAudioOrVideo != null)
