@@ -30,20 +30,27 @@ namespace Sky_multi
     internal class ImageModifierDialog : SkyForms
     {
         private Sky_framework.Button button1;
-        private Sky_multi_Core.ImageReader.ImageView imageView1;
+        private Sky_multi_Viewer.ImageView imageView1;
         private Sky_framework.Button button2;
-        private Sky_framework.Rectangle CropImage = new Sky_framework.Rectangle();
+        private RectangleResizer CropImage;
 
-        internal ImageModifierDialog()
+        internal ImageModifierDialog(Bitmap bitmap)
         {
             InitializeComponent();
+
+            CropImage = new RectangleResizer();
+            CropImage.Location = new Point(0, 0);
+            CropImage.Size = imageView1.Size;
+            CropImage.Visible = false;
+            imageView1.Controls.Add(CropImage);
+            imageView1.SetImage(bitmap);
         }
 
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImageModifierDialog));
             this.button1 = new Sky_framework.Button();
-            this.imageView1 = new Sky_multi_Core.ImageReader.ImageView();
+            this.imageView1 = new Sky_multi_Viewer.ImageView();
             this.button2 = new Sky_framework.Button();
             this.SuspendLayout();
             // 
@@ -68,7 +75,7 @@ namespace Sky_multi
             // 
             // imageView1
             // 
-            this.imageView1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.imageView1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.imageView1.Location = new System.Drawing.Point(2, 51);
             this.imageView1.Name = "imageView1";
             this.imageView1.Size = new System.Drawing.Size(606, 400);
@@ -130,7 +137,7 @@ namespace Sky_multi
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
+            CropImage.Visible = true;
         }
     }
 }

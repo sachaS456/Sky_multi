@@ -23,7 +23,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using Sky_multi_Core.ImageReader;
 
 namespace Sky_multi_Viewer
 {

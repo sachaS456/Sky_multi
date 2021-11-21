@@ -25,8 +25,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Windows.Forms;
+using Sky_multi_Core.ImageReader;
 
-namespace Sky_multi_Core.ImageReader
+namespace Sky_multi_Viewer
 {
     public class ImageView: Control
     {
@@ -58,7 +59,10 @@ namespace Sky_multi_Core.ImageReader
         public void SetImage(ref Image image)
         {
             this.SuspendLayout();
-            Image.Dispose();
+            if (Image != null)
+            {
+                Image.Dispose();
+            }
             Image = image;
             ImageWidth = Image.Width;
             ImageHeight = Image.Height;

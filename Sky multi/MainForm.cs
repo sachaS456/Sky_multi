@@ -1762,18 +1762,10 @@ namespace Sky_multi
             using (ZoneCapture zoneCapture = new ZoneCapture())
             {
                 zoneCapture.ShowDialog();
-
                 this.Visible = true;
-
-                using (SaveFileDialog dialog = new SaveFileDialog())
-                {
-                    dialog.Filter = "Images png| *.png |Images jpeg| *.jpeg; *.jpg |Images bmp| *.bmp |Images ico| *.ico |Images gif| *.gif |Images tiff| *.tiff; *.tif |Images heic| *.heic";
-
-                    if (dialog.ShowDialog() == DialogResult.OK)
-                    {
-                        zoneCapture.BitmapCapture.Save(dialog.FileName);
-                    }
-                }             
+                ImageModifierDialog dialog = new ImageModifierDialog(zoneCapture.BitmapCapture);
+                zoneCapture.Dispose();
+                dialog.Show();            
             }
 
             this.Visible = true;
