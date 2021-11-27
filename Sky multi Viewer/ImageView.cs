@@ -35,9 +35,9 @@ namespace Sky_multi_Viewer
         public PixelOffsetMode PixelOffsetMode = PixelOffsetMode.HighQuality;
         public CompositingQuality CompositingQuality = CompositingQuality.HighQuality;
         public Image Image { get; private set; } = null;
-
-        private int ImageWidth = 0;
-        private int ImageHeight = 0;
+        public Point ImagePosition { get; private set; } = Point.Empty;
+        public int ImageWidth { get; private set; } = 0;
+        public int ImageHeight { get; private set; } = 0;
 
         public ImageView()
         {
@@ -67,6 +67,7 @@ namespace Sky_multi_Viewer
             ImageWidth = Image.Width;
             ImageHeight = Image.Height;
             this.ResumeLayout(false);
+            this.Refresh();
         }
 
         public void RemoveImage()
@@ -123,6 +124,11 @@ namespace Sky_multi_Viewer
             }
         }
 
+        public Bitmap GetBitmapResized()
+        {
+            return new Bitmap(Image, ImageWidth, ImageHeight);
+        }
+
         private void DrawImage(Graphics g)
         {
             if (this == null || this.IsDisposed || this.Disposing || g == null || Image == null)
@@ -134,8 +140,6 @@ namespace Sky_multi_Viewer
             g.PixelOffsetMode = PixelOffsetMode;
             g.CompositingQuality = CompositingQuality;
 
-            int x;
-            int y;
             bool isresize = false;
 
             if (ImageWidth > this.Width || Image.Width > this.Width)
@@ -161,8 +165,10 @@ namespace Sky_multi_Viewer
                 ImageHeight = Image.Height;
             }
 
-            x = this.Width / 2 - ImageWidth / 2;
-            y = this.Height / 2 - ImageHeight / 2;
+            int x = this.Width / 2 - ImageWidth / 2;
+            int y = this.Height / 2 - ImageHeight / 2;
+
+            ImagePosition = new Point(x, y);
 
             g.Clear(this.BackColor);
             g.DrawImage(Image, x, y, ImageWidth, ImageHeight);

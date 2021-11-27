@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
 using Sky_framework;
 
 namespace Sky_multi
@@ -32,6 +33,8 @@ namespace Sky_multi
         private Sky_framework.Button button1;
         private Sky_multi_Viewer.ImageView imageView1;
         private Sky_framework.Button button2;
+        private Sky_framework.Button button3;
+        private Sky_framework.Button button4;
         private RectangleResizer CropImage;
 
         internal ImageModifierDialog(Bitmap bitmap)
@@ -39,8 +42,8 @@ namespace Sky_multi
             InitializeComponent();
 
             CropImage = new RectangleResizer();
-            CropImage.Location = new Point(0, 0);
-            CropImage.Size = imageView1.Size;
+            CropImage.Location = imageView1.ImagePosition;
+            CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
             CropImage.Visible = false;
             imageView1.Controls.Add(CropImage);
             imageView1.SetImage(bitmap);
@@ -52,6 +55,8 @@ namespace Sky_multi
             this.button1 = new Sky_framework.Button();
             this.imageView1 = new Sky_multi_Viewer.ImageView();
             this.button2 = new Sky_framework.Button();
+            this.button3 = new Sky_framework.Button();
+            this.button4 = new Sky_framework.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -79,6 +84,7 @@ namespace Sky_multi
             this.imageView1.Location = new System.Drawing.Point(2, 51);
             this.imageView1.Name = "imageView1";
             this.imageView1.Size = new System.Drawing.Size(606, 400);
+            this.imageView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.imageView1.TabIndex = 4;
             this.imageView1.Text = "imageView1";
             // 
@@ -101,23 +107,80 @@ namespace Sky_multi
             this.button2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.button3.Border = false;
+            this.button3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.button3.borderRadius = 0;
+            this.button3.BorderSize = 0;
+            this.button3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.button3.ID = 0;
+            this.button3.Image = null;
+            this.button3.ImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button3.Location = new System.Drawing.Point(132, 22);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(37, 23);
+            this.button3.TabIndex = 5;
+            this.button3.Text = "V";
+            this.button3.Visible = false;
+            this.button3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button4
+            // 
+            this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.button4.Border = false;
+            this.button4.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.button4.borderRadius = 0;
+            this.button4.BorderSize = 0;
+            this.button4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.button4.ID = 0;
+            this.button4.Image = null;
+            this.button4.ImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button4.Location = new System.Drawing.Point(173, 22);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(37, 23);
+            this.button4.TabIndex = 5;
+            this.button4.Text = "X";
+            this.button4.Visible = false;
+            this.button4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // ImageModifierDialog
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.ButtonMaximizedVisible = true;
             this.ClientSize = new System.Drawing.Size(611, 455);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.imageView1);
             this.Controls.Add(this.button1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImageModifierDialog";
             this.Text = "Sky multi - screenshot";
+            this.Resize += new EventHandler(this_Resize);
             this.Controls.SetChildIndex(this.button1, 0);
             this.Controls.SetChildIndex(this.imageView1, 0);
             this.Controls.SetChildIndex(this.button2, 0);
+            this.Controls.SetChildIndex(this.button3, 0);
+            this.Controls.SetChildIndex(this.button4, 0);
             this.ResumeLayout(false);
 
+        }
+
+        private void this_Resize(object sender, EventArgs e)
+        {
+            if (CropImage.Visible == true)
+            {
+                this.Refresh();
+                CropImage.MaxWidth = imageView1.ImageWidth;
+                CropImage.MaxHeight = imageView1.ImageHeight;
+                CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
+                CropImage.Location = imageView1.ImagePosition;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -137,7 +200,51 @@ namespace Sky_multi
 
         private void button2_Click(object sender, EventArgs e)
         {
+            CropImage.MaxWidth = imageView1.ImageWidth;
+            CropImage.MaxHeight = imageView1.ImageHeight;
+            CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
+            CropImage.Location = imageView1.ImagePosition;
+
             CropImage.Visible = true;
+            button3.Visible = true;
+            button4.Visible = true;
+            button2.Visible = false;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            button3.Visible = false;
+            button4.Visible = false;
+            button2.Visible = true;
+
+            Bitmap bitmap = imageView1.GetBitmapResized();
+            Bitmap NewBitmap = new Bitmap(CropImage.Width, CropImage.Height, imageView1.Image.PixelFormat);
+            for (int indexX = 0; indexX < bitmap.Width; indexX++)
+            {
+                if (indexX >= CropImage.Location.X - imageView1.ImagePosition.X && indexX < CropImage.Location.X - imageView1.ImagePosition.X + CropImage.Width) // si est contenu dans largeur de CropImage
+                {
+                    for (int indexY = 0; indexY < bitmap.Height; indexY++)
+                    {
+                        if (indexY >= CropImage.Location.Y - imageView1.ImagePosition.Y && indexY < CropImage.Location.Y - imageView1.ImagePosition.Y + CropImage.Height) // si est contenu dans hauteur de CropImage
+                        {
+                            NewBitmap.SetPixel(indexX - CropImage.Location.X + imageView1.ImagePosition.X, indexY - CropImage.Location.Y + imageView1.ImagePosition.Y, 
+                                bitmap.GetPixel(indexX, indexY));
+                        }
+                    }
+                }
+            }
+
+            bitmap.Dispose();
+            imageView1.SetImage(NewBitmap);
+            CropImage.Visible = false;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            button3.Visible = false;
+            button4.Visible = false;
+            button2.Visible = true;
+            CropImage.Visible = false;
         }
     }
 }

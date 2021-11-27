@@ -19,6 +19,9 @@ namespace Sky_multi
         private Sky_framework.Rectangle ResizeButtonBottomRight = new Sky_framework.Rectangle();
         private Sky_framework.Rectangle ResizeButtonBottom = new Sky_framework.Rectangle();
 
+        internal int? MaxWidth { get; set; } = null;
+        internal int? MaxHeight { get; set; } = null;
+
         internal RectangleResizer()
         {
             this.SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.ResizeRedraw, true);
@@ -28,7 +31,7 @@ namespace Sky_multi
             this.Size = new Size(100, 100);
             this.BackColor = Color.Transparent;
 
-            const int SizeButton = 20;
+            const int SizeButton = 15;
 
             ResizeButtonTopLeft.BackColor = Color.White;
             ResizeButtonTopLeft.Size = new Size(SizeButton, SizeButton);
@@ -137,11 +140,31 @@ namespace Sky_multi
                 int w = this.Width;
                 int h = this.Height;
                 
-                this.Width -= MousePosition.X - LocationScreenX;
-                this.Height -= MousePosition.Y - LocationScreenY;
+                if (MaxWidth == null || this.Width - (MousePosition.X - LocationScreenX) < MaxWidth)
+                {
+                    this.Width -= MousePosition.X - LocationScreenX;
+                }
+                else
+                {
+                    this.Width = (int)MaxWidth;
+                }
+
+                if (MaxHeight == null || this.Height - (MousePosition.Y - LocationScreenY) < MaxHeight)
+                {
+                    this.Height -= MousePosition.Y - LocationScreenY;
+                }
+                else
+                {
+                    this.Height = (int)MaxHeight;
+                }
 
                 this.Location = new Point(this.Location.X - (this.Width - w), this.Location.Y - (this.Height - h));
                 this.Update();
+
+                if (this.Parent != null)
+                {
+                    this.Parent.Update();
+                }
             }
         }
 
@@ -153,10 +176,22 @@ namespace Sky_multi
 
                 int h = this.Height;
 
-                this.Height -= MousePosition.Y - LocationScreenY;
+                if (MaxHeight == null || this.Height - (MousePosition.Y - LocationScreenY) < MaxHeight)
+                {
+                    this.Height -= MousePosition.Y - LocationScreenY;
+                }
+                else
+                {
+                    this.Height = (int)MaxHeight;
+                }
 
                 this.Location = new Point(this.Location.X, this.Location.Y - (this.Height - h));
                 this.Update();
+
+                if (this.Parent != null)
+                {
+                    this.Parent.Update();
+                }
             }
         }
 
@@ -168,11 +203,31 @@ namespace Sky_multi
 
                 int h = this.Height;
 
-                this.Width = MousePosition.X - LocationScreenX;
-                this.Height -= MousePosition.Y - LocationScreenY;
+                if (MaxWidth == null || MousePosition.X - LocationScreenX < MaxWidth)
+                {
+                    this.Width = MousePosition.X - LocationScreenX;
+                }
+                else
+                {
+                    this.Width = (int)MaxWidth;
+                }
+
+                if (MaxHeight == null || this.Height - (MousePosition.Y - LocationScreenY) < MaxHeight)
+                {
+                    this.Height -= MousePosition.Y - LocationScreenY;
+                }
+                else
+                {
+                    this.Height = (int)MaxHeight;
+                }
 
                 this.Location = new Point(this.Location.X, this.Location.Y - (this.Height - h));
                 this.Update();
+
+                if (this.Parent != null)
+                {
+                    this.Parent.Update();
+                }
             }
         }
 
@@ -184,10 +239,22 @@ namespace Sky_multi
 
                 int w = this.Width;
 
-                this.Width -= MousePosition.X - LocationScreenX;
+                if (MaxWidth == null || this.Width - (MousePosition.X - LocationScreenX) < MaxWidth)
+                {
+                    this.Width -= MousePosition.X - LocationScreenX;
+                }
+                else
+                {
+                    this.Width = (int)MaxWidth;
+                }
 
                 this.Location = new Point(this.Location.X - (this.Width - w), this.Location.Y);
                 this.Update();
+
+                if (this.Parent != null)
+                {
+                    this.Parent.Update();
+                }
             }
         }
 
@@ -197,9 +264,21 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                this.Width = MousePosition.X - LocationScreenX;
+                if (MaxWidth == null || MousePosition.X - LocationScreenX < MaxWidth)
+                {
+                    this.Width = MousePosition.X - LocationScreenX;
+                }
+                else
+                {
+                    this.Width = (int)MaxWidth;
+                }
 
                 this.Update();
+
+                if (this.Parent != null)
+                {
+                    this.Parent.Update();
+                }
             }
         }
 
@@ -211,11 +290,31 @@ namespace Sky_multi
 
                 int w = this.Width;
 
-                this.Width -= MousePosition.X - LocationScreenX;
-                this.Height = MousePosition.Y - LocationScreenY;
+                if (MaxWidth == null || this.Width - (MousePosition.X - LocationScreenX) < MaxWidth)
+                {
+                    this.Width -= MousePosition.X - LocationScreenX;
+                }
+                else
+                {
+                    this.Width = (int)MaxWidth;
+                }
+
+                if (MaxHeight == null || MousePosition.Y - LocationScreenY < MaxHeight)
+                {
+                    this.Height = MousePosition.Y - LocationScreenY;
+                }
+                else
+                {
+                    this.Height = (int)MaxHeight;
+                }
 
                 this.Location = new Point(this.Location.X - (this.Width - w), this.Location.Y);
                 this.Update();
+
+                if (this.Parent != null)
+                {
+                    this.Parent.Update();
+                }
             }
         }
 
@@ -225,10 +324,30 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                this.Width = MousePosition.X - LocationScreenX;
-                this.Height = MousePosition.Y - LocationScreenY;
+                if (MaxWidth == null || MousePosition.X - LocationScreenX < MaxWidth)
+                {
+                    this.Width = MousePosition.X - LocationScreenX;
+                }
+                else
+                {
+                    this.Width = (int)MaxWidth;
+                }
+
+                if (MaxHeight == null || MousePosition.Y - LocationScreenY < MaxHeight)
+                {
+                    this.Height = MousePosition.Y - LocationScreenY;
+                }
+                else
+                {
+                    this.Height = (int)MaxHeight;
+                }
 
                 this.Update();
+
+                if (this.Parent != null)
+                {
+                    this.Parent.Update();
+                }
             }
         }
 
@@ -238,10 +357,28 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                this.Height = MousePosition.Y - LocationScreenY;
+                if (MaxHeight == null || MousePosition.Y - LocationScreenY < MaxHeight)
+                {
+                    this.Height = MousePosition.Y - LocationScreenY;
+                }
+                else
+                {
+                    this.Height = (int)MaxHeight;
+                }
 
                 this.Update();
+
+                if (this.Parent != null)
+                {
+                    this.Parent.Update();
+                }
             }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Sky_framework.Border.DrawRoundRectangle(new Pen(Color.FromArgb(100, 255, 255, 255), 5), 6, 6, Width - 14, Height - 14, 0, e.Graphics);
+            base.OnPaint(e);
         }
     }
 }
