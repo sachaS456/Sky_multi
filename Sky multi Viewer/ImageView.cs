@@ -129,6 +129,11 @@ namespace Sky_multi_Viewer
             return new Bitmap(Image, ImageWidth, ImageHeight);
         }
 
+        public Bitmap GetBitmap()
+        {
+            return new Bitmap(Image);
+        }
+
         private void DrawImage(Graphics g)
         {
             if (this == null || this.IsDisposed || this.Disposing || g == null || Image == null)

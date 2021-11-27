@@ -217,26 +217,52 @@ namespace Sky_multi
             button4.Visible = false;
             button2.Visible = true;
 
-            Bitmap bitmap = imageView1.GetBitmapResized();
-            Bitmap NewBitmap = new Bitmap(CropImage.Width, CropImage.Height, imageView1.Image.PixelFormat);
-            for (int indexX = 0; indexX < bitmap.Width; indexX++)
+            int DeltaImageW = imageView1.Image.Width - imageView1.ImageWidth;
+            int DeltaImageH = imageView1.Image.Height - imageView1.ImageHeight;
+            int x, y, width, height;
+
+            if (DeltaImageW == 0)
             {
-                if (indexX >= CropImage.Location.X - imageView1.ImagePosition.X && indexX < CropImage.Location.X - imageView1.ImagePosition.X + CropImage.Width) // si est contenu dans largeur de CropImage
+                x = CropImage.Location.X - imageView1.ImagePosition.X;
+                width = CropImage.Width;
+            }
+            else
+            {
+                x = (CropImage.Location.X - imageView1.ImagePosition.X) / DeltaImageW;
+                width = CropImage.Width + DeltaImageW;
+            }
+
+            if (DeltaImageH == 0)
+            {
+                y = CropImage.Location.Y - imageView1.ImagePosition.Y;
+                height = CropImage.Height;
+            }
+            else
+            {
+                y = (CropImage.Location.Y - imageView1.ImagePosition.Y) / DeltaImageH;
+                height = CropImage.Height + DeltaImageH;
+            }
+
+            SetCropImage(x, y, width, height);
+
+            CropImage.Visible = false;
+        }
+
+        private void SetCropImage(int x, int y, int width, int height)
+        {
+            Bitmap NewBitmap = new Bitmap(width, height);
+            Bitmap bitmap = imageView1.GetBitmap();
+
+            for (int indexX = 0; indexX < width; indexX++)
+            {
+                for (int indexY = 0; indexY < height; indexY++)
                 {
-                    for (int indexY = 0; indexY < bitmap.Height; indexY++)
-                    {
-                        if (indexY >= CropImage.Location.Y - imageView1.ImagePosition.Y && indexY < CropImage.Location.Y - imageView1.ImagePosition.Y + CropImage.Height) // si est contenu dans hauteur de CropImage
-                        {
-                            NewBitmap.SetPixel(indexX - CropImage.Location.X + imageView1.ImagePosition.X, indexY - CropImage.Location.Y + imageView1.ImagePosition.Y, 
-                                bitmap.GetPixel(indexX, indexY));
-                        }
-                    }
+                    NewBitmap.SetPixel(indexX, indexY, bitmap.GetPixel(indexX + x, indexY + y));
                 }
             }
 
             bitmap.Dispose();
             imageView1.SetImage(NewBitmap);
-            CropImage.Visible = false;
         }
 
         private void button4_Click(object sender, EventArgs e)
