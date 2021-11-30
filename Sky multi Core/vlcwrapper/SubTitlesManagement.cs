@@ -17,32 +17,45 @@
 --------------------------------------------------------------------------------------------------------------------*/
 
 using System.Collections.Generic;
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
 
 namespace Sky_multi_Core.VlcWrapper
 {
     internal sealed class SubTitlesManagement : ISubTitlesManagement, IEnumerableManagement<TrackDescription>
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        public SubTitlesManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        public SubTitlesManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
+        }
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
         }
 
         public int Count
         {
-            get { return myManager.GetVideoSpuCount(myMediaPlayer); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_spu_count(myMediaPlayer); 
+            }
         }
 
         public IEnumerable<TrackDescription> All
         {
             get
             {
-                var module = myManager.GetVideoSpuDescription(myMediaPlayer);
-                var result = TrackDescription.GetSubTrackDescription(module);
-                myManager.ReleaseTrackDescription(module);
+                myMediaPlayerIsLoad();
+                IntPtr module = VlcNative.libvlc_video_get_spu_description(myMediaPlayer);
+                List<TrackDescription> result = TrackDescription.GetSubTrackDescription(module);
+                VlcNative.libvlc_track_description_list_release(module);
                 return result;
             }
         }
@@ -52,21 +65,37 @@ namespace Sky_multi_Core.VlcWrapper
         {
             get
             {
-                var currentId = myManager.GetVideoSpu(myMediaPlayer);
+                myMediaPlayerIsLoad();
+                int currentId = VlcNative.libvlc_video_get_spu(myMediaPlayer);
                 foreach (var availableSubTitle in All)
                 {
                     if (availableSubTitle.ID == currentId)
+                    {
                         return availableSubTitle;
+                    }
                 }
+
                 return null;
             }
-            set { myManager.SetVideoSpu(myMediaPlayer, value.ID); }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_spu(myMediaPlayer, value.ID); 
+            }
         }
 
         public long Delay
         {
-            get { return myManager.GetVideoSpuDelay(myMediaPlayer); }
-            set { myManager.SetVideoSpuDelay(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_spu_delay(myMediaPlayer); 
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_spu_delay(myMediaPlayer, value); 
+            }
         }
     }
 }

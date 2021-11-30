@@ -38,7 +38,7 @@ namespace Sky_multi_Core.VlcWrapper.Core
 
         internal static bool LibVlcLoaded { get; private set; } = false;
 
-        internal static void LoadLibVlc(ref DirectoryInfo dynamicLinkLibrariesPath)
+        internal static void LoadLibVlc(in DirectoryInfo dynamicLinkLibrariesPath)
         {
             if (LibVlcLoaded == true)
             {

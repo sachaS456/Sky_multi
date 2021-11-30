@@ -24,10 +24,9 @@ namespace Sky_multi_Core.VlcWrapper
 {
     internal sealed class VlcMediaInstance : InteropObjectInstance
     {
-        private readonly VlcManager myManager;
         private static readonly Dictionary<IntPtr, VlcMediaInstance> AllInstances = new Dictionary<IntPtr, VlcMediaInstance>();
 
-        internal static VlcMediaInstance New(VlcManager manager, IntPtr pointer)
+        internal static VlcMediaInstance New(IntPtr pointer)
         {
             lock (AllInstances)
             {
@@ -35,7 +34,7 @@ namespace Sky_multi_Core.VlcWrapper
 
                 if (null == instance)
                 {
-                    instance = new VlcMediaInstance(manager, pointer);
+                    instance = new VlcMediaInstance(pointer);
                     AllInstances.Add(pointer, instance);
                 }
 
@@ -43,9 +42,9 @@ namespace Sky_multi_Core.VlcWrapper
             }
         }
 
-        private VlcMediaInstance(VlcManager manager, IntPtr pointer) : base(ref pointer)
+        private VlcMediaInstance(IntPtr pointer) : base(ref pointer)
         {
-            myManager = manager;
+
         }
 
         protected override void Dispose(bool disposing)
@@ -56,7 +55,10 @@ namespace Sky_multi_Core.VlcWrapper
             }
             
             if (Pointer != IntPtr.Zero)
-                myManager.ReleaseMedia(this);
+            {
+                VlcNative.libvlc_media_release(this);
+            }
+
             base.Dispose(disposing);
         }
 

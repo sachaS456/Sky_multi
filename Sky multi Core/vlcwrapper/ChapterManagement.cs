@@ -16,38 +16,61 @@
 
 --------------------------------------------------------------------------------------------------------------------*/
 
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
+
 namespace Sky_multi_Core.VlcWrapper
 {
     internal sealed class ChapterManagement : IChapterManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        public ChapterManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        public ChapterManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
+        }
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
         }
 
         public int Count
         {
-            get { return myManager.GetMediaChapterCount(myMediaPlayer); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_media_player_get_chapter_count(myMediaPlayer); 
+            }
         }
 
         public void Previous()
         {
-            myManager.SetPreviousMediaChapter(myMediaPlayer);
+            myMediaPlayerIsLoad();
+            VlcNative.libvlc_media_player_previous_chapter(myMediaPlayer);
         }
 
         public void Next()
         {
-            myManager.SetNextMediaChapter(myMediaPlayer);
+            myMediaPlayerIsLoad();
+            VlcNative.libvlc_media_player_next_chapter(myMediaPlayer);
         }
 
         public int Current
         {
-            get { return myManager.GetMediaChapter(myMediaPlayer); }
-            set { myManager.SetMediaChapter(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_media_player_get_chapter(myMediaPlayer); 
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_media_player_set_chapter(myMediaPlayer, value); 
+            }
         }
     }
 }

@@ -17,30 +17,43 @@
 --------------------------------------------------------------------------------------------------------------------*/
 
 using System.Collections.Generic;
+using Sky_multi_Core.VlcWrapper.Core;
+using System;
 
 namespace Sky_multi_Core.VlcWrapper
 {
     public sealed class AudioTracksManagement : ITracksManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        internal AudioTracksManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        internal AudioTracksManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
+        }
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
         }
 
         public int Count
         {
-            get { return myManager.GetAudioTracksCount(myMediaPlayer); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_audio_get_track_count(myMediaPlayer);
+            }
         }
 
         public TrackDescription Current
         {
             get
             {
-                var currentId = myManager.GetAudioTrack(myMediaPlayer);
+                myMediaPlayerIsLoad();
+                int currentId = VlcNative.libvlc_audio_get_track(myMediaPlayer);
                 foreach (var track in All)
                 {
                     if (track.ID == currentId)
@@ -48,16 +61,21 @@ namespace Sky_multi_Core.VlcWrapper
                 }
                 return null;
             }
-            set { myManager.SetAudioTrack(myMediaPlayer, value.ID); }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_audio_set_track(myMediaPlayer, value.ID);
+            }
         }
 
         public IEnumerable<TrackDescription> All
         {
             get
             {
-                var module = myManager.GetAudioTracksDescriptions(myMediaPlayer);
-                var result = TrackDescription.GetSubTrackDescription(module);
-                myManager.ReleaseTrackDescription(module);
+                myMediaPlayerIsLoad();
+                IntPtr module = VlcNative.libvlc_audio_get_track_description(myMediaPlayer);
+                List<TrackDescription> result = TrackDescription.GetSubTrackDescription(module);
+                VlcNative.libvlc_track_description_list_release(module);
                 return result;
             }
         }

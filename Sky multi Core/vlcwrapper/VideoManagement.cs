@@ -16,46 +16,95 @@
 
 --------------------------------------------------------------------------------------------------------------------*/
 
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
+
 namespace Sky_multi_Core.VlcWrapper
 {
     internal class VideoManagement : IVideoManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        public VideoManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        public VideoManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
-            Tracks = new VideoTracksManagement(manager, mediaPlayerInstance);
-            Marquee = new MarqueeManagement(manager, mediaPlayerInstance);
-            Logo = new LogoManagement(manager, mediaPlayerInstance);
-            Adjustments = new AdjustmentsManagement(manager, mediaPlayerInstance);
+            Tracks = new VideoTracksManagement(mediaPlayerInstance);
+            Marquee = new MarqueeManagement(mediaPlayerInstance);
+            Logo = new LogoManagement(mediaPlayerInstance);
+            Adjustments = new AdjustmentsManagement(mediaPlayerInstance);
         }
-        
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
+        }
+
         public string AspectRatio
         {
-            get { return myManager.GetVideoAspectRatio(myMediaPlayer); }
-            set { myManager.SetVideoAspectRatio(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return Utf8InteropStringConverter.Utf8InteropToString(VlcNative.libvlc_video_get_aspect_ratio(myMediaPlayer)); 
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+
+                using (Utf8StringHandle aspectRatioInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                {
+                    VlcNative.libvlc_video_set_aspect_ratio(myMediaPlayer, aspectRatioInterop);
+                }
+            }
         }
 
         public string CropGeometry
         {
-            get { return myManager.GetVideoCropGeometry(myMediaPlayer);  }
-            set { myManager.SetVideoCropGeometry(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return Utf8InteropStringConverter.Utf8InteropToString(VlcNative.libvlc_video_get_crop_geometry(myMediaPlayer));  
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+
+                using (Utf8StringHandle cropGeometryInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                {
+                    VlcNative.libvlc_video_set_crop_geometry(myMediaPlayer, cropGeometryInterop);
+                }
+            }
         }
 
         public int Teletext
         {
-            get { return myManager.GetVideoTeletext(myMediaPlayer); }
-            set { myManager.SetVideoTeletext(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_teletext(myMediaPlayer); 
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_teletext(myMediaPlayer, value); 
+            }
         }
 
         public ITracksManagement Tracks { get; private set; }
 
         public string Deinterlace
         {
-            set { myManager.SetVideoDeinterlace(myMediaPlayer, value); }
+            set 
+            {
+                myMediaPlayerIsLoad();
+
+                using (Utf8StringHandle deinterlaceModeInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                {
+                    VlcNative.libvlc_video_set_deinterlace(myMediaPlayer, deinterlaceModeInterop);
+                }
+            }
         }
 
         /// <summary>
@@ -66,11 +115,13 @@ namespace Sky_multi_Core.VlcWrapper
         {
             get
             {
-                return myManager.GetFullScreen(myMediaPlayer) != 0;
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_get_fullscreen(myMediaPlayer) != 0;
             }
             set
             {
-                myManager.SetFullScreen(myMediaPlayer, value);
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_set_fullscreen(myMediaPlayer, value ? 1 : 0);
             }
         }
 
@@ -80,12 +131,20 @@ namespace Sky_multi_Core.VlcWrapper
 
         public bool IsMouseInputEnabled
         {
-            set { myManager.SetMouseInput(myMediaPlayer, value); }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_mouse_input(myMediaPlayer, value ? 1u : 0u); 
+            }
         }
 
         public bool IsKeyInputEnabled
         {
-            set { myManager.SetKeyInput(myMediaPlayer, value); }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_key_input(myMediaPlayer, value ? 1u : 0u); 
+            }
         }
     }
 }

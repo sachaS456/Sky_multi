@@ -23,20 +23,29 @@ namespace Sky_multi_Core.VlcWrapper
     using System.Threading;
     using System.Threading.Tasks;
     using Sky_multi_Core.VlcWrapper.Core;
+    using System.Runtime.InteropServices;
 
     internal class DialogsManagement : IDialogsManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
+        private readonly VlcInstance myVlcInstance;
 
         private IVlcDialogManager currentDialogManager;
 
         private Dictionary<IntPtr, CancellationTokenSource> openDialogsCancellationTokens = new Dictionary<IntPtr, CancellationTokenSource>();
 
-        internal DialogsManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        internal DialogsManagement(VlcMediaPlayerInstance mediaPlayerInstance, VlcInstance vlcInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
+            myVlcInstance = vlcInstance;
+        }
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
         }
 
         public void UseDialogManager(IVlcDialogManager dialogManager, IntPtr data = default(IntPtr))
@@ -53,12 +62,14 @@ namespace Sky_multi_Core.VlcWrapper
             if (dialogManager == null)
             {
                 this.openDialogsCancellationTokens = null;
-                this.myManager.SetDialogCallbacks(null, data);
+                myMediaPlayerIsLoad();
+                this.SetDialogCallbacks(null, data);
             }
             else
             {
                 this.openDialogsCancellationTokens = new Dictionary<IntPtr, CancellationTokenSource>();
-                this.myManager.SetDialogCallbacks(new DialogCallbacks
+                myMediaPlayerIsLoad();
+                this.SetDialogCallbacks(new DialogCallbacks
                 {
                     DisplayError = this.OnDisplayError,
                     DisplayLogin = this.OnDisplayLogin,
@@ -92,12 +103,14 @@ namespace Sky_multi_Core.VlcWrapper
                         using (var usr = Utf8InteropStringConverter.ToUtf8StringHandle(task.Result.Username))
                         using (var pass = Utf8InteropStringConverter.ToUtf8StringHandle(task.Result.Password))
                         {
-                            this.myManager.PostLogin(dialogid, usr, pass, task.Result.StoreCredentials);
+                            myMediaPlayerIsLoad();
+                            this.PostLogin(dialogid, usr, pass, task.Result.StoreCredentials);
                         }
                     }
                     else if(!task.IsCanceled)
                     {
-                        this.myManager.DismissDialog(dialogid);
+                        myMediaPlayerIsLoad();
+                        this.DismissDialog(dialogid);
                     }
 
                     this.openDialogsCancellationTokens.Remove(dialogid);
@@ -118,11 +131,13 @@ namespace Sky_multi_Core.VlcWrapper
                 {
                     if (task.IsCompleted && task.Result != null)
                     {
-                        this.myManager.PostAction(dialogid, (int)task.Result.Value);
+                        myMediaPlayerIsLoad();
+                        this.PostAction(dialogid, (int)task.Result.Value);
                     }
                     else if (!task.IsCanceled)
                     {
-                        this.myManager.DismissDialog(dialogid);
+                        myMediaPlayerIsLoad();
+                        this.DismissDialog(dialogid);
                     }
 
                     this.openDialogsCancellationTokens.Remove(dialogid);
@@ -141,7 +156,8 @@ namespace Sky_multi_Core.VlcWrapper
                 {
                     if (task.IsCompleted)
                     {
-                        this.myManager.DismissDialog(dialogid);
+                        myMediaPlayerIsLoad();
+                        this.DismissDialog(dialogid);
                     }
 
                     this.openDialogsCancellationTokens.Remove(dialogid);
@@ -159,6 +175,124 @@ namespace Sky_multi_Core.VlcWrapper
             if (this.openDialogsCancellationTokens.TryGetValue(dialogid, out var cts))
             {
                 cts.Cancel();
+            }
+        }
+
+        private DialogCallbacks? dialogCallbacks;
+
+        private IntPtr dialogCallbacksPointer;
+
+        /// <summary>
+        /// Register callbacks in order to handle VLC dialogs. LibVLC 3.0.0 and later.
+        /// </summary>
+        private void SetDialogCallbacks(DialogCallbacks? callbacks, IntPtr data)
+        {
+            if (VlcVersionNumber.Major < 3)
+            {
+                throw new InvalidOperationException($"You need VLC version 3.0 or higher to be able to use {nameof(SetDialogCallbacks)}");
+            }
+
+            if (this.dialogCallbacks.HasValue)
+            {
+                Marshal.FreeHGlobal(this.dialogCallbacksPointer);
+                this.dialogCallbacksPointer = IntPtr.Zero;
+            }
+
+            this.dialogCallbacks = callbacks;
+            if (this.dialogCallbacks.HasValue)
+            {
+                this.dialogCallbacksPointer = Marshal.AllocHGlobal(MarshalHelper.SizeOf<DialogCallbacks>());
+                Marshal.StructureToPtr(this.dialogCallbacks.Value, this.dialogCallbacksPointer, false);
+            }
+
+            VlcNative.libvlc_dialog_set_callbacks(this.myVlcInstance, this.dialogCallbacksPointer, data);
+        }
+
+        /// <summary>
+        /// Associate an opaque pointer with the dialog id
+        /// </summary>
+        private void SetDialogContext(IntPtr dialogId, IntPtr data)
+        {
+            if (VlcVersionNumber.Major < 3)
+            {
+                throw new InvalidOperationException($"You need VLC version 3.0 or higher to be able to use {nameof(SetDialogContext)}");
+            }
+
+            VlcNative.libvlc_dialog_set_context(dialogId, data);
+        }
+
+
+        /// <summary>
+        /// Return the opaque pointer associated with the dialog id
+        /// </summary>
+        private IntPtr GetDialogContext(IntPtr dialogId)
+        {
+            if (VlcVersionNumber.Major < 3)
+            {
+                throw new InvalidOperationException($"You need VLC version 3.0 or higher to be able to use {nameof(GetDialogContext)}");
+            }
+
+            return VlcNative.libvlc_dialog_get_context(dialogId);
+        }
+
+        /// <summary>
+        /// Post a login answer
+        /// 
+        /// After this call, p_id won't be valid anymore
+        /// </summary>
+        /// <returns>0 on success, or -1 on error</returns>
+        private int PostLogin(IntPtr dialogId, Utf8StringHandle username, Utf8StringHandle password, bool store)
+        {
+            if (VlcVersionNumber.Major < 3)
+            {
+                throw new InvalidOperationException($"You need VLC version 3.0 or higher to be able to use {nameof(PostLogin)}");
+            }
+
+            return VlcNative.libvlc_dialog_post_login(dialogId, username?.DangerousGetHandle() ?? IntPtr.Zero, password?.DangerousGetHandle() ?? IntPtr.Zero, store);
+        }
+
+        /// <summary>
+        /// Post a question answer
+        /// 
+        /// After this call, p_id won't be valid anymore
+        /// </summary>
+        /// <returns>0 on success, or -1 on error</returns>
+        private int PostAction(IntPtr dialogId, int action)
+        {
+            if (VlcVersionNumber.Major < 3)
+            {
+                throw new InvalidOperationException($"You need VLC version 3.0 or higher to be able to use {nameof(PostAction)}");
+            }
+
+            return VlcNative.libvlc_dialog_post_action(dialogId, action);
+        }
+
+        /// <summary>
+        /// Dismiss a dialog
+        /// 
+        /// After this call, p_id won't be valid anymore
+        /// </summary>
+        /// <returns>0 on success, or -1 on error</returns>
+        private int DismissDialog(IntPtr dialogId)
+        {
+            if (VlcVersionNumber.Major < 3)
+            {
+                throw new InvalidOperationException($"You need VLC version 3.0 or higher to be able to use {nameof(DismissDialog)}");
+            }
+
+            return VlcNative.libvlc_dialog_dismiss(dialogId);
+        }
+
+        private string VlcVersion => Utf8InteropStringConverter.Utf8InteropToString(VlcNative.libvlc_get_version());
+
+        private Version VlcVersionNumber
+        {
+            get
+            {
+                string versionString = this.VlcVersion;
+                versionString = versionString.Split('-', ' ')[0];
+
+                return new Version(versionString);
             }
         }
     }

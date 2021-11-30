@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Sky_multi_Viewer
 {
@@ -113,11 +114,6 @@ namespace Sky_multi_Viewer
             ItIsAImage = false;
             this.SetMedia("dvd:///" + CDPath);
             this.Play();
-        }
-
-        public void OpenDirectory(string DirectoryPath)
-        {
-
         }
 
         public void OpenFile(string FilePath, params string[] options)

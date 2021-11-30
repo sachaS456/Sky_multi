@@ -23,17 +23,27 @@ namespace Sky_multi_Core.VlcWrapper
 {
     internal sealed class VlcMediaPlayerInstance : InteropObjectInstance
     {
-        private readonly VlcManager myManager;
-
-        internal VlcMediaPlayerInstance(VlcManager manager, IntPtr pointer) : base(ref pointer)
+        internal VlcMediaPlayerInstance(IntPtr pointer) : base(ref pointer)
         {
-            myManager = manager;
+
         }
 
         protected override void Dispose(bool disposing)
         {
             if (Pointer != IntPtr.Zero)
-                myManager.ReleaseMediaPlayer(this);
+            {
+                if (this == IntPtr.Zero)
+                    return;
+                try
+                {
+                    VlcNative.libvlc_media_player_release(this);
+                }
+                finally
+                {
+                    this.Pointer = IntPtr.Zero;
+                }
+            }
+
             base.Dispose(disposing);
         }
 

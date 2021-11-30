@@ -28,7 +28,7 @@ namespace Sky_multi_Viewer
 {
     public class VideoView: Control, ISupportInitialize
     {
-        public VlcManager VlcMediaPlayer;
+        public VlcMediaPlayer VlcMediaPlayer;
 
         public VideoView()
         {
@@ -63,11 +63,11 @@ namespace Sky_multi_Viewer
 
             if (VlcMediaplayerOptions == null)
             {
-                VlcMediaPlayer = new VlcManager(ref _vlcLibDirectory, new string[0]);
+                VlcMediaPlayer = new VlcMediaPlayer(_vlcLibDirectory, new string[0]);
             }
             else
             {
-                VlcMediaPlayer = new VlcManager(ref _vlcLibDirectory, ref _vlcMediaPlayerOptions);
+                VlcMediaPlayer = new VlcMediaPlayer(_vlcLibDirectory, _vlcMediaPlayerOptions);
             }
 
             if (this.log != null)

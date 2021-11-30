@@ -17,24 +17,55 @@
 --------------------------------------------------------------------------------------------------------------------*/
 
 using System.Collections.Generic;
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
 
 namespace Sky_multi_Core.VlcWrapper
 {
     public sealed class AudioOutputDescription
     {
-        private VlcManager myManager;
+        private readonly VlcMediaPlayerInstance myInstance;
 
         public string Name { get; private set; }
         public string Description { get; private set; }
 
-        internal AudioOutputDescription(string name, string description, VlcManager manager)
+        internal AudioOutputDescription(string name, string description, VlcMediaPlayerInstance Instance)
         {
             Name = name;
             Description = description;
-            myManager = manager;
+            myInstance = Instance;
         }
 
-        public IEnumerable<AudioOutputDevice> Devices => myManager.GetAudioOutputDeviceList(this.Name);
+        private IEnumerable<AudioOutputDevice> GetAudioOutputDeviceList(string outputName)
+        {
+            using (Utf8StringHandle outputNameHandle = Utf8InteropStringConverter.ToUtf8StringHandle(outputName))
+            {
+                IntPtr deviceList = VlcNative.libvlc_audio_output_device_list_get(this.myInstance, outputNameHandle);
+                try
+                {
+                    List<AudioOutputDevice> result = new List<AudioOutputDevice>();
+                    IntPtr currentPointer = deviceList;
+                    while (currentPointer != IntPtr.Zero)
+                    {
+                        LibvlcAudioOutputDeviceT current = MarshalHelper.PtrToStructure<LibvlcAudioOutputDeviceT>(ref currentPointer);
+                        result.Add(new AudioOutputDevice
+                        {
+                            DeviceIdentifier = Utf8InteropStringConverter.Utf8InteropToString(current.DeviceIdentifier),
+                            Description = Utf8InteropStringConverter.Utf8InteropToString(current.Description)
+                        });
+                        currentPointer = current.Next;
+                    }
+
+                    return result;
+                }
+                finally
+                {
+                    VlcNative.libvlc_audio_output_device_list_release(deviceList);
+                }
+            }
+        }
+
+        public IEnumerable<AudioOutputDevice> Devices => GetAudioOutputDeviceList(this.Name);
     }
 
 }

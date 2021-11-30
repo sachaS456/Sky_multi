@@ -16,20 +16,56 @@
 
 --------------------------------------------------------------------------------------------------------------------*/
 
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
+
 namespace Sky_multi_Core.VlcWrapper
 {
     internal static class VlcMediaInstanceExtensions
     {
-        internal static VlcMediaInstance AddOptionToMedia(this VlcMediaInstance mediaInstance, VlcManager manager, string option)
+        internal static VlcMediaInstance AddOptionToMedia(this VlcMediaInstance mediaInstance, string option)
         {
-            manager.AddOptionToMedia(mediaInstance, option);
+            AddOptionToMediaPrivate(mediaInstance, option);
             return mediaInstance;
         }
 
-        internal static VlcMediaInstance AddOptionToMedia(this VlcMediaInstance mediaInstance, VlcManager manager, string[] option)
+        internal static VlcMediaInstance AddOptionToMedia(this VlcMediaInstance mediaInstance, string[] option)
         {
-            manager.AddOptionToMedia(mediaInstance, option);
+            AddOptionToMediaPrivate(mediaInstance, option);
             return mediaInstance;
+        }
+
+        private static void AddOptionToMediaPrivate(in VlcMediaInstance mediaInstance, string option)
+        {
+            if (mediaInstance == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media instance is not initialized.");
+            }
+
+            if (string.IsNullOrEmpty(option))
+            {
+                return;
+            }
+
+            using (Utf8StringHandle handle = Utf8InteropStringConverter.ToUtf8StringHandle(option))
+            {
+                VlcNative.libvlc_media_add_option(mediaInstance, handle);
+            }
+        }
+
+        private static void AddOptionToMediaPrivate(in VlcMediaInstance mediaInstance, string[] options)
+        {
+            if (mediaInstance == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media instance is not initialized.");
+            }
+
+            options = options ?? new string[0];
+
+            foreach (string option in options)
+            {
+                AddOptionToMedia(mediaInstance, option);
+            }
         }
     }
 }

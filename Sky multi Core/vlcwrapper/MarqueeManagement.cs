@@ -16,77 +16,170 @@
 
 --------------------------------------------------------------------------------------------------------------------*/
 
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
+
 namespace Sky_multi_Core.VlcWrapper
 {
     internal class MarqueeManagement : IMarqueeManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        public MarqueeManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        public MarqueeManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
+        }
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
         }
 
         public bool Enabled
         {
-            get { return myManager.GetVideoMarqueeEnabled(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeEnabled(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.Enable) == 1; 
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.Enable, value ? 1 : 0); 
+            }
         }
 
         public string Text
         {
-            get { return myManager.GetVideoMarqueeText(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeText(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return Utf8InteropStringConverter.Utf8InteropToString(VlcNative.libvlc_video_get_marquee_string(myMediaPlayer, VideoMarqueeOptions.Text)); 
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+
+                using (Utf8StringHandle valueInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                {
+                    VlcNative.libvlc_video_set_marquee_string(myMediaPlayer, VideoMarqueeOptions.Text, valueInterop);
+                }
+            }
         }
 
         public int Color
         {
-            get { return myManager.GetVideoMarqueeColor(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeColor(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.Color); 
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.Color, value);
+            }
         }
 
         public int Opacity
         {
-            get { return myManager.GetVideoMarqueeOpacity(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeOpacity(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.Opacity);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.Opacity, value);
+            }
         }
 
         public int Position
         {
-            get { return myManager.GetVideoMarqueePosition(myMediaPlayer); }
-            set { myManager.SetVideoMarqueePosition(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.Position);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.Position, value);
+            }
         }
 
         public int Refresh
         {
-            get { return myManager.GetVideoMarqueeRefresh(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeRefresh(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.Refresh);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.Refresh, value);
+            }
         }
 
         public int Size
         {
-            get { return myManager.GetVideoMarqueeSize(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeSize(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.Size);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.Size, value);
+            }
         }
 
         public int Timeout
         {
-            get { return myManager.GetVideoMarqueeTimeout(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeTimeout(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.Timeout);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.Timeout, value);
+            }
         }
 
         public int X
         {
-            get { return myManager.GetVideoMarqueeX(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeX(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.X);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.X, value);
+            }
         }
 
         public int Y
         {
-            get { return myManager.GetVideoMarqueeY(myMediaPlayer); }
-            set { myManager.SetVideoMarqueeY(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_marquee_int(myMediaPlayer, VideoMarqueeOptions.Y);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_marquee_int(myMediaPlayer, VideoMarqueeOptions.Y, value);
+            }
         }
     }
 }

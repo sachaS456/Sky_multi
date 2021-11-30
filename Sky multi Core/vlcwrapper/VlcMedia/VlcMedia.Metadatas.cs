@@ -25,123 +25,244 @@ namespace Sky_multi_Core.VlcWrapper
     {
         public string Title
         {
-            get { return GetMetaData(MediaMetadatas.Title); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Title, value); }
+            get 
+            { 
+                return GetMetaData(MediaMetadatas.Title);
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.Title, value);
+            }
         }
 
         public string Artist
         {
-            get { return GetMetaData(MediaMetadatas.Artist); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Artist, value); }
+            get 
+            { 
+                return GetMetaData(MediaMetadatas.Artist); 
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.Artist, value);
+            }
         }
 
         public string Genre
         {
-            get { return GetMetaData(MediaMetadatas.Genre); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Genre, value); }
+            get 
+            { 
+                return GetMetaData(MediaMetadatas.Genre);
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.Genre, value);
+            }
         }
 
         public string Copyright
         {
-            get { return GetMetaData(MediaMetadatas.Copyright); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Copyright, value); }
+            get 
+            { 
+                return GetMetaData(MediaMetadatas.Copyright);
+            }
+            set
+            {
+                SetMediaMeta(MediaMetadatas.Copyright, value); 
+            }
         }
 
         public string Album
         {
-            get { return GetMetaData(MediaMetadatas.Album); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Album, value); }
+            get 
+            { 
+                return GetMetaData(MediaMetadatas.Album);
+            }
+            set
+            {
+                SetMediaMeta(MediaMetadatas.Album, value);
+            }
         }
 
         public string TrackNumber
         {
-            get { return GetMetaData(MediaMetadatas.TrackNumber); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.TrackNumber, value); }
+            get 
+            {
+                return GetMetaData(MediaMetadatas.TrackNumber); 
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.TrackNumber, value); 
+            }
         }
 
         public string Description
         {
-            get { return GetMetaData(MediaMetadatas.Description); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Description, value); }
+            get 
+            { 
+                return GetMetaData(MediaMetadatas.Description);
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.Description, value); 
+            }
         }
 
         public string Rating
         {
-            get { return GetMetaData(MediaMetadatas.Rating); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Rating, value); }
+            get 
+            { 
+                return GetMetaData(MediaMetadatas.Rating);
+            }
+            set
+            {
+                SetMediaMeta(MediaMetadatas.Rating, value);
+            }
         }
 
         public string Date
         {
-            get { return GetMetaData(MediaMetadatas.Date); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Date, value); }
+            get 
+            {
+                return GetMetaData(MediaMetadatas.Date); 
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.Date, value); 
+            }
         }
 
         public string Setting
         {
-            get { return GetMetaData(MediaMetadatas.Setting); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Setting, value); }
+            get
+            {
+                return GetMetaData(MediaMetadatas.Setting); 
+            }
+            set
+            {
+                SetMediaMeta(MediaMetadatas.Setting, value);
+            }
         }
 
         public string URL
         {
-            get { return GetMetaData(MediaMetadatas.URL); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.URL, value); }
+            get
+            { 
+                return GetMetaData(MediaMetadatas.URL);
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.URL, value); 
+            }
         }
 
         public string Language
         {
-            get { return GetMetaData(MediaMetadatas.Language); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Language, value); }
+            get
+            {
+                return GetMetaData(MediaMetadatas.Language); 
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.Language, value);
+            }
         }
 
         public string NowPlaying
         {
-            get { return GetMetaData(MediaMetadatas.NowPlaying); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.NowPlaying, value); }
+            get
+            {
+                return GetMetaData(MediaMetadatas.NowPlaying); 
+            }
+            set
+            {
+                SetMediaMeta(MediaMetadatas.NowPlaying, value);
+            }
         }
 
         public string Publisher
         {
-            get { return GetMetaData(MediaMetadatas.Publisher); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.Publisher, value); }
+            get 
+            { 
+                return GetMetaData(MediaMetadatas.Publisher); 
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.Publisher, value); 
+            }
         }
 
         public string EncodedBy
         {
-            get { return GetMetaData(MediaMetadatas.EncodedBy); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.EncodedBy, value); }
+            get
+            {
+                return GetMetaData(MediaMetadatas.EncodedBy);
+            }
+            set
+            {
+                SetMediaMeta(MediaMetadatas.EncodedBy, value); 
+            }
         }
 
         public string ArtworkURL
         {
-            get { return GetMetaData(MediaMetadatas.ArtworkURL); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.ArtworkURL, value); }
+            get 
+            {
+                return GetMetaData(MediaMetadatas.ArtworkURL);
+            }
+            set
+            {
+                SetMediaMeta(MediaMetadatas.ArtworkURL, value); 
+            }
         }
 
         public string TrackID
         {
-            get { return GetMetaData(MediaMetadatas.TrackID); }
-            set { myVlcMediaPlayer.SetMediaMeta(MediaInstance, MediaMetadatas.TrackID, value); }
+            get 
+            {
+                return GetMetaData(MediaMetadatas.TrackID); 
+            }
+            set 
+            {
+                SetMediaMeta(MediaMetadatas.TrackID, value); 
+            }
         }
 
         public void Parse()
         {
-            myVlcMediaPlayer.ParseMedia(MediaInstance);
+            MediaInstanceIsLoad();
+            VlcNative.libvlc_media_parse(MediaInstance);
         }
 
         public void ParseAsync()
         {
-            myVlcMediaPlayer.ParseMediaAsync(MediaInstance);
+            MediaInstanceIsLoad();
+            VlcNative.libvlc_media_parse_async(MediaInstance);
         }
 
         private string GetMetaData(MediaMetadatas metadata)
         {
             if (MediaInstance == IntPtr.Zero)
+            {
                 return null;
-            if (myVlcMediaPlayer.IsParsedMedia(MediaInstance))
-                myVlcMediaPlayer.ParseMedia(MediaInstance);
-            return myVlcMediaPlayer.GetMediaMeta(MediaInstance, metadata);
+            }
+
+            MediaInstanceIsLoad();
+
+            if (VlcNative.libvlc_media_is_parsed(MediaInstance) == 1)
+            {
+                VlcNative.libvlc_media_parse(MediaInstance);
+            }
+
+            return Utf8InteropStringConverter.Utf8InteropToString(VlcNative.libvlc_media_get_meta(MediaInstance, metadata));
+        }
+
+        private void SetMediaMeta(in MediaMetadatas metadata, in string value)
+        {
+            MediaInstanceIsLoad();
+            using (Utf8StringHandle handle = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+            {
+                VlcNative.libvlc_media_set_meta(MediaInstance, metadata, handle);
+            }
         }
     }
 }

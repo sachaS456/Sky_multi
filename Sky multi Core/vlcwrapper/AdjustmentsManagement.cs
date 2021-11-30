@@ -16,53 +16,110 @@
 
 --------------------------------------------------------------------------------------------------------------------*/
 
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
+
 namespace Sky_multi_Core.VlcWrapper
 {
     internal class AdjustmentsManagement : IAdjustmentsManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        public AdjustmentsManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        public AdjustmentsManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
+        }
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
         }
 
         public bool Enabled
         {
-            get { return myManager.GetVideoAdjustEnabled(myMediaPlayer); }
-            set { myManager.SetVideoAdjustEnabled(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_adjust_int(myMediaPlayer, VideoAdjustOptions.Enable) == 1;
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_adjust_int(myMediaPlayer, VideoAdjustOptions.Enable, value ? 1 : 0);
+            }
         }
 
         public float Contrast
         {
-            get { return myManager.GetVideoAdjustContrast(myMediaPlayer); }
-            set { myManager.SetVideoAdjustContrast(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_adjust_float(myMediaPlayer, VideoAdjustOptions.Contrast);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_adjust_float(myMediaPlayer, VideoAdjustOptions.Contrast, value);
+            }
         }
 
         public float Brightness
         {
-            get { return myManager.GetVideoAdjustBrightness(myMediaPlayer); }
-            set { myManager.SetVideoAdjustBrightness(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_adjust_float(myMediaPlayer, VideoAdjustOptions.Brightness);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_adjust_float(myMediaPlayer, VideoAdjustOptions.Brightness, value);
+            }
         }
 
         public float Hue
         {
-            get { return myManager.GetVideoAdjustHue(myMediaPlayer); }
-            set { myManager.SetVideoAdjustHue(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_adjust_float(myMediaPlayer, VideoAdjustOptions.Hue);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_adjust_float(myMediaPlayer, VideoAdjustOptions.Hue, value);
+            }
         }
 
         public float Saturation
         {
-            get { return myManager.GetVideoAdjustSaturation(myMediaPlayer); }
-            set { myManager.SetVideoAdjustSaturation(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_adjust_float(myMediaPlayer, VideoAdjustOptions.Saturation);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_adjust_float(myMediaPlayer, VideoAdjustOptions.Saturation, value);
+            }
         }
 
         public float Gamma
         {
-            get { return myManager.GetVideoAdjustGamma(myMediaPlayer); }
-            set { myManager.SetVideoAdjustGamma(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_adjust_float(myMediaPlayer, VideoAdjustOptions.Gamma);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_adjust_float(myMediaPlayer, VideoAdjustOptions.Gamma, value);
+            }
         }
     }
 }

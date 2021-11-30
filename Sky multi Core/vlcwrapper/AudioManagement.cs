@@ -16,52 +16,94 @@
 
 --------------------------------------------------------------------------------------------------------------------*/
 
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
+
 namespace Sky_multi_Core.VlcWrapper
 {
     internal class AudioManagement : IAudioManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        internal AudioManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        internal AudioManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
-            Outputs = new AudioOutputsManagement(manager, mediaPlayerInstance);
-            Tracks = new AudioTracksManagement(manager, mediaPlayerInstance);
+            Outputs = new AudioOutputsManagement(mediaPlayerInstance);
+            Tracks = new AudioTracksManagement(mediaPlayerInstance);
+        }
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
         }
 
         public IAudioOutputsManagement Outputs { get; private set; }
 
         public bool IsMute
         {
-            get { return myManager.IsMute(myMediaPlayer); }
-            set { myManager.SetMute(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_audio_get_mute(myMediaPlayer) == 1;
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_audio_set_mute(myMediaPlayer, value ? 1 : 0);
+            }
         }
 
         public void ToggleMute()
         {
-            myManager.ToggleMute(myMediaPlayer);
+            myMediaPlayerIsLoad();
+            VlcNative.libvlc_audio_toggle_mute(myMediaPlayer);
         }
 
         public int Volume
         {
-            get { return myManager.GetVolume(myMediaPlayer); }
-            set { myManager.SetVolume(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_audio_get_volume(myMediaPlayer);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_audio_set_volume(myMediaPlayer, value);
+            }
         }
 
         public ITracksManagement Tracks { get; private set; }
 
         public int Channel
         {
-            get { return myManager.GetAudioChannel(myMediaPlayer); }
-            set { myManager.SetAudioChannel(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_audio_get_channel(myMediaPlayer);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_audio_set_channel(myMediaPlayer, value);
+            }
         }
 
         public long Delay
         {
-            get { return myManager.GetAudioDelay(myMediaPlayer); }
-            set { myManager.SetAudioDelay(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_audio_get_delay(myMediaPlayer);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_audio_set_delay(myMediaPlayer, value);
+            }
         }
     }
 }

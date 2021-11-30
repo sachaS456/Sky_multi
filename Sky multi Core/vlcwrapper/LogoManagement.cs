@@ -16,64 +16,136 @@
 
 --------------------------------------------------------------------------------------------------------------------*/
 
+using System;
+using Sky_multi_Core.VlcWrapper.Core;
+
 namespace Sky_multi_Core.VlcWrapper
 {
     internal class LogoManagement : ILogoManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        public LogoManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        public LogoManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayer = mediaPlayerInstance;
+        }
+
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayer == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
         }
 
         public bool Enabled
         {
-            get { return myManager.GetVideoLogoEnabled(myMediaPlayer); }
-            set { myManager.SetVideoLogoEnabled(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_logo_int(myMediaPlayer, VideoLogoOptions.Enable) == 1;
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_logo_int(myMediaPlayer, VideoLogoOptions.Enable, value ? 1 : 0);
+            }
         }
 
         public string File
         {
-            set { myManager.SetVideoLogoFile(myMediaPlayer, value); }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                using (Utf8StringHandle valueInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                {
+                    VlcNative.libvlc_video_set_logo_string(myMediaPlayer, VideoLogoOptions.File, valueInterop);
+                }
+            }
         }
 
         public int X
         {
-            get { return myManager.GetVideoLogoX(myMediaPlayer); }
-            set { myManager.SetVideoLogoX(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_logo_int(myMediaPlayer, VideoLogoOptions.X);
+            }
+            set
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_logo_int(myMediaPlayer, VideoLogoOptions.X, value);
+            }
         }
 
         public int Y
         {
-            get { return myManager.GetVideoLogoY(myMediaPlayer); }
-            set { myManager.SetVideoLogoY(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_logo_int(myMediaPlayer, VideoLogoOptions.Y);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_logo_int(myMediaPlayer, VideoLogoOptions.Y, value);
+            }
         }
 
         public int Delay
         {
-            get { return myManager.GetVideoLogoDelay(myMediaPlayer); }
-            set { myManager.SetVideoLogoDelay(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_logo_int(myMediaPlayer, VideoLogoOptions.Delay);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_logo_int(myMediaPlayer, VideoLogoOptions.Delay, value);
+            }
         }
 
         public int Repeat
         {
-            get { return myManager.GetVideoLogoRepeat(myMediaPlayer); }
-            set { myManager.SetVideoLogoRepeat(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_logo_int(myMediaPlayer, VideoLogoOptions.Repeat);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_logo_int(myMediaPlayer, VideoLogoOptions.Repeat, value);
+            }
         }
 
         public int Opacity
         {
-            get { return myManager.GetVideoLogoOpacity(myMediaPlayer); }
-            set { myManager.SetVideoLogoOpacity(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_logo_int(myMediaPlayer, VideoLogoOptions.Opacity);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_logo_int(myMediaPlayer, VideoLogoOptions.Opacity, value);
+            }
         }
 
         public int Position
         {
-            get { return myManager.GetVideoLogoPosition(myMediaPlayer); }
-            set { myManager.SetVideoLogoPosition(myMediaPlayer, value); }
+            get 
+            {
+                myMediaPlayerIsLoad();
+                return VlcNative.libvlc_video_get_logo_int(myMediaPlayer, VideoLogoOptions.Position);
+            }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                VlcNative.libvlc_video_set_logo_int(myMediaPlayer, VideoLogoOptions.Position, value);
+            }
         }
     }
 }

@@ -19,17 +19,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sky_multi_Core.VlcWrapper.Core;
 
 namespace Sky_multi_Core.VlcWrapper
 {
     internal class AudioOutputsManagement : IAudioOutputsManagement
     {
-        private readonly VlcManager myManager;
         private readonly VlcMediaPlayerInstance myMediaPlayerInstance;
 
-        internal AudioOutputsManagement(VlcManager manager, VlcMediaPlayerInstance mediaPlayerInstance)
+        internal AudioOutputsManagement(VlcMediaPlayerInstance mediaPlayerInstance)
         {
-            myManager = manager;
             myMediaPlayerInstance = mediaPlayerInstance;
         }
 
@@ -37,11 +36,53 @@ namespace Sky_multi_Core.VlcWrapper
         {
             get
             {
-                return myManager.GetAudioOutputsDescriptions().Select(x => new AudioOutputDescription(x.Name, x.Description, this.myManager));
+                return GetAudioOutputsDescriptions().Select(x => new AudioOutputDescription(x.Name, x.Description, this.myMediaPlayerInstance));
             }
         }
 
-        public int Count => myManager.GetAudioOutputsDescriptions().Count;
+        private void myMediaPlayerIsLoad()
+        {
+            if (myMediaPlayerInstance == IntPtr.Zero)
+            {
+                throw new ArgumentException("Media player instance is not initialized.");
+            }
+        }
+
+        private List<AudioOutputDescriptionStructure> GetAudioOutputsDescriptions()
+        {
+            myMediaPlayerIsLoad();
+            IntPtr first = VlcNative.libvlc_audio_output_list_get(myMediaPlayerInstance);
+            List<AudioOutputDescriptionStructure> result = new List<AudioOutputDescriptionStructure>();
+
+            if (first == IntPtr.Zero)
+            {
+                return result;
+            }
+
+            try
+            {
+                IntPtr currentPtr = first;
+                while (currentPtr != IntPtr.Zero)
+                {
+                    AudioOutputDescriptionStructureInternal current = MarshalHelper.PtrToStructure<AudioOutputDescriptionStructureInternal>(ref currentPtr);
+                    result.Add(new AudioOutputDescriptionStructure
+                    {
+                        Name = Utf8InteropStringConverter.Utf8InteropToString(current.Name),
+                        Description = Utf8InteropStringConverter.Utf8InteropToString(current.Description)
+                    });
+
+                    currentPtr = current.NextAudioOutputDescription;
+                }
+
+                return result;
+            }
+            finally
+            {
+                VlcNative.libvlc_audio_output_list_release(first);
+            }
+        }
+
+        public int Count => GetAudioOutputsDescriptions().Count;
 
         public AudioOutputDescription Current
         {
@@ -49,7 +90,14 @@ namespace Sky_multi_Core.VlcWrapper
             {
                 throw new NotSupportedException("Not implemented in LibVlc.");
             }
-            set { myManager.SetAudioOutput(myMediaPlayerInstance, value.Name); }
+            set 
+            {
+                myMediaPlayerIsLoad();
+                using (Utf8StringHandle outputInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value.Name))
+                {
+                    VlcNative.libvlc_audio_output_set(myMediaPlayerInstance, outputInterop);
+                }
+            }
         }
     }
 }

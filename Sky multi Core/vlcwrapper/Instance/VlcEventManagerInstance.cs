@@ -19,7 +19,7 @@
 using System;
 using Sky_multi_Core.VlcWrapper.Core;
 
-namespace Sky_multi_Core
+namespace Sky_multi_Core.VlcWrapper
 {
     internal abstract class VlcEventManagerInstance : InteropObjectInstance
     {
