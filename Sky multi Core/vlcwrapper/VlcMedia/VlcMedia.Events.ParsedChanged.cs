@@ -28,7 +28,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaParsedChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaParsedChanged(args.eventArgsUnion.MediaParsedChanged.NewStatus);
         }
 

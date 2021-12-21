@@ -32,14 +32,14 @@ namespace Sky_multi_Core.VlcWrapper
         /// </summary>
         /// <param name="ptr">The c-style string pointer</param>
         /// <returns>The string object</returns>
-        public static string Utf8InteropToString(IntPtr ptr)
+        public static string Utf8InteropToString(in IntPtr ptr)
         {
             if (ptr == IntPtr.Zero)
             {
                 return null;
             }
 
-            var length = 0;
+            int length = 0;
 
             while (Marshal.ReadByte(ptr, length) != 0)
             {
@@ -56,7 +56,7 @@ namespace Sky_multi_Core.VlcWrapper
         /// </summary>
         /// <param name="source">The source string to be converted to UTF-8 so that it can be passed to libvlc.</param>
         /// <returns>The safe handle</returns>
-        public static Utf8StringHandle ToUtf8StringHandle(string source)
+        public static Utf8StringHandle ToUtf8StringHandle(in string source)
         {
             if (source == null)
             {
@@ -64,7 +64,7 @@ namespace Sky_multi_Core.VlcWrapper
             }
 
             byte[] bytes = Encoding.UTF8.GetBytes(source);
-            var buffer = Marshal.AllocHGlobal(bytes.Length + 1);
+            IntPtr buffer = Marshal.AllocHGlobal(bytes.Length + 1);
             try
             {
                 Marshal.Copy(bytes, 0, buffer, bytes.Length);

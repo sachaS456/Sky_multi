@@ -45,7 +45,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerBufferingInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerBuffering(args.eventArgsUnion.MediaPlayerBuffering.NewCache);
         }
 
@@ -104,7 +104,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerLengthChangedInternal(IntPtr ptr)
         {
-            VlcEventArg args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            VlcEventArg args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerLengthChanged(args.eventArgsUnion.MediaPlayerLengthChanged.NewLength);
         }
 
@@ -118,7 +118,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerMediaChangedInternal(IntPtr ptr)
         {
-            VlcEventArg args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            VlcEventArg args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerMediaChanged(new VlcMedia(VlcMediaInstance.New(args.eventArgsUnion.MediaPlayerMediaChanged.MediaInstance), myVlcInstance));
         }
 
@@ -147,7 +147,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerPausableChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerPausableChanged(args.eventArgsUnion.MediaPlayerPausableChanged.NewPausable == 1);
         }
 
@@ -191,7 +191,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerPositionChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerPositionChanged(args.eventArgsUnion.MediaPlayerPositionChanged.NewPosition);
         }
 
@@ -205,7 +205,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerScrambledChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerScrambledChanged(args.eventArgsUnion.MediaPlayerScrambledChanged.NewScrambled);
         }
 
@@ -219,7 +219,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerSeekableChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerSeekableChanged(args.eventArgsUnion.MediaPlayerSeekableChanged.NewSeekable);
         }
 
@@ -233,7 +233,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerSnapshotTakenInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             var fileName = Utf8InteropStringConverter.Utf8InteropToString(args.eventArgsUnion.MediaPlayerSnapshotTaken.pszFilename);
             OnMediaPlayerSnapshotTaken(fileName);
         }
@@ -263,7 +263,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerTimeChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerTimeChanged(args.eventArgsUnion.MediaPlayerTimeChanged.NewTime);
         }
 
@@ -277,7 +277,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerTitleChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerTitleChanged(args.eventArgsUnion.MediaPlayerTitleChanged.NewTitle);
         }
 
@@ -291,7 +291,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerVideoOutChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerVideoOutChanged(args.eventArgsUnion.MediaPlayerVideoOutChanged.NewCount);
         }
 
@@ -305,7 +305,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerEsAddedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerEsAdded(args.eventArgsUnion.MediaPlayerEsChanged);
         }
 
@@ -319,7 +319,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerEsDeletedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerEsDeleted(args.eventArgsUnion.MediaPlayerEsChanged);
         }
 
@@ -333,7 +333,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerEsSelectedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerEsSelected(args.eventArgsUnion.MediaPlayerEsChanged);
         }
 
@@ -399,7 +399,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerAudioVolumeInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerAudioVolume(args.eventArgsUnion.MediaPlayerAudioVolume.volume);
         }
 
@@ -413,7 +413,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerAudioDeviceInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerAudioDevice(Utf8InteropStringConverter.Utf8InteropToString(args.eventArgsUnion.MediaPlayerAudioDevice.pszDevice));
         }
 
@@ -427,7 +427,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaPlayerChapterChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaPlayerChapterChanged(args.eventArgsUnion.MediaPlayerChapterChanged.NewChapter);
         }
 
@@ -540,8 +540,8 @@ namespace Sky_multi_Core.VlcWrapper
                 line = line2.ToUInt32();
             }
 
-            module = Utf8InteropStringConverter.Utf8InteropToString(module2);
-            file = Utf8InteropStringConverter.Utf8InteropToString(file2);
+            module = Utf8InteropStringConverter.Utf8InteropToString(in module2);
+            file = Utf8InteropStringConverter.Utf8InteropToString(in file2);
         }
     }
 }

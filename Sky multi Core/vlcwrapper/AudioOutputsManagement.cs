@@ -64,11 +64,11 @@ namespace Sky_multi_Core.VlcWrapper
                 IntPtr currentPtr = first;
                 while (currentPtr != IntPtr.Zero)
                 {
-                    AudioOutputDescriptionStructureInternal current = MarshalHelper.PtrToStructure<AudioOutputDescriptionStructureInternal>(ref currentPtr);
+                    AudioOutputDescriptionStructureInternal current = MarshalHelper.PtrToStructure<AudioOutputDescriptionStructureInternal>(in currentPtr);
                     result.Add(new AudioOutputDescriptionStructure
                     {
-                        Name = Utf8InteropStringConverter.Utf8InteropToString(current.Name),
-                        Description = Utf8InteropStringConverter.Utf8InteropToString(current.Description)
+                        Name = Utf8InteropStringConverter.Utf8InteropToString(in current.Name),
+                        Description = Utf8InteropStringConverter.Utf8InteropToString(in current.Description)
                     });
 
                     currentPtr = current.NextAudioOutputDescription;

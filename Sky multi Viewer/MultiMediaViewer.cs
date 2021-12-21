@@ -97,7 +97,7 @@ namespace Sky_multi_Viewer
             OnMouseHover(e);
         }
 
-        public void OpenCD(string CDPath)
+        public void OpenDVD(string DVDPath)
         {
             imageView.Visible = false;
 
@@ -112,7 +112,7 @@ namespace Sky_multi_Viewer
             }
 
             ItIsAImage = false;
-            this.SetMedia("dvd:///" + CDPath);
+            this.SetMedia("dvd:///" + DVDPath);
             this.Play();
         }
 
@@ -153,10 +153,26 @@ namespace Sky_multi_Viewer
             ItIsAImage = true;
         }
 
+        public Image Image
+        {
+            get
+            {
+                return imageView.Image;
+            }
+            set
+            {
+                imageView.SetImage(value);
+            }
+        }
+
         public void RotateImage()
         {
             imageView.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
             imageView.Refresh();
         }
+
+        public void ScaleImage(ushort scale) => imageView.ScaleImage(scale);
+
+        public void DecodeImageFile(string FilePath) => imageView.DecodeImageFile(ref FilePath);
     }
 }

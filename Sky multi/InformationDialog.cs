@@ -41,9 +41,9 @@ namespace Sky_multi
         private Panel panel1;
         private Sky_framework.Button buttonOK;
 
-        internal InformationDialog(ref string FileName, Language language)
+        internal InformationDialog(in string FileName, Language language, in string[] Version)
         {
-            InitializeComponent(language);
+            InitializeComponent(in language, in Version);
             this.Location = new Point(Screen.FromControl(this).WorkingArea.Width / 2 - this.Width / 2, Screen.FromControl(this).WorkingArea.Height / 2 - this.Height / 2);
 
             if (FileName != string.Empty)
@@ -68,9 +68,9 @@ namespace Sky_multi
             }
         }
 
-        internal InformationDialog(ref string FileName, string Resolution, string PixelFormat, Language language)
+        internal InformationDialog(in string FileName, string Resolution, string PixelFormat, Language language, in string[] Version)
         {
-            InitializeComponent(language);
+            InitializeComponent(in language, in Version);
             this.Location = new Point(Screen.FromControl(this).WorkingArea.Width / 2 - this.Width / 2, Screen.FromControl(this).WorkingArea.Height / 2 - this.Height / 2);
 
             if (FileName != string.Empty)
@@ -109,10 +109,10 @@ namespace Sky_multi
             panel1.Controls.Add(InfoImage);
         }
 
-        internal InformationDialog(ref string FileName, MediaTrack[] ListTracks, List<TrackDescription> trackDescriptionsV, List<TrackDescription> trackDescriptionsA,
-            List<TrackDescription> trackDescriptionsT, Language language)
+        internal InformationDialog(in string FileName, MediaTrack[] ListTracks, List<TrackDescription> trackDescriptionsV, List<TrackDescription> trackDescriptionsA,
+            List<TrackDescription> trackDescriptionsT, Language language, in string[] Version)
         {
-            InitializeComponent(language);
+            InitializeComponent(in language, in Version);
             this.Location = new Point(Screen.FromControl(this).WorkingArea.Width / 2 - this.Width / 2, Screen.FromControl(this).WorkingArea.Height / 2 - this.Height / 2);
 
             if (FileName != string.Empty)
@@ -198,7 +198,7 @@ namespace Sky_multi
             }
         }
 
-        private void InitializeComponent(Language language)
+        private void InitializeComponent(in Language language, in string[] version)
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InformationDialog));
             this.buttonOK = new Sky_framework.Button();
@@ -266,11 +266,15 @@ namespace Sky_multi
             this.label2.TabIndex = 7;
             if (language == Language.French)
             {
-                this.label2.Text = resources.GetString("label2FR.Text");
+                this.label2.Text = "Version : " + version[5] + "\nDéveloppée par Sacha Himber\n\nSky multi est une application libre qui permet de lire\n" +
+                    "des vidéos, des audios et des images il peut lire un grand\nnombre de format de fichier.\n\nLibrairies utilisés : Net " + version[0] +
+                    ", Sky Framework " + version[1] + ", \nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
             }
             else
             {
-                this.label2.Text = resources.GetString("label2EN.Text");
+                this.label2.Text = "Version : " + version[5] + "\n\nDeveloped by Sacha Himber\n\nSky multi is a free application that allows you to read\n" +
+                    "videos, audios and pictures it can play a great\nnumber of file format.\n\nLibraries used : Net " + version[0] + ", Sky Framework " + version[1] +
+                    ",\nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
             }
             // 
             // rectangle3

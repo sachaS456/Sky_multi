@@ -57,7 +57,7 @@ namespace Sky_multi_Core.VlcWrapper
             set 
             {
                 myMediaPlayerIsLoad();
-                using (Utf8StringHandle valueInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                using (Utf8StringHandle valueInterop = Utf8InteropStringConverter.ToUtf8StringHandle(in value))
                 {
                     VlcNative.libvlc_video_set_logo_string(myMediaPlayer, VideoLogoOptions.File, valueInterop);
                 }

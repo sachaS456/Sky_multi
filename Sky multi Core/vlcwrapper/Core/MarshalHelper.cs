@@ -32,12 +32,7 @@ namespace Sky_multi_Core.VlcWrapper.Core
         /// <typeparam name="T">The type of structure to convert</typeparam>
         /// <param name="ptr">The pointer</param>
         /// <returns>The converted structure</returns>
-        internal static T PtrToStructure<T>(ref IntPtr ptr) where T: struct
-        {
-            return Marshal.PtrToStructure<T>(ptr);
-        }
-
-        internal static T PtrToStructure<T>(IntPtr ptr) where T : struct
+        internal static T PtrToStructure<T>(in IntPtr ptr) where T: struct
         {
             return Marshal.PtrToStructure<T>(ptr);
         }
@@ -58,7 +53,7 @@ namespace Sky_multi_Core.VlcWrapper.Core
         /// <typeparam name="T">The delegate type</typeparam>
         /// <param name="ptr">The pointer to the C function</param>
         /// <returns>The delegate</returns>
-        internal static T GetDelegateForFunctionPointer<T>(ref IntPtr ptr)
+        internal static T GetDelegateForFunctionPointer<T>(in IntPtr ptr)
         {
             // The GetDelegateForFunctionPointer with two parameters is now deprecated.
             return Marshal.GetDelegateForFunctionPointer<T>(ptr);

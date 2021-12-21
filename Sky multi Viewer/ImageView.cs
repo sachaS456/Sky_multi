@@ -39,11 +39,20 @@ namespace Sky_multi_Viewer
         public int ImageWidth { get; private set; } = 0;
         public int ImageHeight { get; private set; } = 0;
 
+        private ushort Factor = 100;
+        private int ImagePositionXFactor = 0;
+        private int ImagePositionYFactor = 0;
+        private int ImageFactorW = 0;
+        private int ImageFactorH = 0;
+
         public ImageView()
         {
             this.SetStyle(ControlStyles.ResizeRedraw, true);
             this.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
+
+            this.MouseWheel += new MouseEventHandler(This_MouseWheel);
+            this.Resize += new EventHandler(This_Resize);
         }
 
         public void DecodeImageFile(string FilePath)
@@ -124,6 +133,135 @@ namespace Sky_multi_Viewer
             }
         }
 
+        private void This_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta < 0)
+            {
+                ScaleImage((ushort)(Factor - 10), e.Location);
+            }
+            else
+            {
+                ScaleImage((ushort)(Factor + 10), e.Location);
+            }
+        }
+
+        private void DrawImageScale(in Graphics g, ushort factor, in Point PointFactor)
+        {
+            g.SmoothingMode = SmoothingMode;
+            g.PixelOffsetMode = PixelOffsetMode;
+            g.CompositingQuality = CompositingQuality;
+
+            g.Clear(base.BackColor);
+
+            int DeltaImageFactorW = (int)((float)ImageWidth / 100 * factor) - ImageFactorW;
+            int DeltaImageFactorH = (int)((float)ImageHeight / 100 * factor) - ImageFactorH;
+
+            ImageFactorW += DeltaImageFactorW;
+            ImageFactorH += DeltaImageFactorH;
+
+            if (ImageFactorW <= this.Width || ImageFactorH <= this.Height)
+            {
+                ImagePositionXFactor = this.Width / 2 - ImageFactorW / 2;
+                ImagePositionYFactor = this.Height / 2 - ImageFactorH / 2;
+            }
+            else
+            {
+                /*BLOC:
+                 1; 2; 3;
+                 4; 5; 6;
+                 7; 8; 9;
+                */
+                switch (GetBlocControl(PointFactor))
+                {
+                    case 1: // Top Left
+                        
+                        break;
+
+                    case 2: // Top Center
+                        ImagePositionXFactor -= DeltaImageFactorW / 2;
+                        break;
+
+                    case 3: // Top Right
+                        ImagePositionXFactor -= DeltaImageFactorW;
+                        break;
+
+                    case 4: // Middle Left
+                        ImagePositionYFactor -= DeltaImageFactorH / 2;
+                        break;
+
+                    case 5: // Middle Center
+                        ImagePositionXFactor -= DeltaImageFactorW / 2;
+                        ImagePositionYFactor -= DeltaImageFactorH / 2;
+                        break;
+
+                    case 6: // Middle Right
+                        ImagePositionXFactor -= DeltaImageFactorW;
+                        ImagePositionYFactor -= DeltaImageFactorH / 2;
+                        break;
+
+                    case 7: // Bottom Left
+                        ImagePositionYFactor -= DeltaImageFactorH;
+                        break;
+
+                    case 8: // Bottom Center
+                        ImagePositionXFactor -= DeltaImageFactorW / 2;
+                        ImagePositionYFactor -= DeltaImageFactorH;
+                        break;
+
+                    case 9: // Bottom Right
+                        ImagePositionXFactor -= DeltaImageFactorW;
+                        ImagePositionYFactor -= DeltaImageFactorH;
+                        break;
+
+                    default: // PointFactor is empty
+
+                        break;
+                }
+
+                if (ImagePositionXFactor > 10)
+                {
+                    ImagePositionXFactor = 10;
+                }
+
+                if (ImagePositionYFactor > 10)
+                {
+                    ImagePositionYFactor = 10;
+                }
+            }
+
+            g.DrawImage(Image, ImagePositionXFactor, ImagePositionYFactor, ImageFactorW, ImageFactorH);
+
+            Factor = factor;
+        }
+
+        private sbyte GetBlocControl(Point point)
+        {
+            sbyte IdBloc = 0;
+            for (sbyte y = 1; y <= 3; y++)
+            {
+                for (sbyte x = 1; x <= 3; x++)
+                {
+                    IdBloc++;
+                    if (point.X < x*(this.Width / 3) && point.Y < y*(this.Height / 3))
+                    {
+                        return IdBloc;
+                    }
+                }
+            }
+
+            return -1;
+        }
+
+        public void ScaleImage(ushort scale)
+        {
+            ScaleImage(in scale, Point.Empty);
+        }
+
+        public void ScaleImage(in ushort scale, Point PointFactor)
+        {
+            DrawImageScale(this.CreateGraphics(), scale, in PointFactor);
+        }
+
         public Bitmap GetBitmapResized()
         {
             return new Bitmap(Image, ImageWidth, ImageHeight);
@@ -134,7 +272,14 @@ namespace Sky_multi_Viewer
             return new Bitmap(Image);
         }
 
-        private void DrawImage(Graphics g)
+        private void This_Resize(object sender, EventArgs e)
+        {
+            Factor = 100;
+            ImageFactorW = 0;
+            ImageFactorH = 0;
+        }
+
+        private void DrawImage(in Graphics g)
         {
             if (this == null || this.IsDisposed || this.Disposing || g == null || Image == null)
             {
@@ -234,7 +379,14 @@ namespace Sky_multi_Viewer
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            DrawImage(e.Graphics);
+            if (Factor == 100)
+            {
+                DrawImage(e.Graphics);
+            }
+            else
+            {
+                DrawImageScale(e.Graphics, Factor, Point.Empty);
+            }
             base.OnPaint(e);
         }
     }

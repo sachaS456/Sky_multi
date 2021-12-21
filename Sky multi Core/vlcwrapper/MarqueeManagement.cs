@@ -63,7 +63,7 @@ namespace Sky_multi_Core.VlcWrapper
             {
                 myMediaPlayerIsLoad();
 
-                using (Utf8StringHandle valueInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                using (Utf8StringHandle valueInterop = Utf8InteropStringConverter.ToUtf8StringHandle(in value))
                 {
                     VlcNative.libvlc_video_set_marquee_string(myMediaPlayer, VideoMarqueeOptions.Text, valueInterop);
                 }

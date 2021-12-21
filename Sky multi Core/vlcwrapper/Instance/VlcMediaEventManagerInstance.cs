@@ -22,8 +22,8 @@ namespace Sky_multi_Core.VlcWrapper
 {
     internal sealed class VlcMediaEventManagerInstance : VlcEventManagerInstance
     {
-        internal VlcMediaEventManagerInstance(IntPtr pointer)
-            : base(ref pointer)
+        internal VlcMediaEventManagerInstance(in IntPtr pointer)
+            : base(in pointer)
         {
         }
     }

@@ -23,19 +23,19 @@ namespace Sky_multi_Core.VlcWrapper
 {
     internal static class VlcMediaInstanceExtensions
     {
-        internal static VlcMediaInstance AddOptionToMedia(this VlcMediaInstance mediaInstance, string option)
+        internal static VlcMediaInstance AddOptionToMedia(this VlcMediaInstance mediaInstance, in string option)
         {
             AddOptionToMediaPrivate(mediaInstance, option);
             return mediaInstance;
         }
 
-        internal static VlcMediaInstance AddOptionToMedia(this VlcMediaInstance mediaInstance, string[] option)
+        internal static VlcMediaInstance AddOptionToMedia(this VlcMediaInstance mediaInstance, in string[] option)
         {
             AddOptionToMediaPrivate(mediaInstance, option);
             return mediaInstance;
         }
 
-        private static void AddOptionToMediaPrivate(in VlcMediaInstance mediaInstance, string option)
+        private static void AddOptionToMediaPrivate(in VlcMediaInstance mediaInstance, in string option)
         {
             if (mediaInstance == IntPtr.Zero)
             {

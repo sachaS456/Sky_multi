@@ -33,15 +33,15 @@ namespace Sky_multi_Core.VlcWrapper
             Name = name;
         }
 
-        internal static List<TrackDescription> GetSubTrackDescription(IntPtr moduleRef)
+        internal static List<TrackDescription> GetSubTrackDescription(in IntPtr moduleRef)
         {
             var result = new List<TrackDescription>();
             if (moduleRef != IntPtr.Zero)
             {
-                var module = MarshalHelper.PtrToStructure<TrackDescriptionStructure>(ref moduleRef);
-                var name = Utf8InteropStringConverter.Utf8InteropToString(module.Name);
+                var module = MarshalHelper.PtrToStructure<TrackDescriptionStructure>(in moduleRef);
+                var name = Utf8InteropStringConverter.Utf8InteropToString(in module.Name);
                 result.Add(new TrackDescription(module.Id, name));
-                var data = GetSubTrackDescription(module.NextTrackDescription);
+                var data = GetSubTrackDescription(in module.NextTrackDescription);
                 result.AddRange(data);
             }
             return result;

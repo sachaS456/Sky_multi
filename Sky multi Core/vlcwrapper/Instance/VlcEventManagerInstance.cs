@@ -23,7 +23,7 @@ namespace Sky_multi_Core.VlcWrapper
 {
     internal abstract class VlcEventManagerInstance : InteropObjectInstance
     {
-        internal VlcEventManagerInstance(ref IntPtr pointer) : base(ref pointer)
+        internal VlcEventManagerInstance(in IntPtr pointer) : base(in pointer)
         {
             
         }
@@ -33,7 +33,7 @@ namespace Sky_multi_Core.VlcWrapper
             base.Dispose(disposing);
         }
 
-        public static implicit operator IntPtr(VlcEventManagerInstance instance)
+        public static implicit operator IntPtr(in VlcEventManagerInstance instance)
         {
             return instance.Pointer;
         }

@@ -34,7 +34,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private Dictionary<IntPtr, CancellationTokenSource> openDialogsCancellationTokens = new Dictionary<IntPtr, CancellationTokenSource>();
 
-        internal DialogsManagement(VlcMediaPlayerInstance mediaPlayerInstance, VlcInstance vlcInstance)
+        internal DialogsManagement(in VlcMediaPlayerInstance mediaPlayerInstance, in VlcInstance vlcInstance)
         {
             myMediaPlayer = mediaPlayerInstance;
             myVlcInstance = vlcInstance;

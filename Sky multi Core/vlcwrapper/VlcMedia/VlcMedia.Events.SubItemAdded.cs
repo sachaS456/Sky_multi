@@ -28,8 +28,8 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaSubItemAddedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
-            OnMediaSubItemAdded(new VlcMedia(VlcMediaInstance.New(args.eventArgsUnion.MediaSubItemAdded.NewChild), VlcInstance));
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
+            OnMediaSubItemAdded(new VlcMedia(VlcMediaInstance.New(in args.eventArgsUnion.MediaSubItemAdded.NewChild), in VlcInstance));
         }
 
         public void OnMediaSubItemAdded(VlcMedia newSubItemAdded)

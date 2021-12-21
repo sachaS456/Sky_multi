@@ -25,6 +25,19 @@ namespace Sky_multi_Core.ImageReader
 {
     public class RawDecoder
     {
+        public static string LibRawVersion() => Marshal.PtrToStringAnsi(RawDecoderCore.libraw_version());
+
+        public static Version LibRawVersionNumber
+        {
+            get
+            {
+                string versionString = LibRawVersion();
+                versionString = versionString.Split('-', ' ')[0];
+
+                return new Version(versionString);
+            }
+        }
+
         public static Bitmap RawToBitmap(string Path)
         {
             IntPtr handler = RawDecoderCore.libraw_init(RawDecoderCore.LibRaw_init_flags.LIBRAW_OPTIONS_NONE);

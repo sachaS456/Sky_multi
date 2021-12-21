@@ -53,7 +53,7 @@ namespace Sky_multi_Core.VlcWrapper
             {
                 myMediaPlayerIsLoad();
 
-                using (Utf8StringHandle aspectRatioInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                using (Utf8StringHandle aspectRatioInterop = Utf8InteropStringConverter.ToUtf8StringHandle(in value))
                 {
                     VlcNative.libvlc_video_set_aspect_ratio(myMediaPlayer, aspectRatioInterop);
                 }
@@ -71,7 +71,7 @@ namespace Sky_multi_Core.VlcWrapper
             {
                 myMediaPlayerIsLoad();
 
-                using (Utf8StringHandle cropGeometryInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                using (Utf8StringHandle cropGeometryInterop = Utf8InteropStringConverter.ToUtf8StringHandle(in value))
                 {
                     VlcNative.libvlc_video_set_crop_geometry(myMediaPlayer, cropGeometryInterop);
                 }
@@ -100,7 +100,7 @@ namespace Sky_multi_Core.VlcWrapper
             {
                 myMediaPlayerIsLoad();
 
-                using (Utf8StringHandle deinterlaceModeInterop = Utf8InteropStringConverter.ToUtf8StringHandle(value))
+                using (Utf8StringHandle deinterlaceModeInterop = Utf8InteropStringConverter.ToUtf8StringHandle(in value))
                 {
                     VlcNative.libvlc_video_set_deinterlace(myMediaPlayer, deinterlaceModeInterop);
                 }

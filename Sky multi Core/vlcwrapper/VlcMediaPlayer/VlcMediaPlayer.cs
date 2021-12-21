@@ -32,17 +32,7 @@ namespace Sky_multi_Core.VlcWrapper
         private VlcMedia myCurrentMedia;
         private HardwareAccelerationType HardwareAcceleration_ = HardwareAccelerationType.d3d11;
 
-        public string VlcVersion => Utf8InteropStringConverter.Utf8InteropToString(VlcNative.libvlc_get_version());
-
-        public VlcMediaPlayer(DirectoryInfo dynamicLinkLibrariesPath, string[] args) : this(in dynamicLinkLibrariesPath, in args)
-        {
-            
-        }
-
-        public VlcMediaPlayer(in DirectoryInfo dynamicLinkLibrariesPath, string[] args) : this(in dynamicLinkLibrariesPath, in args)
-        {
-            
-        }
+        public static string VlcVersion => Utf8InteropStringConverter.Utf8InteropToString(VlcNative.libvlc_get_version());
 
         public VlcMediaPlayer(in DirectoryInfo dynamicLinkLibrariesPath, in string[] args)
         {
@@ -126,11 +116,11 @@ namespace Sky_multi_Core.VlcWrapper
             }
         }
 
-        public Version VlcVersionNumber
+        public static Version VlcVersionNumber
         {
             get
             {
-                string versionString = this.VlcVersion;
+                string versionString = VlcMediaPlayer.VlcVersion;
                 versionString = versionString.Split('-', ' ')[0];
 
                 return new Version(versionString);
@@ -141,7 +131,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void RegisterEvents()
         {
-            var vlcEventManager = this.GetMediaPlayerEventManager(myMediaPlayerInstance);
+            VlcMediaPlayerEventManagerInstance vlcEventManager = this.GetMediaPlayerEventManager(myMediaPlayerInstance);
             this.AttachEvent(vlcEventManager, EventTypes.MediaPlayerBackward, myOnMediaPlayerBackwardInternalEventCallback = OnMediaPlayerBackwardInternal);
             this.AttachEvent(vlcEventManager, EventTypes.MediaPlayerBuffering, myOnMediaPlayerBufferingInternalEventCallback = OnMediaPlayerBufferingInternal);
             this.AttachEvent(vlcEventManager, EventTypes.MediaPlayerEncounteredError, myOnMediaPlayerEncounteredErrorInternalEventCallback = OnMediaPlayerEncounteredErrorInternal);
@@ -176,7 +166,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void UnregisterEvents()
         {
-            var vlcEventManager = this.GetMediaPlayerEventManager(myMediaPlayerInstance);
+            VlcMediaPlayerEventManagerInstance vlcEventManager = this.GetMediaPlayerEventManager(myMediaPlayerInstance);
             this.DetachEvent(vlcEventManager, EventTypes.MediaPlayerBackward, myOnMediaPlayerBackwardInternalEventCallback);
             this.DetachEvent(vlcEventManager, EventTypes.MediaPlayerBuffering, myOnMediaPlayerBufferingInternalEventCallback);
             this.DetachEvent(vlcEventManager, EventTypes.MediaPlayerEncounteredError, myOnMediaPlayerEncounteredErrorInternalEventCallback);
@@ -227,7 +217,7 @@ namespace Sky_multi_Core.VlcWrapper
             VlcNative.libvlc_event_detach(eventManagerInstance, eventType, callback, IntPtr.Zero);
         }
 
-        internal VlcMediaPlayerEventManagerInstance GetMediaPlayerEventManager(VlcMediaPlayerInstance mediaPlayerInstance)
+        internal VlcMediaPlayerEventManagerInstance GetMediaPlayerEventManager(in VlcMediaPlayerInstance mediaPlayerInstance)
         {
             if (mediaPlayerInstance == IntPtr.Zero)
                 throw new ArgumentException("Media player instance is not initialized.");
@@ -392,7 +382,7 @@ namespace Sky_multi_Core.VlcWrapper
                 long time = this.Time;
                 if (this.GetMedia().optionsAdded == null)
                 {
-                    this.Play(this.GetMedia().Mrl, new string[] { ConvertStringHardwareAccelerationType(ref HardwareAcceleration_) });
+                    this.Play(this.GetMedia().Mrl, new string[] { ConvertStringHardwareAccelerationType(in HardwareAcceleration_) });
                 }
                 else
                 {
@@ -404,7 +394,7 @@ namespace Sky_multi_Core.VlcWrapper
                             options.RemoveAt(index);
                         }
                     }
-                    options.Add(ConvertStringHardwareAccelerationType(ref HardwareAcceleration_));
+                    options.Add(ConvertStringHardwareAccelerationType(in HardwareAcceleration_));
                     this.Play(this.GetMedia().Mrl, options.ToArray());
                 }
                 this.Time = time;
@@ -413,10 +403,10 @@ namespace Sky_multi_Core.VlcWrapper
 
         private string ConvertStringHardwareAccelerationType(HardwareAccelerationType value)
         {
-            return ConvertStringHardwareAccelerationType(ref value);
+            return ConvertStringHardwareAccelerationType(in value);
         }
 
-        private string ConvertStringHardwareAccelerationType(ref HardwareAccelerationType value)
+        private string ConvertStringHardwareAccelerationType(in HardwareAccelerationType value)
         {
             switch (value)
             {
@@ -437,7 +427,7 @@ namespace Sky_multi_Core.VlcWrapper
         public int SetAudioOutput(string outputName)
         {
             myMediaPlayerInstanceIsLoad();
-            using (Utf8StringHandle outputInterop = Utf8InteropStringConverter.ToUtf8StringHandle(outputName))
+            using (Utf8StringHandle outputInterop = Utf8InteropStringConverter.ToUtf8StringHandle(in outputName))
             {
                 return VlcNative.libvlc_audio_output_set(myMediaPlayerInstance, outputInterop);
             }
@@ -446,28 +436,28 @@ namespace Sky_multi_Core.VlcWrapper
         public VlcMedia SetMedia(FileInfo file, params string[] options)
         {
             Array.Resize(ref options, options.Length + 1);
-            options[options.Length - 1] = ConvertStringHardwareAccelerationType(ref HardwareAcceleration_);
+            options[options.Length - 1] = ConvertStringHardwareAccelerationType(in HardwareAcceleration_);
             return SetMedia(new VlcMedia(myVlcInstance, file, options));
         }
 
         public VlcMedia SetMedia(Uri uri, params string[] options)
         {
             Array.Resize(ref options, options.Length + 1);
-            options[options.Length - 1] = ConvertStringHardwareAccelerationType(ref HardwareAcceleration_);
+            options[options.Length - 1] = ConvertStringHardwareAccelerationType(in HardwareAcceleration_);
             return SetMedia(new VlcMedia(myVlcInstance, uri, options));
         }
 
         public VlcMedia SetMedia(string mrl, params string[] options)
         {
             Array.Resize(ref options, options.Length + 1);
-            options[options.Length - 1] = ConvertStringHardwareAccelerationType(ref HardwareAcceleration_);
+            options[options.Length - 1] = ConvertStringHardwareAccelerationType(in HardwareAcceleration_);
             return SetMedia(new VlcMedia(myVlcInstance, mrl, options));
         }
 
         public VlcMedia SetMedia(Stream stream, params string[] options)
         {
             Array.Resize(ref options, options.Length + 1);
-            options[options.Length - 1] = ConvertStringHardwareAccelerationType(ref HardwareAcceleration_);
+            options[options.Length - 1] = ConvertStringHardwareAccelerationType(in HardwareAcceleration_);
             return SetMedia(new VlcMedia(myVlcInstance, stream, options));
         }
 
@@ -597,7 +587,7 @@ namespace Sky_multi_Core.VlcWrapper
         public IEnumerable<FilterModuleDescription> GetAudioFilters()
         {
             IntPtr module = VlcNative.libvlc_audio_filter_list_get(myVlcInstance);
-            ModuleDescriptionStructure nextModule = MarshalHelper.PtrToStructure<ModuleDescriptionStructure>(ref module);
+            ModuleDescriptionStructure nextModule = MarshalHelper.PtrToStructure<ModuleDescriptionStructure>(in module);
             List<FilterModuleDescription> result = GetSubFilter(nextModule);
 
             if (module != IntPtr.Zero)
@@ -622,7 +612,7 @@ namespace Sky_multi_Core.VlcWrapper
 
             if (module.NextModule != IntPtr.Zero)
             {
-                ModuleDescriptionStructure nextModule = MarshalHelper.PtrToStructure<ModuleDescriptionStructure>(ref module.NextModule);
+                ModuleDescriptionStructure nextModule = MarshalHelper.PtrToStructure<ModuleDescriptionStructure>(in module.NextModule);
                 List<FilterModuleDescription> data = GetSubFilter(nextModule);
 
                 if (data.Count > 0)
@@ -637,7 +627,7 @@ namespace Sky_multi_Core.VlcWrapper
         public IEnumerable<FilterModuleDescription> GetVideoFilters()
         {
             IntPtr module = VlcNative.libvlc_video_filter_list_get(myVlcInstance);
-            ModuleDescriptionStructure nextModule = MarshalHelper.PtrToStructure<ModuleDescriptionStructure>(ref module);
+            ModuleDescriptionStructure nextModule = MarshalHelper.PtrToStructure<ModuleDescriptionStructure>(in module);
             List<FilterModuleDescription> result = GetSubFilter(nextModule);
 
             if (module != IntPtr.Zero)
@@ -814,7 +804,7 @@ namespace Sky_multi_Core.VlcWrapper
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            using (Utf8StringHandle filePathHandle = Utf8InteropStringConverter.ToUtf8StringHandle(filePath))
+            using (Utf8StringHandle filePathHandle = Utf8InteropStringConverter.ToUtf8StringHandle(in filePath))
             {
                 return VlcNative.libvlc_video_take_snapshot(myMediaPlayerInstance, outputNumber, filePathHandle, width, height) == 0;
             }

@@ -25,7 +25,7 @@ namespace Sky_multi_Core.VlcWrapper
     {
         private readonly VlcMediaPlayerInstance myMediaPlayer;
 
-        internal AudioManagement(VlcMediaPlayerInstance mediaPlayerInstance)
+        internal AudioManagement(in VlcMediaPlayerInstance mediaPlayerInstance)
         {
             myMediaPlayer = mediaPlayerInstance;
             Outputs = new AudioOutputsManagement(mediaPlayerInstance);

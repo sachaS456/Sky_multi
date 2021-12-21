@@ -28,7 +28,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private void OnMediaMetaChangedInternal(IntPtr ptr)
         {
-            var args = MarshalHelper.PtrToStructure<VlcEventArg>(ref ptr);
+            var args = MarshalHelper.PtrToStructure<VlcEventArg>(in ptr);
             OnMediaMetaChanged(args.eventArgsUnion.MediaMetaChanged.MetaType);
         }
 

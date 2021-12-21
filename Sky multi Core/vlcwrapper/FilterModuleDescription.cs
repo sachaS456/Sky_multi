@@ -38,10 +38,10 @@ namespace Sky_multi_Core.VlcWrapper
                 return null;
             var result = new FilterModuleDescription
             {
-                Name = Utf8InteropStringConverter.Utf8InteropToString(module.Name),
-                ShortName = Utf8InteropStringConverter.Utf8InteropToString(module.ShortName),
-                LongName = Utf8InteropStringConverter.Utf8InteropToString(module.LongName),
-                Help = Utf8InteropStringConverter.Utf8InteropToString(module.Help)
+                Name = Utf8InteropStringConverter.Utf8InteropToString(in module.Name),
+                ShortName = Utf8InteropStringConverter.Utf8InteropToString(in module.ShortName),
+                LongName = Utf8InteropStringConverter.Utf8InteropToString(in module.LongName),
+                Help = Utf8InteropStringConverter.Utf8InteropToString(in module.Help)
             };
             return result;
         }

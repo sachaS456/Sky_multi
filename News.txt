@@ -4,7 +4,8 @@
 -Redesign of part of the wrapper of libvlc.dll and libvlccore.dll
 -New feature that allow change hardware acceleration
 -Redesign of image viewer
--New feature which add the preview of screenshots are added
+-New feature which add the preview of screenshots
 -New feature which can crop the image of screenshots 
+-New feature that allows you to zoom the images 
 
 ----------------------------------

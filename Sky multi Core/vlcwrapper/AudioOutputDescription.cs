@@ -38,7 +38,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private IEnumerable<AudioOutputDevice> GetAudioOutputDeviceList(string outputName)
         {
-            using (Utf8StringHandle outputNameHandle = Utf8InteropStringConverter.ToUtf8StringHandle(outputName))
+            using (Utf8StringHandle outputNameHandle = Utf8InteropStringConverter.ToUtf8StringHandle(in outputName))
             {
                 IntPtr deviceList = VlcNative.libvlc_audio_output_device_list_get(this.myInstance, outputNameHandle);
                 try
@@ -47,11 +47,11 @@ namespace Sky_multi_Core.VlcWrapper
                     IntPtr currentPointer = deviceList;
                     while (currentPointer != IntPtr.Zero)
                     {
-                        LibvlcAudioOutputDeviceT current = MarshalHelper.PtrToStructure<LibvlcAudioOutputDeviceT>(ref currentPointer);
+                        LibvlcAudioOutputDeviceT current = MarshalHelper.PtrToStructure<LibvlcAudioOutputDeviceT>(in currentPointer);
                         result.Add(new AudioOutputDevice
                         {
-                            DeviceIdentifier = Utf8InteropStringConverter.Utf8InteropToString(current.DeviceIdentifier),
-                            Description = Utf8InteropStringConverter.Utf8InteropToString(current.Description)
+                            DeviceIdentifier = Utf8InteropStringConverter.Utf8InteropToString(in current.DeviceIdentifier),
+                            Description = Utf8InteropStringConverter.Utf8InteropToString(in current.Description)
                         });
                         currentPointer = current.Next;
                     }

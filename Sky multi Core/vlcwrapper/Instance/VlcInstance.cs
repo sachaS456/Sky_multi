@@ -23,7 +23,7 @@ namespace Sky_multi_Core.VlcWrapper
 {
     internal sealed class VlcInstance : InteropObjectInstance
     {
-        internal VlcInstance(IntPtr pointer) : base(ref pointer)
+        internal VlcInstance(in IntPtr pointer) : base(in pointer)
         {
 
         }
@@ -43,7 +43,7 @@ namespace Sky_multi_Core.VlcWrapper
             base.Dispose(disposing);            
         }
 
-        public static implicit operator IntPtr(VlcInstance instance)
+        public static implicit operator IntPtr(in VlcInstance instance)
         {
             if (instance == null)
                 return IntPtr.Zero;

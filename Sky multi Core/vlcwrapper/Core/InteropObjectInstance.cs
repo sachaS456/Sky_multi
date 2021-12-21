@@ -26,7 +26,7 @@ namespace Sky_multi_Core.VlcWrapper.Core
 
         private bool myIsDisposing = false;
 
-        protected InteropObjectInstance(ref IntPtr pointer)
+        protected InteropObjectInstance(in IntPtr pointer)
         {
             Pointer = pointer;
         }

@@ -29,31 +29,31 @@ namespace Sky_multi_Core.VlcWrapper
         internal readonly string[] optionsAdded;
         private readonly VlcInstance VlcInstance;
 
-        internal VlcMedia(VlcInstance vlcInstance, in FileInfo file, params string[] options)
+        internal VlcMedia(in VlcInstance vlcInstance, in FileInfo file, params string[] options)
             : this(CreateNewMediaFromPath(vlcInstance, file.FullName).AddOptionToMedia(options), vlcInstance)
         {
             optionsAdded = options;
         }
 
-        internal VlcMedia(VlcInstance vlcInstance, in Uri uri, params string[] options)
+        internal VlcMedia(in VlcInstance vlcInstance, in Uri uri, params string[] options)
             : this(CreateNewMediaFromLocation(vlcInstance, uri.AbsoluteUri).AddOptionToMedia(options), vlcInstance)
         {
             optionsAdded = options;
         }
         
-        internal VlcMedia(VlcInstance vlcInstance, in string mrl, params string[] options)
+        internal VlcMedia(in VlcInstance vlcInstance, in string mrl, params string[] options)
             : this(CreateNewMediaFromLocation(vlcInstance, mrl).AddOptionToMedia(options), vlcInstance)
         {
             optionsAdded = options;
         }
 
-        internal VlcMedia(VlcInstance vlcInstance, in Stream stream, params string[] options)
+        internal VlcMedia(in VlcInstance vlcInstance, in Stream stream, params string[] options)
             : this(CreateNewMediaFromStream(vlcInstance, stream).AddOptionToMedia(options), vlcInstance)
         {
             optionsAdded = options;
         }
 
-        internal VlcMedia(in VlcMediaInstance mediaInstance, VlcInstance vlcInstance)
+        internal VlcMedia(in VlcMediaInstance mediaInstance, in VlcInstance vlcInstance)
         {
             MediaInstance = mediaInstance;
             VlcInstance = vlcInstance;
@@ -157,17 +157,17 @@ namespace Sky_multi_Core.VlcWrapper
                     return new MediaTrack[0];
                 try
                 {
-                    var result = new MediaTrack[cpt];
+                    MediaTrack[] result = new MediaTrack[cpt];
                     for (int index = 0; index < cpt; index++)
                     {
-                        var current = MarshalHelper.PtrToStructure<LibvlcMediaTrackT>(Marshal.ReadIntPtr(fullBuffer, index * MarshalHelper.SizeOf<IntPtr>()));
+                        LibvlcMediaTrackT current = MarshalHelper.PtrToStructure<LibvlcMediaTrackT>(Marshal.ReadIntPtr(fullBuffer, index * MarshalHelper.SizeOf<IntPtr>()));
 
                         TrackInfo trackInfo = null;
 
                         switch (current.Type)
                         {
                             case MediaTrackTypes.Audio:
-                                LibvlcAudioTrackT audio = MarshalHelper.PtrToStructure<LibvlcAudioTrackT>(ref current.TypedTrack);
+                                LibvlcAudioTrackT audio = MarshalHelper.PtrToStructure<LibvlcAudioTrackT>(in current.TypedTrack);
                                 trackInfo = new AudioTrack
                                 {
                                     Channels = audio.Channels,
@@ -175,7 +175,7 @@ namespace Sky_multi_Core.VlcWrapper
                                 };
                                 break;
                             case MediaTrackTypes.Video:
-                                LibvlcVideoTrackT video = MarshalHelper.PtrToStructure<LibvlcVideoTrackT>(ref current.TypedTrack);
+                                LibvlcVideoTrackT video = MarshalHelper.PtrToStructure<LibvlcVideoTrackT>(in current.TypedTrack);
                                 trackInfo = new VideoTrack
                                 {
                                     Height = video.Height,
@@ -190,10 +190,10 @@ namespace Sky_multi_Core.VlcWrapper
                                 };
                                 break;
                             case MediaTrackTypes.Text:
-                                LibvlcSubtitleTrackT text = MarshalHelper.PtrToStructure<LibvlcSubtitleTrackT>(ref current.TypedTrack);
+                                LibvlcSubtitleTrackT text = MarshalHelper.PtrToStructure<LibvlcSubtitleTrackT>(in current.TypedTrack);
                                 trackInfo = new SubtitleTrack
                                 {
-                                    Encoding = Utf8InteropStringConverter.Utf8InteropToString(text.Encoding)
+                                    Encoding = Utf8InteropStringConverter.Utf8InteropToString(in text.Encoding)
                                 };
                                 break;
                         }
@@ -208,8 +208,8 @@ namespace Sky_multi_Core.VlcWrapper
                             Level = current.Level,
                             TrackInfo = trackInfo,
                             Bitrate = current.Bitrate,
-                            Language = Utf8InteropStringConverter.Utf8InteropToString(current.Language),
-                            Description = Utf8InteropStringConverter.Utf8InteropToString(current.Description)
+                            Language = Utf8InteropStringConverter.Utf8InteropToString(in current.Language),
+                            Description = Utf8InteropStringConverter.Utf8InteropToString(in current.Description)
                         };
                     }
                     return result;
@@ -280,7 +280,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private static VlcMediaInstance CreateNewMediaFromLocation(in VlcInstance VlcInstance, in string mrl)
         {
-            using (Utf8StringHandle handle = Utf8InteropStringConverter.ToUtf8StringHandle(mrl))
+            using (Utf8StringHandle handle = Utf8InteropStringConverter.ToUtf8StringHandle(in mrl))
             {
                 return VlcMediaInstance.New(VlcNative.libvlc_media_new_location(VlcInstance, handle));
             }
@@ -288,7 +288,7 @@ namespace Sky_multi_Core.VlcWrapper
 
         private static VlcMediaInstance CreateNewMediaFromPath(in VlcInstance VlcInstance, in string mrl)
         {
-            using (Utf8StringHandle handle = Utf8InteropStringConverter.ToUtf8StringHandle(mrl))
+            using (Utf8StringHandle handle = Utf8InteropStringConverter.ToUtf8StringHandle(in mrl))
             {
                 return VlcMediaInstance.New(VlcNative.libvlc_media_new_path(VlcInstance, handle));
             }
@@ -310,7 +310,7 @@ namespace Sky_multi_Core.VlcWrapper
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            if (VlcVersionNumber.Major < 3)
+            if (VlcMediaPlayer.VlcVersionNumber.Major < 3)
             {
                 throw new InvalidOperationException("You need VLC version 3.0 or higher to be able to use CreateNewMediaFromStream");
             }
@@ -412,7 +412,7 @@ namespace Sky_multi_Core.VlcWrapper
             }
         }
 
-        private static IntPtr AddStream(Stream stream)
+        private static IntPtr AddStream(in Stream stream)
         {
             if (stream == null)
             {
@@ -453,19 +453,6 @@ namespace Sky_multi_Core.VlcWrapper
         {
             StreamData result;
             DicStreams.TryRemove(handle, out result);
-        }
-
-        private static string VlcVersion => Utf8InteropStringConverter.Utf8InteropToString(VlcNative.libvlc_get_version());
-
-        private static Version VlcVersionNumber
-        {
-            get
-            {
-                string versionString = VlcVersion;
-                versionString = versionString.Split('-', ' ')[0];
-
-                return new Version(versionString);
-            }
         }
     }
 }

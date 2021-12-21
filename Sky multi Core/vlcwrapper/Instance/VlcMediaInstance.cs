@@ -26,7 +26,7 @@ namespace Sky_multi_Core.VlcWrapper
     {
         private static readonly Dictionary<IntPtr, VlcMediaInstance> AllInstances = new Dictionary<IntPtr, VlcMediaInstance>();
 
-        internal static VlcMediaInstance New(IntPtr pointer)
+        internal static VlcMediaInstance New(in IntPtr pointer)
         {
             lock (AllInstances)
             {
@@ -42,7 +42,7 @@ namespace Sky_multi_Core.VlcWrapper
             }
         }
 
-        private VlcMediaInstance(IntPtr pointer) : base(ref pointer)
+        private VlcMediaInstance(in IntPtr pointer) : base(in pointer)
         {
 
         }
@@ -62,7 +62,7 @@ namespace Sky_multi_Core.VlcWrapper
             base.Dispose(disposing);
         }
 
-        public static implicit operator IntPtr(VlcMediaInstance instance)
+        public static implicit operator IntPtr(in VlcMediaInstance instance)
         {
             return instance.Pointer;
         }

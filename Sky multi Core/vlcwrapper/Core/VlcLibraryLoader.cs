@@ -17,21 +17,13 @@
 --------------------------------------------------------------------------------------------------------------------*/
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Sky_multi_Core.VlcWrapper.Core
 {
-    /// <summary>
-    /// This class loads the required libvlc libraries.
-    /// Only one instance per directory will be created.
-    ///
-    /// Use <see cref="GetOrCreateLoader" /> and <see cref="ReleaseLoader"/> to get a VlcLibraryLoader instance and release it properly.
-    /// Do not call Dispose() by yourself, it will be called as needed by ReleaseLoader.
-    /// </summary>
-    internal static class VlcLibraryLoader//: IDisposable
+    internal static class VlcLibraryLoader
     {
         private static IntPtr myLibVlcDllHandle;
         private static IntPtr myLibVlcCoreDllHandle;
