@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Drawing;
 using System.Windows.Forms;
-using Sky_framework;
+using Sky_UI;
 
 namespace Sky_multi
 {
@@ -32,8 +32,8 @@ namespace Sky_multi
     {
         private TextBox TextBox = new TextBox();
         private Label FormatString = new Label();
-        private Sky_framework.Button ButtonOk = new Sky_framework.Button();
-        private Sky_framework.Button ButtonCancel = new Sky_framework.Button();
+        private Sky_UI.Button ButtonOk = new Sky_UI.Button();
+        private Sky_UI.Button ButtonCancel = new Sky_UI.Button();
 
         internal RenameFileDialog(Language language)
         {

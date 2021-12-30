@@ -83,7 +83,7 @@ namespace Sky_multi_Viewer
 
                     if (this.BackgroundImage == null)
                     {
-                        this.BackgroundImage = null;
+                        this.Play("File:///" + FilePath, Option);
 
                         if (ItIsAudioOrVideo != null)
                         {
@@ -93,7 +93,7 @@ namespace Sky_multi_Viewer
                         ItIsAImage = false;
                         RawImage = false;
 
-                        this.Play("File:///" + FilePath, Option);
+                        //this.Play();
                         return;
                     }
                 }

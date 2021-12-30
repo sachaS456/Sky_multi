@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using Sky_framework;
+using Sky_UI;
 
 namespace Sky_multi
 {
@@ -36,7 +36,7 @@ namespace Sky_multi
         private RadioButton radioButton2;
         private RadioButton radioButton3;
         private CheckBox checkBox2;
-        private Sky_framework.Rectangle rectangle2;
+        private Sky_UI.Rectangle rectangle2;
         private Label label3;
         private CheckBox checkBox3;
         private CheckBox checkBox4;
@@ -44,9 +44,9 @@ namespace Sky_multi
         private CheckBox checkBox6;
         private ComboBox comboBox1;
         private Label label4;
-        private Sky_framework.Button button1;
-        private Sky_framework.Button button2;
-        private Sky_framework.Rectangle rectangle1;
+        private Sky_UI.Button button1;
+        private Sky_UI.Button button2;
+        private Sky_UI.Rectangle rectangle1;
 
         internal DataSettings DataSettings { get; private set; }
 
@@ -100,7 +100,7 @@ namespace Sky_multi
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
-            this.rectangle1 = new Sky_framework.Rectangle();
+            this.rectangle1 = new Sky_UI.Rectangle();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -108,7 +108,7 @@ namespace Sky_multi
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.rectangle2 = new Sky_framework.Rectangle();
+            this.rectangle2 = new Sky_UI.Rectangle();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
@@ -116,8 +116,8 @@ namespace Sky_multi
             this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new Sky_framework.Button();
-            this.button2 = new Sky_framework.Button();
+            this.button1 = new Sky_UI.Button();
+            this.button2 = new Sky_UI.Button();
             this.SuspendLayout();
             // 
             // rectangle1

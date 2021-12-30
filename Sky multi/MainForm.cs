@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sky_framework;
+using Sky_UI;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
@@ -33,16 +33,16 @@ namespace Sky_multi
 {
     internal sealed class MainForm : SkyForms
     {
-        private Sky_framework.ProgressBar progressBar;
-        private Sky_framework.Button buttonPlay;
-        private Sky_framework.Button buttonMoreMinute;
-        private Sky_framework.Button buttonLessMinute;
-        private Sky_framework.Button buttonMore;
-        private Sky_framework.Button buttonInfo;
-        private Sky_framework.Button buttonFullScreen;
-        private Sky_framework.Button buttonSettings;
-        private Sky_framework.Button ButtonMediaRight;
-        private Sky_framework.Button ButtonMediaLeft;
+        private Sky_UI.ProgressBar progressBar;
+        private Sky_UI.Button buttonPlay;
+        private Sky_UI.Button buttonMoreMinute;
+        private Sky_UI.Button buttonLessMinute;
+        private Sky_UI.Button buttonMore;
+        private Sky_UI.Button buttonInfo;
+        private Sky_UI.Button buttonFullScreen;
+        private Sky_UI.Button buttonSettings;
+        private Sky_UI.Button ButtonMediaRight;
+        private Sky_UI.Button ButtonMediaLeft;
         private MenuDeroulant MenuDeroulantMore;
         private MenuDeroulant MenuDeroulantExt = new MenuDeroulant();
         private MenuDeroulant menuDeroulantLink;
@@ -57,14 +57,14 @@ namespace Sky_multi
         private ImageConvertDialogControl ImageConvertDialogControl = null;
         private SetTimeDialog SetTimeDialog = null;
         private Sky_multi_Viewer.VideoPreview VideoPreview = new Sky_multi_Viewer.VideoPreview();
-        private Sky_framework.Button buttonSound = new Sky_framework.Button();
-        private Sky_framework.Button buttonReadingSpeed = new Sky_framework.Button();
+        private Sky_UI.Button buttonSound = new Sky_UI.Button();
+        private Sky_UI.Button buttonReadingSpeed = new Sky_UI.Button();
         private SoundVolumeControl SoundVolumeControl = null;
         private ChoiceSpeed ChoiceSpeed = null;
         private DataSettings DataSettings;
         private bool MediaEnd = false;
         private string subTitlePath = null;
-        private bool ButtonMEdiaChangeClicked = false;
+        private bool ButtonMediaMouseEnter = false;
 
         internal MainForm() : base()
         {
@@ -209,7 +209,20 @@ namespace Sky_multi
                     while (this.Opacity < 1);
 
                     BlurMainForm();
-                    UpdateDetectDialogControl update = new UpdateDetectDialogControl(CurrentVersion, await Sky_Updater.Update.DownloadStringAsync("https://serie-sky.netlify.app/Download/Sky multi/Version.txt"));
+
+                    UpdateDetectDialogControl update;
+                    if (DataSettings.Language == Language.French)
+                    {
+                                            update = new UpdateDetectDialogControl((sbyte)DataSettings.Language, CurrentVersion, await Sky_Updater.Update.DownloadStringAsync(
+                        "https://serie-sky.netlify.app/Download/Sky multi/Version.txt"), await Sky_Updater.Update.DownloadStringAsync(
+                            "https://serie-sky.netlify.app/Download/Sky multi/ReleaseNoteFR.txt"));
+                    }
+                    else
+                    {
+                                            update = new UpdateDetectDialogControl((sbyte)DataSettings.Language, CurrentVersion, await Sky_Updater.Update.DownloadStringAsync(
+                        "https://serie-sky.netlify.app/Download/Sky multi/Version.txt"), await Sky_Updater.Update.DownloadStringAsync(
+                            "https://serie-sky.netlify.app/Download/Sky multi/ReleaseNoteEN.txt"));
+                    }
                     update.BringToFront();
                     update.Location = new Point(this.Width / 2 - update.Width / 2, this.Height / 2 - update.Height / 2);
                     update.Anchor = AnchorStyles.None;
@@ -242,7 +255,19 @@ namespace Sky_multi
                     while (this.Opacity < 1);
 
                     BlurMainForm();
-                    UpdateDetectDialogControl update = new UpdateDetectDialogControl(CurrentVersion, await Sky_Updater.Update.DownloadStringAsync("https://serie-sky.netlify.app/Download/Sky multi/Version.txt"));
+                    UpdateDetectDialogControl update;
+                    if (DataSettings.Language == Language.French)
+                    {
+                                            update = new UpdateDetectDialogControl((sbyte)DataSettings.Language, CurrentVersion, await Sky_Updater.Update.DownloadStringAsync(
+                        "https://serie-sky.netlify.app/Download/Sky multi/Version.txt"), await Sky_Updater.Update.DownloadStringAsync(
+                            "https://serie-sky.netlify.app/Download/Sky multi/ReleaseNoteFR.txt"));
+                    }
+                    else
+                    {
+                                            update = new UpdateDetectDialogControl((sbyte)DataSettings.Language, CurrentVersion, await Sky_Updater.Update.DownloadStringAsync(
+                        "https://serie-sky.netlify.app/Download/Sky multi/Version.txt"), await Sky_Updater.Update.DownloadStringAsync(
+                            "https://serie-sky.netlify.app/Download/Sky multi/ReleaseNoteEN.txt"));
+                    }
                     update.BringToFront();
                     update.Location = new Point(this.Width / 2 - update.Width / 2, this.Height / 2 - update.Height / 2);
                     update.Anchor = AnchorStyles.None;
@@ -263,7 +288,7 @@ namespace Sky_multi
 
             if (Download == true)
             {
-                DownloadUpdaterDialog update = new DownloadUpdaterDialog("Sky multi");
+                DownloadUpdaterDialog update = new DownloadUpdaterDialog((sbyte)DataSettings.Language, "Sky multi");
                 update.BringToFront();
                 update.Location = new Point(this.Width / 2 - update.Width / 2, this.Height / 2 - update.Height / 2);
                 update.Anchor = AnchorStyles.None;
@@ -367,7 +392,7 @@ namespace Sky_multi
                     continue;
                 }
 
-                if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
+                if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMediaMouseEnter)
                 {
                     if (MouseShow == false)
                     {
@@ -403,43 +428,42 @@ namespace Sky_multi
                     ButtonMediaRight.Location = new Point(this.Width - ButtonMediaRight.Width - Border, ButtonMediaRight.Location.Y);
                     ButtonMediaLeft.Width = 40;
 
-                    while (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
+                    while (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMediaMouseEnter)
                     {
-                        ButtonMEdiaChangeClicked = false;
                         X = Cursor.Position.X;
                         Y = Cursor.Position.Y;
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMediaMouseEnter)
                         {
                             continue;
                         }
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMediaMouseEnter)
                         {
                             continue;
                         }
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMediaMouseEnter)
                         {
                             continue;
                         }
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMediaMouseEnter)
                         {
                             continue;
                         }
 
                         await Task.Delay(400);
 
-                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMEdiaChangeClicked)
+                        if (Cursor.Position.X != X || Cursor.Position.Y != Y || ButtonMediaMouseEnter)
                         {
                             continue;
                         }
@@ -492,19 +516,19 @@ namespace Sky_multi
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.multiMediaViewer = new Sky_multi_Viewer.MultiMediaViewer();
-            this.progressBar = new Sky_framework.ProgressBar();
-            this.buttonPlay = new Sky_framework.Button();
-            this.buttonMoreMinute = new Sky_framework.Button();
-            this.buttonLessMinute = new Sky_framework.Button();
-            this.buttonMore = new Sky_framework.Button();
-            this.buttonInfo = new Sky_framework.Button();
-            this.buttonFullScreen = new Sky_framework.Button();
-            this.buttonSettings = new Sky_framework.Button();
+            this.progressBar = new Sky_UI.ProgressBar();
+            this.buttonPlay = new Sky_UI.Button();
+            this.buttonMoreMinute = new Sky_UI.Button();
+            this.buttonLessMinute = new Sky_UI.Button();
+            this.buttonMore = new Sky_UI.Button();
+            this.buttonInfo = new Sky_UI.Button();
+            this.buttonFullScreen = new Sky_UI.Button();
+            this.buttonSettings = new Sky_UI.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.ButtonMediaRight = new Sky_framework.Button();
-            this.ButtonMediaLeft = new Sky_framework.Button();
+            this.ButtonMediaRight = new Sky_UI.Button();
+            this.ButtonMediaLeft = new Sky_UI.Button();
             ((System.ComponentModel.ISupportInitialize)(this.multiMediaViewer)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -732,6 +756,8 @@ namespace Sky_multi
             this.ButtonMediaRight.BorderColor = Color.Black;
             this.ButtonMediaRight.BorderSize = 2;
             this.ButtonMediaRight.Click += new System.EventHandler(this.ButtonMediaRight_Click);
+            this.ButtonMediaRight.MouseEnter += new EventHandler(this.ButtonMediaRight_MouseEnter);
+            this.ButtonMediaRight.MouseLeave += new EventHandler(this.ButtonMediaRight_MouseLeave);
             // 
             // ButtonMediaLeft
             // 
@@ -750,6 +776,8 @@ namespace Sky_multi
             this.ButtonMediaLeft.BorderColor = Color.Black;
             this.ButtonMediaLeft.BorderSize = 2;
             this.ButtonMediaLeft.Click += new System.EventHandler(this.ButtonMediaLeft_Click);
+            this.ButtonMediaLeft.MouseEnter += new EventHandler(this.ButtonMediaLeft_MouseEnter);
+            this.ButtonMediaLeft.MouseLeave += new EventHandler(this.ButtonMediaLeft_MouseLeave);
             // 
             // VideoPreview
             // 
@@ -796,7 +824,6 @@ namespace Sky_multi
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.ClientSize = new System.Drawing.Size(658, 480);
             this.Controls.Add(this.buttonFullScreen);
             this.Controls.Add(this.buttonSettings);
             this.Controls.Add(this.buttonInfo);
@@ -807,7 +834,6 @@ namespace Sky_multi
             this.Controls.Add(this.ButtonMediaLeft);
             this.Controls.Add(this.VideoPreview);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = new System.Drawing.Point(0, 0);
             this.Name = "MainForm";
             this.Text = "Sky multi";
             this.MinimumSize = new Size(550, 400);
@@ -822,6 +848,7 @@ namespace Sky_multi
             this.Controls.SetChildIndex(this.ButtonMediaRight, 0);
             this.Controls.SetChildIndex(this.ButtonMediaLeft, 0);
             this.Controls.SetChildIndex(this.VideoPreview, 0);
+            this.ClientSize = new System.Drawing.Size(658, 480);
             ((System.ComponentModel.ISupportInitialize)(this.multiMediaViewer)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -1198,12 +1225,12 @@ namespace Sky_multi
                     panel1.Location = new Point(this.Width / 2 - panel1.Width / 2, this.Height);
                     panel1.Height = 71;
 
-                    IntPtr handle = Sky_framework.Win32.CreateRoundRectRgn(0, 0, panel1.Width, panel1.Height, 20, 20);
+                    IntPtr handle = Sky_UI.Win32.CreateRoundRectRgn(0, 0, panel1.Width, panel1.Height, 20, 20);
 
                     if (handle != IntPtr.Zero)
                     {
                         panel1.Region = Region.FromHrgn(handle);
-                        Sky_framework.Win32.DeleteObject(handle);
+                        Sky_UI.Win32.DeleteObject(handle);
                     }
 
                     ShowAndHideProgressBar();
@@ -1228,6 +1255,7 @@ namespace Sky_multi
                 multiMediaViewer.BackColor = Color.Black;
             }
 
+            await Task.Delay(300);
             if (DataSettings.WhenVideoSetFullScreen == true && GetVideo() == true && FullScreen == false)
             {
                 FullScreen_M();
@@ -1236,8 +1264,6 @@ namespace Sky_multi
 
         private void ButtonMediaRight_Click(object sender, EventArgs e)
         {
-            ButtonMEdiaChangeClicked = true;
-
             if (MediaLoaded == string.Empty)
             {
                 if (DataSettings.Language == Language.French)
@@ -1256,8 +1282,6 @@ namespace Sky_multi
 
         private void ButtonMediaLeft_Click(object sender, EventArgs e)
         {
-            ButtonMEdiaChangeClicked = true;
-
             if (MediaLoaded == string.Empty)
             {
                 if (DataSettings.Language == Language.French)
@@ -1297,6 +1321,7 @@ namespace Sky_multi
 
                 if (DataSettings.UsingDefinitionMax == true && Sky_multi_Core.ResolutionMonitor.SetResolutionMax() == true)
                 {
+                    this.FullScreen = true;
                     if (DataSettings.Language == Language.French)
                     {
                         MessageBox.Show("Sky multi a changé de définition pour une meilleur qualité d'image.", "Sky multi", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1314,12 +1339,12 @@ namespace Sky_multi
 
                 panel1.Location = new Point(this.Width / 2 - panel1.Width / 2, panel1.Location.Y + panel1.Height + this.Border + 1);
 
-                IntPtr handle = Sky_framework.Win32.CreateRoundRectRgn(0, 0, panel1.Width, panel1.Height, 20, 20);
+                IntPtr handle = Sky_UI.Win32.CreateRoundRectRgn(0, 0, panel1.Width, panel1.Height, 20, 20);
 
                 if (handle != IntPtr.Zero)
                 {
                     panel1.Region = Region.FromHrgn(handle);
-                    Sky_framework.Win32.DeleteObject(handle);
+                    Sky_UI.Win32.DeleteObject(handle);
                 }
 
                 if (multiMediaViewer.ItIsAImage == false)
@@ -1866,7 +1891,7 @@ namespace Sky_multi
                             {
                                 try
                                 {
-                                    RecycleBin.MoveFileToRB(NewName);
+                                    Sky_multi_Core.RecycleBin.MoveFileToRB(NewName);
                                 }
                                 catch
                                 {
@@ -1885,7 +1910,7 @@ namespace Sky_multi
                             {
                                 try
                                 {
-                                    RecycleBin.MoveFileToRB(NewName);
+                                    Sky_multi_Core.RecycleBin.MoveFileToRB(NewName);
                                 }
                                 catch
                                 {
@@ -1967,7 +1992,7 @@ namespace Sky_multi
                     try
                     {
                         //File.Delete(MediaLoaded);
-                        RecycleBin.MoveFileToRB(MediaLoaded);
+                        Sky_multi_Core.RecycleBin.MoveFileToRB(MediaLoaded);
                     }
                     catch
                     {
@@ -1996,7 +2021,7 @@ namespace Sky_multi
                     try
                     {
                         //File.Delete(MediaLoaded);
-                        RecycleBin.MoveFileToRB(MediaLoaded);
+                        Sky_multi_Core.RecycleBin.MoveFileToRB(MediaLoaded);
                     }
                     catch
                     {
@@ -2173,6 +2198,15 @@ namespace Sky_multi
         {
             List<string> SubtitlesTrackList = new List<string>();
 
+            if (DataSettings.Language == Language.French)
+            {
+                SubtitlesTrackList.Add("Selectionner un fichier");
+            }
+            else
+            {
+                SubtitlesTrackList.Add("Select a file");
+            }
+
             foreach (Sky_multi_Core.TrackDescription i in multiMediaViewer.SubTitles.All)
             {
                 SubtitlesTrackList.Add(i.Name);
@@ -2211,11 +2245,13 @@ namespace Sky_multi
 
                 if (DataSettings.Language == Language.French)
                 {
-                    fileDialog.Filter = "Tous les fichiers|*.*";
+                    fileDialog.Filter = "Fichiers sous-titres| *.cdg; *.idx; *.srt; *.sub; *.utf; *.ass; *.ssa; *.aqt; *.jss; *.psb; *.rt; *.sami; *.smi; " +
+                        "*.txt; *.smil; *.stl; *.usf; *.dks; *.pjs; *.mpl2; *.mks; *.vtt; *.tt; *.ttml; *.dfxp; *.scc |Tous les fichiers| *.*";
                 }
                 else
                 {
-                    fileDialog.Filter = "All the files|*.*";
+                    fileDialog.Filter = "Subtitles file|*.cdg; *.idx; *.srt; *.sub; *.utf; *.ass; *.ssa; *.aqt; *.jss; *.psb; *.rt; *.sami; *.smi; " +
+                        "*.txt; *.smil; *.stl; *.usf; *.dks; *.pjs; *.mpl2; *.mks; *.vtt; *.tt; *.ttml; *.dfxp; *.scc |All the files| *.*";
                 }
 
                 if (fileDialog.ShowDialog() == DialogResult.OK)
@@ -2487,7 +2523,7 @@ namespace Sky_multi
 
         private void DefineBackground(object sender, MouseEventArgs e)
         {
-            Sky_framework.Win32.SystemParametersInfo(20, 0, MediaLoaded, 0x1 | 0x2);
+            Sky_UI.Win32.SystemParametersInfo(20, 0, MediaLoaded, 0x1 | 0x2);
         }
 
         private void Quitter_Click(object sender, EventArgs e)
@@ -2923,6 +2959,26 @@ namespace Sky_multi
         private void multiMediaViewer_DoubleClick(object sender, EventArgs e)
         {
             FullScreen_M();
+        }
+
+        private void ButtonMediaRight_MouseEnter(object sender, EventArgs e)
+        {
+            ButtonMediaMouseEnter = true;
+        }
+
+        private void ButtonMediaRight_MouseLeave(object sender, EventArgs e)
+        {
+            ButtonMediaMouseEnter = false;
+        }
+
+        private void ButtonMediaLeft_MouseEnter(object sender, EventArgs e)
+        {
+            ButtonMediaMouseEnter = true;
+        }
+
+        private void ButtonMediaLeft_MouseLeave(object sender, EventArgs e)
+        {
+            ButtonMediaMouseEnter = false;
         }
     }
 }

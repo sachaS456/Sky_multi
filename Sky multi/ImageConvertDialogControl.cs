@@ -31,18 +31,18 @@ namespace Sky_multi
         private Label label1 = new Label();
         private Label label2 = new Label();
         private Label label3 = new Label();
-        private Sky_framework.Button ButtonConvert = new Sky_framework.Button();
-        private Sky_framework.Button ButtonCancel = new Sky_framework.Button();
+        private Sky_UI.Button ButtonConvert = new Sky_UI.Button();
+        private Sky_UI.Button ButtonCancel = new Sky_UI.Button();
         private Label LabelFormatConvert = new Label();
-        private Sky_framework.Button ButtonFormatConvertPNG = new Sky_framework.Button();
-        private Sky_framework.Button ButtonFormatConvertJPG = new Sky_framework.Button();
-        private Sky_framework.Button ButtonFormatConvertJPEG = new Sky_framework.Button();
-        private Sky_framework.Button ButtonFormatConvertICO = new Sky_framework.Button();
-        private Sky_framework.Button ButtonFormatConvertGIF = new Sky_framework.Button();
-        private Sky_framework.Button ButtonFormatConvertTIFF = new Sky_framework.Button();
-        private Sky_framework.Button ButtonFormatConvertTIF = new Sky_framework.Button();
-        private Sky_framework.Button ButtonFormatConvertBMP = new Sky_framework.Button();
-        private Sky_framework.Button ButtonFormatConvertWEBP = new Sky_framework.Button();
+        private Sky_UI.Button ButtonFormatConvertPNG = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertJPG = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertJPEG = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertICO = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertGIF = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertTIFF = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertTIF = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertBMP = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertWEBP = new Sky_UI.Button();
 
         internal string FormatString { set; get; } = string.Empty;
 
@@ -234,12 +234,12 @@ namespace Sky_multi
 
         private void This_Resize(object sender, EventArgs e)
         {
-            IntPtr handle = Sky_framework.Win32.CreateRoundRectRgn(0, 0, Width, Height, 15, 15);
+            IntPtr handle = Sky_UI.Win32.CreateRoundRectRgn(0, 0, Width, Height, 15, 15);
 
             if (handle != IntPtr.Zero)
             {
                 Region = Region.FromHrgn(handle);
-                Sky_framework.Win32.DeleteObject(handle);
+                Sky_UI.Win32.DeleteObject(handle);
             }
         }
 
@@ -285,7 +285,7 @@ namespace Sky_multi
         protected override void OnPaint(PaintEventArgs e)
         {
             this.CreateGraphics().Clear(this.BackColor);
-            Sky_framework.Border.DrawRoundRectangle(new Pen(Color.FromArgb(150, 150, 150), 2), 1, 1, Width - 3, Height - 3, 5, this.CreateGraphics());
+            Sky_UI.Border.DrawRoundRectangle(new Pen(Color.FromArgb(150, 150, 150), 2), 1, 1, Width - 3, Height - 3, 5, this.CreateGraphics());
         }
     }
 }
