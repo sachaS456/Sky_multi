@@ -131,14 +131,15 @@ namespace Sky_multi_Viewer
                     imageView.RemoveImage();
                 }
 
+                this.SetMedia("File:///" + FilePath, options);
+                this.Play();
+
                 if (ItIsAudioOrVideo != null)
                 {
                     ItIsAudioOrVideo(ItIsAImage);
                 }
 
                 ItIsAImage = false;
-                this.SetMedia("File:///" + FilePath, options);
-                this.Play();
                 return;
             }
 

@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using Sky_framework;
+using Sky_UI;
 using System.IO;
 using Sky_multi_Core.VlcWrapper;
 
@@ -31,15 +31,15 @@ namespace Sky_multi
 {
     internal sealed class InformationDialog : SkyForms
     {
-        private Sky_framework.Rectangle rectangle1;
-        private Sky_framework.Rectangle rectangle2;
+        private Sky_UI.Rectangle rectangle1;
+        private Sky_UI.Rectangle rectangle2;
         private Label label2;
-        private Sky_framework.Rectangle rectangle3;
+        private Sky_UI.Rectangle rectangle3;
         private Label FileInfo;
         private Label label1;
-        private Sky_framework.Rectangle rectangle4;
+        private Sky_UI.Rectangle rectangle4;
         private Panel panel1;
-        private Sky_framework.Button buttonOK;
+        private Sky_UI.Button buttonOK;
 
         internal InformationDialog(in string FileName, Language language, in string[] Version)
         {
@@ -201,14 +201,14 @@ namespace Sky_multi
         private void InitializeComponent(in Language language, in string[] version)
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InformationDialog));
-            this.buttonOK = new Sky_framework.Button();
-            this.rectangle1 = new Sky_framework.Rectangle();
-            this.rectangle2 = new Sky_framework.Rectangle();
+            this.buttonOK = new Sky_UI.Button();
+            this.rectangle1 = new Sky_UI.Rectangle();
+            this.rectangle2 = new Sky_UI.Rectangle();
             this.label2 = new System.Windows.Forms.Label();
-            this.rectangle3 = new Sky_framework.Rectangle();
+            this.rectangle3 = new Sky_UI.Rectangle();
             this.FileInfo = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.rectangle4 = new Sky_framework.Rectangle();
+            this.rectangle4 = new Sky_UI.Rectangle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.rectangle3.SuspendLayout();
             this.SuspendLayout();
@@ -220,7 +220,7 @@ namespace Sky_multi
             this.buttonOK.Border = false;
             this.buttonOK.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.buttonOK.borderRadius = 5;
-            this.buttonOK.Location = new System.Drawing.Point(553, 327);
+            this.buttonOK.Location = new System.Drawing.Point(563, 367);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(93, 30);
             this.buttonOK.TabIndex = 3;
@@ -268,12 +268,12 @@ namespace Sky_multi
             {
                 this.label2.Text = "Version : " + version[5] + "\nDéveloppée par Sacha Himber\n\nSky multi est une application libre qui permet de lire\n" +
                     "des vidéos, des audios et des images il peut lire un grand\nnombre de format de fichier.\n\nLibrairies utilisés : Net " + version[0] +
-                    ", Sky Framework " + version[1] + ", \nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
+                    ", Sky UI " + version[1] + ", \nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
             }
             else
             {
                 this.label2.Text = "Version : " + version[5] + "\n\nDeveloped by Sacha Himber\n\nSky multi is a free application that allows you to read\n" +
-                    "videos, audios and pictures it can play a great\nnumber of file format.\n\nLibraries used : Net " + version[0] + ", Sky Framework " + version[1] +
+                    "videos, audios and pictures it can play a great\nnumber of file format.\n\nLibraries used : Net " + version[0] + ", Sky UI " + version[1] +
                     ",\nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
             }
             // 
@@ -345,7 +345,7 @@ namespace Sky_multi
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.ButtonMaximizedVisible = false;
-            this.ClientSize = new System.Drawing.Size(660, 368);
+            this.ClientSize = new System.Drawing.Size(660, 370);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.rectangle4);
             this.Controls.Add(this.rectangle3);

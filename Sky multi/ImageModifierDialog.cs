@@ -24,17 +24,17 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
-using Sky_framework;
+using Sky_UI;
 
 namespace Sky_multi
 {
     internal class ImageModifierDialog : SkyForms
     {
-        private Sky_framework.Button button1;
+        private Sky_UI.Button button1;
         private Sky_multi_Viewer.ImageView imageView1;
-        private Sky_framework.Button button2;
-        private Sky_framework.Button button3;
-        private Sky_framework.Button button4;
+        private Sky_UI.Button button2;
+        private Sky_UI.Button button3;
+        private Sky_UI.Button button4;
         private RectangleResizer CropImage;
 
         internal ImageModifierDialog(Bitmap bitmap)
@@ -52,11 +52,11 @@ namespace Sky_multi
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImageModifierDialog));
-            this.button1 = new Sky_framework.Button();
+            this.button1 = new Sky_UI.Button();
             this.imageView1 = new Sky_multi_Viewer.ImageView();
-            this.button2 = new Sky_framework.Button();
-            this.button3 = new Sky_framework.Button();
-            this.button4 = new Sky_framework.Button();
+            this.button2 = new Sky_UI.Button();
+            this.button3 = new Sky_UI.Button();
+            this.button4 = new Sky_UI.Button();
             this.SuspendLayout();
             // 
             // button1

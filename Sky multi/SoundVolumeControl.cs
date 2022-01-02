@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using Sky_framework;
+using Sky_UI;
 
 namespace Sky_multi
 {
@@ -34,8 +34,8 @@ namespace Sky_multi
     {
         private Label Label = new Label();
         private Label LabelVolume = new Label();
-        private Sky_framework.ProgressBar VolumeBar = new Sky_framework.ProgressBar();
-        private Sky_framework.Button ButtonMute = new Sky_framework.Button();
+        private Sky_UI.ProgressBar VolumeBar = new Sky_UI.ProgressBar();
+        private Sky_UI.Button ButtonMute = new Sky_UI.Button();
         private bool BarMouseDown = false;
         private int Volume = 100;
         private bool Mute = false;

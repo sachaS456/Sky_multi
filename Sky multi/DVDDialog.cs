@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using Sky_framework;
+using Sky_UI;
 using System.IO;
 
 namespace Sky_multi
@@ -14,8 +14,8 @@ namespace Sky_multi
     {
         private ComboBox comboBox1;
         private Label label1;
-        private Sky_framework.Button button2;
-        private Sky_framework.Button button1;
+        private Sky_UI.Button button2;
+        private Sky_UI.Button button1;
         private readonly Language language;
 
         internal DVDDialog(Language language) : base()
@@ -40,8 +40,8 @@ namespace Sky_multi
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DVDDialog));
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new Sky_framework.Button();
-            this.button2 = new Sky_framework.Button();
+            this.button1 = new Sky_UI.Button();
+            this.button2 = new Sky_UI.Button();
             this.SuspendLayout();
             // 
             // comboBox1

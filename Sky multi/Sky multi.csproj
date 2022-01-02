@@ -24,8 +24,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sky framework\Sky framework\Sky framework.csproj" />
-    <ProjectReference Include="..\..\Sky multi Updater\Sky multi Updater\Sky Updater.csproj" />
+    <ProjectReference Include="..\..\Sky UI\Sky UI\Sky UI.csproj" />
+    <ProjectReference Include="..\..\Sky Updater\Sky Updater\Sky Updater.csproj" />
     <ProjectReference Include="..\Sky multi Viewer\Sky multi Viewer.csproj" />
   </ItemGroup>
 

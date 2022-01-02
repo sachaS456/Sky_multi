@@ -25,20 +25,20 @@ namespace Sky_multi
 {
     internal delegate void EventSetTimeHandler(long VlcTime);
 
-    internal sealed class SetTimeDialog : Sky_framework.SkyForms
+    internal sealed class SetTimeDialog : Sky_UI.SkyForms
     {
         private System.Windows.Forms.Label label1;
-        private Sky_framework.ButtonCircular buttonCircular1;
-        private Sky_framework.ButtonCircular buttonCircular2;
-        private Sky_framework.ButtonCircular buttonCircular3;
-        private Sky_framework.ButtonCircular buttonCircular4;
+        private Sky_UI.ButtonCircular buttonCircular1;
+        private Sky_UI.ButtonCircular buttonCircular2;
+        private Sky_UI.ButtonCircular buttonCircular3;
+        private Sky_UI.ButtonCircular buttonCircular4;
         private System.Windows.Forms.Label label2;
-        private Sky_framework.ButtonCircular buttonCircular5;
-        private Sky_framework.ButtonCircular buttonCircular6;
+        private Sky_UI.ButtonCircular buttonCircular5;
+        private Sky_UI.ButtonCircular buttonCircular6;
         private System.Windows.Forms.Label label3;
         private Sky_multi_Viewer.VideoView vlcControl1;
-        private Sky_framework.Button button1;
-        private Sky_framework.Button button2;
+        private Sky_UI.Button button1;
+        private Sky_UI.Button button2;
         private long hours = 0;
         private long minutes = 0;
         private long seconds = 0;
@@ -99,17 +99,17 @@ namespace Sky_multi
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.label1 = new System.Windows.Forms.Label();
-            this.buttonCircular1 = new Sky_framework.ButtonCircular();
-            this.buttonCircular2 = new Sky_framework.ButtonCircular();
-            this.buttonCircular3 = new Sky_framework.ButtonCircular();
-            this.buttonCircular4 = new Sky_framework.ButtonCircular();
+            this.buttonCircular1 = new Sky_UI.ButtonCircular();
+            this.buttonCircular2 = new Sky_UI.ButtonCircular();
+            this.buttonCircular3 = new Sky_UI.ButtonCircular();
+            this.buttonCircular4 = new Sky_UI.ButtonCircular();
             this.label2 = new System.Windows.Forms.Label();
-            this.buttonCircular5 = new Sky_framework.ButtonCircular();
-            this.buttonCircular6 = new Sky_framework.ButtonCircular();
+            this.buttonCircular5 = new Sky_UI.ButtonCircular();
+            this.buttonCircular6 = new Sky_UI.ButtonCircular();
             this.label3 = new System.Windows.Forms.Label();
             this.vlcControl1 = new Sky_multi_Viewer.VideoView();
-            this.button1 = new Sky_framework.Button();
-            this.button2 = new Sky_framework.Button();
+            this.button1 = new Sky_UI.Button();
+            this.button2 = new Sky_UI.Button();
             ((System.ComponentModel.ISupportInitialize)(this.vlcControl1)).BeginInit();
             this.SuspendLayout();
             // 

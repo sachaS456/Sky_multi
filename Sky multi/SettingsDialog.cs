@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using Sky_framework;
+using Sky_UI;
 
 namespace Sky_multi
 {
@@ -36,7 +36,7 @@ namespace Sky_multi
         private RadioButton radioButton2;
         private RadioButton radioButton3;
         private CheckBox checkBox2;
-        private Sky_framework.Rectangle rectangle2;
+        private Sky_UI.Rectangle rectangle2;
         private Label label3;
         private CheckBox checkBox3;
         private CheckBox checkBox4;
@@ -44,10 +44,10 @@ namespace Sky_multi
         private CheckBox checkBox6;
         private ComboBox comboBox1;
         private Label label4;
-        private Sky_framework.Button button1;
-        private Sky_framework.Button button2;
-        private Sky_framework.Rectangle rectangle1;
-        private Sky_framework.Rectangle rectangle3;
+        private Sky_UI.Button button1;
+        private Sky_UI.Button button2;
+        private Sky_UI.Rectangle rectangle1;
+        private Sky_UI.Rectangle rectangle3;
         private Label label5;
         private RadioButton radioButton4;
         private RadioButton radioButton5;
@@ -60,7 +60,6 @@ namespace Sky_multi
             this.DataSettings = DataSettings;
 
             InitializeComponent();
-            this.Location = new Point(Screen.FromControl(this).WorkingArea.Width / 2 - this.Width / 2, Screen.FromControl(this).WorkingArea.Height / 2 - this.Height / 2);
 
             checkBox1.Checked = DataSettings.CliqueMadiaPause;
             checkBox2.Checked = DataSettings.MinimizeWindowsMediaPause;
@@ -126,7 +125,7 @@ namespace Sky_multi
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
-            this.rectangle1 = new Sky_framework.Rectangle();
+            this.rectangle1 = new Sky_UI.Rectangle();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -134,7 +133,7 @@ namespace Sky_multi
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.rectangle2 = new Sky_framework.Rectangle();
+            this.rectangle2 = new Sky_UI.Rectangle();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
@@ -142,9 +141,9 @@ namespace Sky_multi
             this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new Sky_framework.Button();
-            this.button2 = new Sky_framework.Button();
-            this.rectangle3 = new Sky_framework.Rectangle();
+            this.button1 = new Sky_UI.Button();
+            this.button2 = new Sky_UI.Button();
+            this.rectangle3 = new Sky_UI.Rectangle();
             this.label5 = new Label();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
@@ -551,7 +550,9 @@ namespace Sky_multi
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.ButtonMaximizedVisible = true;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.ClientSize = new System.Drawing.Size(573, 395);
+            this.Location = new Point(Screen.FromControl(this).WorkingArea.Width / 2 - this.Width / 2, Screen.FromControl(this).WorkingArea.Height / 2 - this.Height / 2);
             this.Controls.Add(this.rectangle3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -576,11 +577,9 @@ namespace Sky_multi
             this.rectangle3.Controls.Add(this.radioButton5);
             this.rectangle3.Controls.Add(this.radioButton6);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = new System.Drawing.Point(0, 0);
             this.Name = "SettingsDialog";
             this.Redimensionnable = false;
             this.ButtonMaximizedVisible = false;
-            this.StartPosition = FormStartPosition.CenterScreen;
             if (DataSettings.Language == Language.French)
             {
                 this.Text = "Sky multi - Réglages";

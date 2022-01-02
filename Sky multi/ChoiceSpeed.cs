@@ -20,7 +20,7 @@ using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Sky_framework;
+using Sky_UI;
 
 namespace Sky_multi
 {
@@ -31,8 +31,8 @@ namespace Sky_multi
         internal EventSpeedHandler EventSpeedChanged = null;
         private float Coef = 1;
         private bool Multiplication = true;
-        private Sky_framework.Button button2;
-        private Sky_framework.Button button1;
+        private Sky_UI.Button button2;
+        private Sky_UI.Button button1;
         private System.Windows.Forms.Label label1;
 
         internal ChoiceSpeed(float Rate)
@@ -55,8 +55,8 @@ namespace Sky_multi
 
         private void InitializeComponent()
         {
-            this.button2 = new Sky_framework.Button();
-            this.button1 = new Sky_framework.Button();
+            this.button2 = new Sky_UI.Button();
+            this.button1 = new Sky_UI.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 

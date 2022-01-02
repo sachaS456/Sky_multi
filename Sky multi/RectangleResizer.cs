@@ -10,14 +10,14 @@ namespace Sky_multi
 {
     internal sealed class RectangleResizer : Control
     {
-        private Sky_framework.Rectangle ResizeButtonTopLeft = new Sky_framework.Rectangle();
-        private Sky_framework.Rectangle ResizeButtonTop = new Sky_framework.Rectangle();
-        private Sky_framework.Rectangle ResizeButtonTopRight = new Sky_framework.Rectangle();
-        private Sky_framework.Rectangle ResizeButtonLeft = new Sky_framework.Rectangle();
-        private Sky_framework.Rectangle ResizeButtonRight = new Sky_framework.Rectangle();
-        private Sky_framework.Rectangle ResizeButtonBottomLeft = new Sky_framework.Rectangle();
-        private Sky_framework.Rectangle ResizeButtonBottomRight = new Sky_framework.Rectangle();
-        private Sky_framework.Rectangle ResizeButtonBottom = new Sky_framework.Rectangle();
+        private Sky_UI.Rectangle ResizeButtonTopLeft = new Sky_UI.Rectangle();
+        private Sky_UI.Rectangle ResizeButtonTop = new Sky_UI.Rectangle();
+        private Sky_UI.Rectangle ResizeButtonTopRight = new Sky_UI.Rectangle();
+        private Sky_UI.Rectangle ResizeButtonLeft = new Sky_UI.Rectangle();
+        private Sky_UI.Rectangle ResizeButtonRight = new Sky_UI.Rectangle();
+        private Sky_UI.Rectangle ResizeButtonBottomLeft = new Sky_UI.Rectangle();
+        private Sky_UI.Rectangle ResizeButtonBottomRight = new Sky_UI.Rectangle();
+        private Sky_UI.Rectangle ResizeButtonBottom = new Sky_UI.Rectangle();
 
         internal int? MaxWidth { get; set; } = null;
         internal int? MaxHeight { get; set; } = null;
@@ -377,7 +377,7 @@ namespace Sky_multi
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Sky_framework.Border.DrawRoundRectangle(new Pen(Color.FromArgb(100, 255, 255, 255), 5), 6, 6, Width - 14, Height - 14, 0, e.Graphics);
+            Sky_UI.Border.DrawRoundRectangle(new Pen(Color.FromArgb(100, 255, 255, 255), 5), 6, 6, Width - 14, Height - 14, 0, e.Graphics);
             base.OnPaint(e);
         }
     }
