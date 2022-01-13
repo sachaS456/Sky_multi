@@ -113,8 +113,9 @@ namespace Sky_multi
             MenuDeroulantMore.TabIndex = 13;
             MenuDeroulantMore.Visible = false;
             MenuDeroulantMore.SetButton(Buttons);
-            MenuDeroulantMore.AddBar(5);
-            MenuDeroulantMore.AddBar(7);
+            MenuDeroulantMore.AddBar(2);
+            MenuDeroulantMore.AddBar(6);
+            MenuDeroulantMore.AddBar(8);
             Controls.Add(MenuDeroulantMore);
             this.Controls.SetChildIndex(this.MenuDeroulantMore, 0);
 

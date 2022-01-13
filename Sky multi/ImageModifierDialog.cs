@@ -176,8 +176,7 @@ namespace Sky_multi
             if (CropImage.Visible == true)
             {
                 this.Refresh();
-                CropImage.MaxWidth = imageView1.ImageWidth;
-                CropImage.MaxHeight = imageView1.ImageHeight;
+                CropImage.RectangleMax = new System.Drawing.Rectangle(imageView1.ImagePosition.X, imageView1.ImagePosition.Y, imageView1.ImageWidth, imageView1.ImageHeight);
                 CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
                 CropImage.Location = imageView1.ImagePosition;
             }
@@ -200,8 +199,7 @@ namespace Sky_multi
 
         private void button2_Click(object sender, EventArgs e)
         {
-            CropImage.MaxWidth = imageView1.ImageWidth;
-            CropImage.MaxHeight = imageView1.ImageHeight;
+            CropImage.RectangleMax = new System.Drawing.Rectangle(imageView1.ImagePosition.X, imageView1.ImagePosition.Y, imageView1.ImageWidth, imageView1.ImageHeight);
             CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
             CropImage.Location = imageView1.ImagePosition;
 
@@ -217,33 +215,33 @@ namespace Sky_multi
             button4.Visible = false;
             button2.Visible = true;
 
-            int DeltaImageW = imageView1.Image.Width - imageView1.ImageWidth;
-            int DeltaImageH = imageView1.Image.Height - imageView1.ImageHeight;
-            int x, y, width, height;
+            float CoefImageW = (float)imageView1.Image.Width / imageView1.ImageWidth;
+            float CoefImageH = (float)imageView1.Image.Height / imageView1.ImageHeight;
+            float x, y, width, height;
 
-            if (DeltaImageW == 0)
+            if (CoefImageW == 1.0)
             {
-                x = CropImage.Location.X - imageView1.ImagePosition.X;
-                width = CropImage.Width;
+                x = CropImage.LocationSelectedArea.X - imageView1.ImagePosition.X;
+                width = CropImage.SelectedArea.Width;
             }
             else
             {
-                x = (CropImage.Location.X - imageView1.ImagePosition.X) / DeltaImageW;
-                width = CropImage.Width + DeltaImageW;
+                x = (CropImage.LocationSelectedArea.X - imageView1.ImagePosition.X) * CoefImageW;
+                width = CropImage.SelectedArea.Width * CoefImageW;
             }
 
-            if (DeltaImageH == 0)
+            if (CoefImageH == 1.0)
             {
-                y = CropImage.Location.Y - imageView1.ImagePosition.Y;
-                height = CropImage.Height;
+                y = CropImage.LocationSelectedArea.Y - imageView1.ImagePosition.Y;
+                height = CropImage.SelectedArea.Height;
             }
             else
             {
-                y = (CropImage.Location.Y - imageView1.ImagePosition.Y) / DeltaImageH;
-                height = CropImage.Height + DeltaImageH;
+                y = (CropImage.LocationSelectedArea.Y - imageView1.ImagePosition.Y) * CoefImageH;
+                height = CropImage.SelectedArea.Height * CoefImageH;
             }
 
-            SetCropImage(x, y, width, height);
+            SetCropImage((int)x, (int)y, (int)width, (int)height);
 
             CropImage.Visible = false;
         }

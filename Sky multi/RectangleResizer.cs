@@ -19,8 +19,7 @@ namespace Sky_multi
         private Sky_UI.Rectangle ResizeButtonBottomRight = new Sky_UI.Rectangle();
         private Sky_UI.Rectangle ResizeButtonBottom = new Sky_UI.Rectangle();
 
-        internal int? MaxWidth { get; set; } = null;
-        internal int? MaxHeight { get; set; } = null;
+        internal Rectangle RectangleMax { get; set; } = Rectangle.Empty;
 
         internal RectangleResizer()
         {
@@ -137,28 +136,41 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                int w = this.Width;
-                int h = this.Height;
-                
-                if (MaxWidth == null || this.Width - (MousePosition.X - LocationScreenX) < MaxWidth)
+                int w = this.Width - (MousePosition.X - LocationScreenX);
+
+                if (w <= 0)
                 {
-                    this.Width -= MousePosition.X - LocationScreenX;
-                }
-                else
-                {
-                    this.Width = (int)MaxWidth;
+                    w = 1;
                 }
 
-                if (MaxHeight == null || this.Height - (MousePosition.Y - LocationScreenY) < MaxHeight)
+                int h = this.Height - (MousePosition.Y - LocationScreenY);
+
+                if (h <= 0)
                 {
-                    this.Height -= MousePosition.Y - LocationScreenY;
-                }
-                else
-                {
-                    this.Height = (int)MaxHeight;
+                    h = 1;
                 }
 
-                this.Location = new Point(this.Location.X - (this.Width - w), this.Location.Y - (this.Height - h));
+                int x = this.Location.X - (w - this.Width);
+                int y = this.Location.Y - (h - this.Height);
+
+                if (RectangleMax != Rectangle.Empty)
+                {
+                    if (x < RectangleMax.X)
+                    {
+                        w -= RectangleMax.X - x;
+                        x = RectangleMax.X;
+                    }
+
+                    if (y < RectangleMax.Y)
+                    {
+                        h -= RectangleMax.Y - y;
+                        y = RectangleMax.Y;
+                    }
+                }
+
+                this.Width = w;
+                this.Height = h;
+                this.Location = new Point(x, y);
                 this.Update();
 
                 if (this.Parent != null)
@@ -174,18 +186,26 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                int h = this.Height;
+                int h = this.Height - (MousePosition.Y - LocationScreenY);
 
-                if (MaxHeight == null || this.Height - (MousePosition.Y - LocationScreenY) < MaxHeight)
+                if (h <= 0)
                 {
-                    this.Height -= MousePosition.Y - LocationScreenY;
-                }
-                else
-                {
-                    this.Height = (int)MaxHeight;
+                    h = 1;
                 }
 
-                this.Location = new Point(this.Location.X, this.Location.Y - (this.Height - h));
+                int y = this.Location.Y - (h - this.Height);
+
+                if (RectangleMax != Rectangle.Empty)
+                {
+                    if (y < RectangleMax.Y)
+                    {
+                        h -= RectangleMax.Y - y;
+                        y = RectangleMax.Y;
+                    }
+                }
+
+                this.Height = h;
+                this.Location = new Point(this.Location.X, y);
                 this.Update();
 
                 if (this.Parent != null)
@@ -201,27 +221,39 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                int h = this.Height;
+                int w = MousePosition.X - LocationScreenX;
 
-                if (MaxWidth == null || MousePosition.X - LocationScreenX < MaxWidth)
+                if (w <= 0)
                 {
-                    this.Width = MousePosition.X - LocationScreenX;
-                }
-                else
-                {
-                    this.Width = (int)MaxWidth;
+                    w = 1;
                 }
 
-                if (MaxHeight == null || this.Height - (MousePosition.Y - LocationScreenY) < MaxHeight)
+                int h = this.Height - (MousePosition.Y - LocationScreenY);
+
+                if (h <= 0)
                 {
-                    this.Height -= MousePosition.Y - LocationScreenY;
-                }
-                else
-                {
-                    this.Height = (int)MaxHeight;
+                    h = 1;
                 }
 
-                this.Location = new Point(this.Location.X, this.Location.Y - (this.Height - h));
+                int y = this.Location.Y - (h - this.Height);
+
+                if (RectangleMax != Rectangle.Empty)
+                {
+                    if (w + (this.Location.X - RectangleMax.X) > RectangleMax.Width)
+                    {
+                        w = RectangleMax.Width - (this.Location.X - RectangleMax.X);
+                    }
+
+                    if (y < RectangleMax.Y)
+                    {
+                        h -= RectangleMax.Y - y;
+                        y = RectangleMax.Y;
+                    }
+                }
+
+                this.Width = w;
+                this.Height = h;
+                this.Location = new Point(this.Location.X, y);
                 this.Update();
 
                 if (this.Parent != null)
@@ -237,18 +269,26 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                int w = this.Width;
+                int w = this.Width - (MousePosition.X - LocationScreenX);
 
-                if (MaxWidth == null || this.Width - (MousePosition.X - LocationScreenX) < MaxWidth)
+                if (w <= 0)
                 {
-                    this.Width -= MousePosition.X - LocationScreenX;
-                }
-                else
-                {
-                    this.Width = (int)MaxWidth;
+                    w = 1;
                 }
 
-                this.Location = new Point(this.Location.X - (this.Width - w), this.Location.Y);
+                int x = this.Location.X - (w - this.Width);
+
+                if (RectangleMax != Rectangle.Empty)
+                {
+                    if (x < RectangleMax.X)
+                    {
+                        w -= RectangleMax.X - x;
+                        x = RectangleMax.X;
+                    }
+                }
+
+                this.Width = w;
+                this.Location = new Point(x, this.Location.Y);
                 this.Update();
 
                 if (this.Parent != null)
@@ -264,15 +304,22 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                if (MaxWidth == null || MousePosition.X - LocationScreenX < MaxWidth)
+                int w = MousePosition.X - LocationScreenX;
+
+                if (w <= 0)
                 {
-                    this.Width = MousePosition.X - LocationScreenX;
-                }
-                else
-                {
-                    this.Width = (int)MaxWidth;
+                    w = 1;
                 }
 
+                if (RectangleMax != Rectangle.Empty)
+                {
+                    if (w + (this.Location.X - RectangleMax.X) > RectangleMax.Width)
+                    {
+                        w = RectangleMax.Width - (this.Location.X - RectangleMax.X);
+                    }
+                }
+
+                this.Width = w;
                 this.Update();
 
                 if (this.Parent != null)
@@ -288,27 +335,39 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                int w = this.Width;
+                int w = this.Width - (MousePosition.X - LocationScreenX);
 
-                if (MaxWidth == null || this.Width - (MousePosition.X - LocationScreenX) < MaxWidth)
+                if (w <= 0)
                 {
-                    this.Width -= MousePosition.X - LocationScreenX;
-                }
-                else
-                {
-                    this.Width = (int)MaxWidth;
+                    w = 1;
                 }
 
-                if (MaxHeight == null || MousePosition.Y - LocationScreenY < MaxHeight)
+                int h = MousePosition.Y - LocationScreenY;
+
+                if (h <= 0)
                 {
-                    this.Height = MousePosition.Y - LocationScreenY;
-                }
-                else
-                {
-                    this.Height = (int)MaxHeight;
+                    h = 1;
                 }
 
-                this.Location = new Point(this.Location.X - (this.Width - w), this.Location.Y);
+                int x = this.Location.X - (w - this.Width);
+
+                if (RectangleMax != Rectangle.Empty)
+                {
+                    if (x < RectangleMax.X)
+                    {
+                        w -= RectangleMax.X - x;
+                        x = RectangleMax.X;
+                    }
+
+                    if (h + (this.Location.Y - RectangleMax.Y) > RectangleMax.Height)
+                    {
+                        h = RectangleMax.Height - (this.Location.Y - RectangleMax.Y);
+                    }
+                }
+
+                this.Width = w;
+                this.Height = h;
+                this.Location = new Point(x, this.Location.Y);
                 this.Update();
 
                 if (this.Parent != null)
@@ -324,24 +383,35 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                if (MaxWidth == null || MousePosition.X - LocationScreenX < MaxWidth)
+                int w = MousePosition.X - LocationScreenX;
+
+                if (w <= 0)
                 {
-                    this.Width = MousePosition.X - LocationScreenX;
-                }
-                else
-                {
-                    this.Width = (int)MaxWidth;
+                    w = 1;
                 }
 
-                if (MaxHeight == null || MousePosition.Y - LocationScreenY < MaxHeight)
+                int h = MousePosition.Y - LocationScreenY;
+
+                if (h <= 0)
                 {
-                    this.Height = MousePosition.Y - LocationScreenY;
-                }
-                else
-                {
-                    this.Height = (int)MaxHeight;
+                    h = 1;
                 }
 
+                if (RectangleMax != Rectangle.Empty)
+                {
+                    if (w + (this.Location.X - RectangleMax.X) > RectangleMax.Width)
+                    {
+                        w = RectangleMax.Width - (this.Location.X - RectangleMax.X);
+                    }
+
+                    if (h + (this.Location.Y - RectangleMax.Y) > RectangleMax.Height)
+                    {
+                        h = RectangleMax.Height - (this.Location.Y - RectangleMax.Y);
+                    }
+                }
+
+                this.Width = w;
+                this.Height = h;
                 this.Update();
 
                 if (this.Parent != null)
@@ -357,21 +427,44 @@ namespace Sky_multi
             {
                 LocationControlOnScreen(out int LocationScreenX, out int LocationScreenY);
 
-                if (MaxHeight == null || MousePosition.Y - LocationScreenY < MaxHeight)
+                int h = MousePosition.Y - LocationScreenY;
+
+                if (h <= 0)
                 {
-                    this.Height = MousePosition.Y - LocationScreenY;
-                }
-                else
-                {
-                    this.Height = (int)MaxHeight;
+                    h = 1;
                 }
 
+                if (RectangleMax != Rectangle.Empty)
+                {
+                    if (h + (this.Location.Y - RectangleMax.Y) > RectangleMax.Height)
+                    {
+                        h = RectangleMax.Height - (this.Location.Y - RectangleMax.Y);
+                    }
+                }
+
+                this.Height = h;
                 this.Update();
 
                 if (this.Parent != null)
                 {
                     this.Parent.Update();
                 }
+            }
+        }
+
+        internal Rectangle SelectedArea
+        {
+            get
+            {
+                return new Rectangle(6, 6, Width - 14, Height - 14);
+            }
+        }
+
+        internal Point LocationSelectedArea
+        {
+            get
+            {
+                return new Point(this.Location.X + 6, this.Location.Y + 6);
             }
         }
 
