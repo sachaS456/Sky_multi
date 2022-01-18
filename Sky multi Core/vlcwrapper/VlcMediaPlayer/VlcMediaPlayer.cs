@@ -38,31 +38,35 @@ namespace Sky_multi_Core.VlcWrapper
         {
             VlcLibraryLoader.LoadLibVlc(in dynamicLinkLibrariesPath);
 
-            IntPtr[] utf8Args = new IntPtr[args?.Length ?? 0];
-            try
+            lock (args)
             {
-                for (int i = 0; i < utf8Args.Length; i++)
+                IntPtr[] utf8Args = new IntPtr[args?.Length ?? 0];
+                try
                 {
-                    byte[] bytes = Encoding.UTF8.GetBytes(args[i]);
-                    IntPtr buffer = Marshal.AllocHGlobal(bytes.Length + 1);
-                    Marshal.Copy(bytes, 0, buffer, bytes.Length);
-                    Marshal.WriteByte(buffer, bytes.Length, 0);
-                    utf8Args[i] = buffer;
-                }
 
-                lock (utf8Args)
-                {
-                    myVlcInstance = new VlcInstance(VlcNative.libvlc_new(utf8Args.Length, utf8Args));
-                    myMediaPlayerInstance = this.CreateMediaPlayer();
-                }
-            }
-            finally
-            {
-                foreach (IntPtr arg in utf8Args)
-                {
-                    if (arg != IntPtr.Zero)
+                    for (int i = 0; i < utf8Args.Length; i++)
                     {
-                        Marshal.FreeHGlobal(arg);
+                        byte[] bytes = Encoding.UTF8.GetBytes(args[i]);
+                        IntPtr buffer = Marshal.AllocHGlobal(bytes.Length + 1);
+                        Marshal.Copy(bytes, 0, buffer, bytes.Length);
+                        Marshal.WriteByte(buffer, bytes.Length, 0);
+                        utf8Args[i] = buffer;
+                    }
+
+                    lock (utf8Args)
+                    {
+                        myVlcInstance = new VlcInstance(VlcNative.libvlc_new(utf8Args.Length, utf8Args));
+                        myMediaPlayerInstance = this.CreateMediaPlayer();
+                    }
+                }
+                finally
+                {
+                    foreach (IntPtr arg in utf8Args)
+                    {
+                        if (arg != IntPtr.Zero)
+                        {
+                            Marshal.FreeHGlobal(arg);
+                        }
                     }
                 }
             }

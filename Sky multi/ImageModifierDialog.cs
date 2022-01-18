@@ -217,29 +217,12 @@ namespace Sky_multi
 
             float CoefImageW = (float)imageView1.Image.Width / imageView1.ImageWidth;
             float CoefImageH = (float)imageView1.Image.Height / imageView1.ImageHeight;
-            float x, y, width, height;
 
-            if (CoefImageW == 1.0)
-            {
-                x = CropImage.LocationSelectedArea.X - imageView1.ImagePosition.X;
-                width = CropImage.SelectedArea.Width;
-            }
-            else
-            {
-                x = (CropImage.LocationSelectedArea.X - imageView1.ImagePosition.X) * CoefImageW;
-                width = CropImage.SelectedArea.Width * CoefImageW;
-            }
+            float x = (CropImage.LocationSelectedArea.X - imageView1.ImagePosition.X) * CoefImageW;
+            float width = CropImage.SelectedArea.Width * CoefImageW;
 
-            if (CoefImageH == 1.0)
-            {
-                y = CropImage.LocationSelectedArea.Y - imageView1.ImagePosition.Y;
-                height = CropImage.SelectedArea.Height;
-            }
-            else
-            {
-                y = (CropImage.LocationSelectedArea.Y - imageView1.ImagePosition.Y) * CoefImageH;
-                height = CropImage.SelectedArea.Height * CoefImageH;
-            }
+            float y = (CropImage.LocationSelectedArea.Y - imageView1.ImagePosition.Y) * CoefImageH;
+            float height = CropImage.SelectedArea.Height * CoefImageH;
 
             SetCropImage((int)x, (int)y, (int)width, (int)height);
 

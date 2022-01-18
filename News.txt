@@ -7,5 +7,7 @@
 -New feature which add the preview of screenshots
 -New feature which can crop the image of screenshots 
 -New feature that allows you to zoom the images 
+-DVD support
+-New animation for starting the application
 
 ----------------------------------

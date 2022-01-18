@@ -834,7 +834,6 @@ namespace Sky_multi
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.ClientSize = new System.Drawing.Size(658, 480);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Controls.Add(this.buttonFullScreen);
             this.Controls.Add(this.buttonSettings);
@@ -860,6 +859,7 @@ namespace Sky_multi
             this.Controls.SetChildIndex(this.ButtonMediaRight, 0);
             this.Controls.SetChildIndex(this.ButtonMediaLeft, 0);
             this.Controls.SetChildIndex(this.VideoPreview, 0);
+            this.ClientSize = new System.Drawing.Size(658, 480);
             ((System.ComponentModel.ISupportInitialize)(this.multiMediaViewer)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

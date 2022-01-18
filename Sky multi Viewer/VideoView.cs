@@ -23,12 +23,15 @@ using System.IO;
 using Sky_multi_Core.VlcWrapper;
 using Sky_multi_Core.VlcWrapper.Core;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Sky_multi_Viewer
 {
     public class VideoView: Control, ISupportInitialize
     {
-        public VlcMediaPlayer VlcMediaPlayer;
+        public VlcMediaPlayer VlcMediaPlayer { get; private set; }
+        public bool ControlLoaded { get; private set; } = false;
 
         public VideoView()
         {
@@ -43,31 +46,115 @@ namespace Sky_multi_Viewer
             }
             set
             {
-                VlcMediaPlayer.HardwareAcceleration = value;
+                WaitSetHardwareAcceleration(value);
             }
+        }
+
+        public async void WaitSetHardwareAcceleration(HardwareAccelerationType value)
+        {
+            while (ControlLoaded == false)
+            {
+                await Task.Delay(10);
+            }
+
+            VlcMediaPlayer.HardwareAcceleration = value;
         }
 
         public void BeginInit()
         {
-
+            
         }
 
-        public void EndInit()
+        private async void LoadingVlcInstance()
+        {
+            Brush brush = Brushes.White;
+
+            while (ControlLoaded == false)
+            {
+                int sizeElipse1 = 0;
+                bool sizeElipse1D = false;
+                int sizeElipse2 = 0;
+                bool sizeElipse2D = false;
+                int sizeElipse3 = 0;
+                bool sizeElipse3D = false;
+
+                while (true)
+                {
+                    this.CreateGraphics().Clear(Color.Black);
+
+                    if (sizeElipse1 < 50 && sizeElipse1D == false)
+                    {
+                        sizeElipse1 += 2;
+                        this.CreateGraphics().FillEllipse(brush, this.Width / 2 - 100 - sizeElipse1 / 2, this.Height / 2 - sizeElipse1 / 2, sizeElipse1, sizeElipse1);
+                    }
+                    else if (sizeElipse1 > 0)
+                    {
+                        sizeElipse1D = true;
+                        sizeElipse1 -= 2;
+                        this.CreateGraphics().FillEllipse(brush, this.Width / 2 - 100 - sizeElipse1 / 2, this.Height / 2 - sizeElipse1 / 2, sizeElipse1, sizeElipse1);
+                    }
+
+                    if (sizeElipse1 > 15 || sizeElipse1D == true)
+                    {
+                        if (sizeElipse2 < 50 && sizeElipse2D == false)
+                        {
+                            sizeElipse2 += 2;
+                            this.CreateGraphics().FillEllipse(brush, this.Width / 2 - 25 - sizeElipse2 / 2, this.Height / 2 - sizeElipse2 / 2, sizeElipse2, sizeElipse2);
+                        }
+                        else if (sizeElipse2 > 0)
+                        {
+                            sizeElipse2D = true;
+                            sizeElipse2 -= 2;
+                            this.CreateGraphics().FillEllipse(brush, this.Width / 2 - 25 - sizeElipse2 / 2, this.Height / 2 - sizeElipse2 / 2, sizeElipse2, sizeElipse2);
+                        }
+                    }
+
+                    if (sizeElipse2 > 15 || sizeElipse2D == true)
+                    {
+                        if (sizeElipse3 < 50 && sizeElipse3D == false)
+                        {
+                            sizeElipse3 += 2;
+                            this.CreateGraphics().FillEllipse(brush, this.Width / 2 + 50 - sizeElipse3 / 2, this.Height / 2 - sizeElipse3 / 2, sizeElipse3, sizeElipse3);
+                        }
+                        else if (sizeElipse3 > 0)
+                        {
+                            sizeElipse3D = true;
+                            sizeElipse3 -= 2;
+                            this.CreateGraphics().FillEllipse(brush, this.Width / 2 + 50 - sizeElipse3 / 2, this.Height / 2 - sizeElipse3 / 2, sizeElipse3, sizeElipse3);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    await Task.Delay(16);
+                }
+
+                await Task.Delay(250);
+            }
+        }
+
+        public async void EndInit()
         {
             if (IsInDesignMode || VlcMediaPlayer != null)
             {
+                ControlLoaded = true;
                 return;
             }
 
+            LoadingVlcInstance();
+
             VlcLibDirectory = OnVlcLibDirectoryNeeded();
 
-            if (VlcMediaplayerOptions == null)
+            //await Task.Run(() => LoadMediaPlayer());
+            Thread thread = new Thread(LoadMediaPlayer);
+            thread.Priority = ThreadPriority.Highest;
+            thread.Start();
+
+            while (ControlLoaded == false)
             {
-                VlcMediaPlayer = new VlcMediaPlayer(_vlcLibDirectory, new string[0]);
-            }
-            else
-            {
-                VlcMediaPlayer = new VlcMediaPlayer(_vlcLibDirectory, _vlcMediaPlayerOptions);
+                await Task.Delay(10);
             }
 
             if (this.log != null)
@@ -78,9 +165,24 @@ namespace Sky_multi_Viewer
             RegisterEvents();
 
             VlcMediaPlayer.VideoHostControlHandle = Handle;
+
             this.Video.IsKeyInputEnabled = false;
             this.Video.IsMouseInputEnabled = false;
             this.Audio.Volume = 100;
+        }
+
+        private void LoadMediaPlayer()
+        {
+            if (_vlcMediaPlayerOptions == null)
+            {
+                VlcMediaPlayer = new VlcMediaPlayer(_vlcLibDirectory, new string[0]);
+            }
+            else
+            {
+                VlcMediaPlayer = new VlcMediaPlayer(_vlcLibDirectory, _vlcMediaPlayerOptions);
+            }
+
+            ControlLoaded = true;
         }
 
         public event EventHandler<VlcLibDirectoryNeededEventArgs> VlcLibDirectoryNeeded;
@@ -102,7 +204,10 @@ namespace Sky_multi_Viewer
         [Category("Media Player")]
         public string[] VlcMediaplayerOptions
         {
-            get { return this._vlcMediaPlayerOptions; }
+            get 
+            { 
+                return this._vlcMediaPlayerOptions; 
+            }
             set
             {
                 if (!(VlcMediaPlayer is null))
@@ -179,30 +284,43 @@ namespace Sky_multi_Viewer
             }
         }
 
+        private async Task WaitControlLoaded()
+        {
+            while (ControlLoaded == false)
+            {
+                await Task.Delay(10);
+            }
+        }
+
         #region VlcControl Functions & Properties
 
-        public void Play()
+        public async void Play()
         {
+            await WaitControlLoaded();
             VlcMediaPlayer?.Play();
         }
 
-        public void Play(FileInfo file, params string[] options)
+        public async void Play(FileInfo file, params string[] options)
         {
+            await WaitControlLoaded();
             VlcMediaPlayer?.Play(file, options);
         }
 
-        public void Play(Uri uri, params string[] options)
+        public async void Play(Uri uri, params string[] options)
         {
+            await WaitControlLoaded();
             VlcMediaPlayer?.Play(uri, options);
         }
 
-        public void Play(string mrl, params string[] options)
+        public async void Play(string mrl, params string[] options)
         {
+            await WaitControlLoaded();
             VlcMediaPlayer?.Play(mrl, options);
         }
 
-        public void Play(Stream stream, params string[] options)
+        public async void Play(Stream stream, params string[] options)
         {
+            await WaitControlLoaded();
             VlcMediaPlayer?.Play(stream, options);
         }
 
@@ -479,23 +597,27 @@ namespace Sky_multi_Viewer
             }
         }
 
-        public void SetMedia(FileInfo file, params string[] options)
+        public async void SetMedia(FileInfo file, params string[] options)
         {
+            await WaitControlLoaded();
             VlcMediaPlayer.SetMedia(file, options);
         }
 
-        public void SetMedia(Uri file, params string[] options)
+        public async void SetMedia(Uri file, params string[] options)
         {
+            await WaitControlLoaded();
             VlcMediaPlayer.SetMedia(file, options);
         }
 
-        public void SetMedia(string mrl, params string[] options)
+        public async void SetMedia(string mrl, params string[] options)
         {
+            await WaitControlLoaded();
             VlcMediaPlayer.SetMedia(mrl, options);
         }
 
-        public void SetMedia(Stream stream, params string[] options)
+        public async void SetMedia(Stream stream, params string[] options)
         {
+            await WaitControlLoaded();
             VlcMediaPlayer.SetMedia(stream, options);
         }
 
