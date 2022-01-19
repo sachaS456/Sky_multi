@@ -207,6 +207,8 @@ namespace Sky_multi
             button3.Visible = true;
             button4.Visible = true;
             button2.Visible = false;
+
+            imageView1.CanZoom = false;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -227,6 +229,7 @@ namespace Sky_multi
             SetCropImage((int)x, (int)y, (int)width, (int)height);
 
             CropImage.Visible = false;
+            imageView1.CanZoom = true;
         }
 
         private void SetCropImage(int x, int y, int width, int height)
@@ -252,6 +255,7 @@ namespace Sky_multi
             button4.Visible = false;
             button2.Visible = true;
             CropImage.Visible = false;
+            imageView1.CanZoom = true;
         }
     }
 }
