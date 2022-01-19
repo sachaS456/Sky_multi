@@ -312,19 +312,19 @@ namespace Sky_multi
             }
         }
 
-        private void OpenMediaOnStarting()
+        private async void OpenMediaOnStarting()
         {
             if (Environment.GetCommandLineArgs().Last() != Application.ExecutablePath && Environment.GetCommandLineArgs().Last() != Application.StartupPath + @"Sky multi.dll")
             {
-                /*while (multiMediaViewer.Chargement == false || this.Opacity < 1)
+                while (multiMediaViewer.ControlLoaded == false || this.Opacity < 1)
                 {
                     await Task.Delay(1);
 
-                    if (multiMediaViewer.Chargement != true && this.Opacity >= 1)
+                    if (multiMediaViewer.ControlLoaded == true && this.Opacity >= 1)
                     {
                         break;
                     }
-                }*/
+                }
 
                 if (File.Exists(Environment.GetCommandLineArgs().Last()))
                 {
@@ -1722,7 +1722,7 @@ namespace Sky_multi
 
         private void OpenFile()
         {
-            /*if (multiMediaViewer.Chargement == true)
+            if (multiMediaViewer.ControlLoaded == false)
             {
                 if (DataSettings.Language == Language.French)
                 {
@@ -1733,7 +1733,7 @@ namespace Sky_multi
                     MessageBox.Show("Sky multi Viewer is loading please wait.", "Sky multi", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 return;
-            }*/
+            }
 
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
@@ -1776,24 +1776,17 @@ namespace Sky_multi
 
         private void SnapshotAllToScreen(object sender, MouseEventArgs e)
         {
-            this.Visible = false;
+            //this.Visible = false;
             Bitmap bitmap = new Bitmap(Screen.FromControl(this).Bounds.Width, Screen.FromControl(this).Bounds.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
                 g.CopyFromScreen(Screen.FromControl(this).Bounds.Left, Screen.FromControl(this).Bounds.Top, 0, 0, Screen.FromControl(this).Bounds.Size, CopyPixelOperation.SourceCopy);
             }
 
-            this.Visible = true;
+            //this.Visible = true;
 
-            using (SaveFileDialog dialog = new SaveFileDialog())
-            {
-                dialog.Filter = "Images png| *.png |Images jpeg| *.jpeg; *.jpg |Images bmp| *.bmp |Images ico| *.ico |Images gif| *.gif |Images tiff| *.tiff; *.tif |Images heic| *.heic";
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    bitmap.Save(dialog.FileName);
-                }
-            }
+            ImageModifierDialog dialog = new ImageModifierDialog(bitmap);
+            dialog.Show();
         }
 
         private void SnapshotPerso(object sender, MouseEventArgs e)

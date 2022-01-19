@@ -38,6 +38,7 @@ namespace Sky_multi_Viewer
         public Point ImagePosition { get; private set; } = Point.Empty;
         public int ImageWidth { get; private set; } = 0;
         public int ImageHeight { get; private set; } = 0;
+        public bool CanZoom { get; set; } = true;
 
         private ushort Factor = 100;
         private int ImagePositionXFactor = 0;
@@ -147,6 +148,11 @@ namespace Sky_multi_Viewer
 
         private void DrawImageScale(in Graphics g, ushort factor, in Point PointFactor)
         {
+            if (CanZoom == false)
+            {
+                return;
+            }
+
             g.SmoothingMode = SmoothingMode;
             g.PixelOffsetMode = PixelOffsetMode;
             g.CompositingQuality = CompositingQuality;

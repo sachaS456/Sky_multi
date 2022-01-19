@@ -56,7 +56,11 @@ namespace Sky_multi_Core.VlcWrapper
                     lock (utf8Args)
                     {
                         myVlcInstance = new VlcInstance(VlcNative.libvlc_new(utf8Args.Length, utf8Args));
-                        myMediaPlayerInstance = this.CreateMediaPlayer();
+
+                        lock (myVlcInstance)
+                        {
+                            myMediaPlayerInstance = new VlcMediaPlayerInstance(VlcNative.libvlc_media_player_new(myVlcInstance));
+                        }
                     }
                 }
                 finally
@@ -110,14 +114,6 @@ namespace Sky_multi_Core.VlcWrapper
             if (instance == IntPtr.Zero)
                 return;
             VlcNative.libvlc_free(instance);
-        }
-
-        internal VlcMediaPlayerInstance CreateMediaPlayer()
-        {
-            lock (myVlcInstance)
-            {
-                return new VlcMediaPlayerInstance(VlcNative.libvlc_media_player_new(myVlcInstance));
-            }
         }
 
         public static Version VlcVersionNumber
