@@ -1,4 +1,5 @@
-﻿Changes between 3.0.x and 3.1.0:
+﻿
+Changes between 3.0.x and 3.1.0:
 ----------------------------------
 
 -Redesign of part of the wrapper of libvlc.dll and libvlccore.dll
@@ -9,5 +10,25 @@
 -New feature that allows you to zoom the images 
 -DVD support
 -New animation for starting the application
+-.Net 5 upgrade to .Net 6
+-GPL 2 license upgrade to GPL 3 
+
+----------------------------------
+
+Changes between 3.0.0 and 3.0.1:
+----------------------------------
+
+-Added filter to search for subtitle files
+-Fixed an issue where the button that allows to select 
+subtitle files did not appear
+-Now the mouse and buttons no longer hide when the mouse 
+touch the next or previous media buttons
+-Partial correction of a problem when loading a video 
+sometimes the application did not go to full screen when 
+the option "set full screen when it's a video" was activated
+-Fixed a problem when the option "set on definition
+maximum when switching to full screen "is activated, 
+the window was not at the right size for the screen 
+during the passage in full screen
 
 ----------------------------------

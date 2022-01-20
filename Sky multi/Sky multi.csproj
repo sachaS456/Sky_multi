@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <RootNamespace>Sky_multi</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>AnyCPU;x64;x86;ARM64</Platforms>
     <Version>3.1.0</Version>
     <Authors>Sacha Himber</Authors>
-    <Copyright>Copyright ©  2021 Himber Sacha</Copyright>
+    <Copyright>Copyright ©  2022 Himber Sacha</Copyright>
     <NeutralLanguage>fr-FR</NeutralLanguage>
     <Description>Voici Sky multi un lecteur multimédia.</Description>
     <PackageIcon>Sky multi.ico</PackageIcon>

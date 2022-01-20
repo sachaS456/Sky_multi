@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <RootNamespace>Sky_multi_Core</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
     <SignAssembly>true</SignAssembly>
@@ -10,7 +10,7 @@
     <Version>3.1.0</Version>
     <Authors>Sacha Himber</Authors>
     <Description>C'est un composant de Sky multi.</Description>
-    <Copyright>Copyright ©  2021 Himber Sacha</Copyright>
+    <Copyright>Copyright ©  2022 Himber Sacha</Copyright>
     <NeutralLanguage>fr-FR</NeutralLanguage>
     <Platforms>AnyCPU;x64;x86;ARM64</Platforms>
   </PropertyGroup>
