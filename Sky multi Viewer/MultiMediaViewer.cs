@@ -172,7 +172,7 @@ namespace Sky_multi_Viewer
             imageView.Refresh();
         }
 
-        public void ScaleImage(ushort scale) => imageView.ScaleImage(scale);
+        //public void ScaleImage(ushort scale) => imageView.ScaleImage(scale);
 
         public void DecodeImageFile(string FilePath) => imageView.DecodeImageFile(ref FilePath);
     }

@@ -40,9 +40,7 @@ namespace Sky_multi_Viewer
         public int ImageHeight { get; private set; } = 0;
         public bool CanZoom { get; set; } = true;
 
-        private ushort Factor = 100;
-        private int ImagePositionXFactor = 0;
-        private int ImagePositionYFactor = 0;
+        private float Factor = 1.0f;
         private int ImageFactorW = 0;
         private int ImageFactorH = 0;
 
@@ -138,15 +136,15 @@ namespace Sky_multi_Viewer
         {
             if (e.Delta < 0)
             {
-                ScaleImage((ushort)(Factor - 10), e.Location);
+                ScaleImage(Factor - 0.25f, e.Location.X, e.Location.Y);
             }
             else
             {
-                ScaleImage((ushort)(Factor + 10), e.Location);
+                ScaleImage(Factor + 0.25f, e.Location.X, e.Location.Y);
             }
         }
 
-        private void DrawImageScale(in Graphics g, ushort factor, in Point PointFactor)
+        private void DrawImageScale(in Graphics g, float factor, in int xPixelWidth, in int yPixelHeight)
         {
             if (CanZoom == false)
             {
@@ -159,113 +157,71 @@ namespace Sky_multi_Viewer
 
             g.Clear(base.BackColor);
 
-            int DeltaImageFactorW = (int)((float)ImageWidth / 100 * factor) - ImageFactorW;
-            int DeltaImageFactorH = (int)((float)ImageHeight / 100 * factor) - ImageFactorH;
+            ImageFactorW = (int)(ImageWidth * factor);
+            ImageFactorH = (int)(ImageHeight * factor);
 
-            ImageFactorW += DeltaImageFactorW;
-            ImageFactorH += DeltaImageFactorH;
+            int x;
+            int CheckDelta;
 
-            if (ImageFactorW <= this.Width || ImageFactorH <= this.Height)
+            if (this.Width > ImageFactorW)
             {
-                ImagePositionXFactor = this.Width / 2 - ImageFactorW / 2;
-                ImagePositionYFactor = this.Height / 2 - ImageFactorH / 2;
+                x = this.Width / 2 - ImageFactorW / 2;
             }
             else
             {
-                /*BLOC:
-                 1; 2; 3;
-                 4; 5; 6;
-                 7; 8; 9;
-                */
-                switch (GetBlocControl(PointFactor))
+                x = (int)(xPixelWidth - (float)factor * (xPixelWidth - ImagePosition.X));
+
+                if (x > 0)
                 {
-                    case 1: // Top Left
-                        
-                        break;
-
-                    case 2: // Top Center
-                        ImagePositionXFactor -= DeltaImageFactorW / 2;
-                        break;
-
-                    case 3: // Top Right
-                        ImagePositionXFactor -= DeltaImageFactorW;
-                        break;
-
-                    case 4: // Middle Left
-                        ImagePositionYFactor -= DeltaImageFactorH / 2;
-                        break;
-
-                    case 5: // Middle Center
-                        ImagePositionXFactor -= DeltaImageFactorW / 2;
-                        ImagePositionYFactor -= DeltaImageFactorH / 2;
-                        break;
-
-                    case 6: // Middle Right
-                        ImagePositionXFactor -= DeltaImageFactorW;
-                        ImagePositionYFactor -= DeltaImageFactorH / 2;
-                        break;
-
-                    case 7: // Bottom Left
-                        ImagePositionYFactor -= DeltaImageFactorH;
-                        break;
-
-                    case 8: // Bottom Center
-                        ImagePositionXFactor -= DeltaImageFactorW / 2;
-                        ImagePositionYFactor -= DeltaImageFactorH;
-                        break;
-
-                    case 9: // Bottom Right
-                        ImagePositionXFactor -= DeltaImageFactorW;
-                        ImagePositionYFactor -= DeltaImageFactorH;
-                        break;
-
-                    default: // PointFactor is empty
-
-                        break;
+                    x = 0;
                 }
 
-                if (ImagePositionXFactor > 10)
-                {
-                    ImagePositionXFactor = 10;
-                }
+                CheckDelta = this.Width - (x + ImageFactorW);
 
-                if (ImagePositionYFactor > 10)
+                if (CheckDelta > 0)
                 {
-                    ImagePositionYFactor = 10;
+                    x += CheckDelta;
                 }
             }
 
-            g.DrawImage(Image, ImagePositionXFactor, ImagePositionYFactor, ImageFactorW, ImageFactorH);
+            int y;
+
+            if (this.Height > ImageFactorH)
+            {
+                y = this.Height / 2 - ImageFactorH / 2;
+            }
+            else
+            {
+                y = (int)(yPixelHeight - (float)factor * (yPixelHeight - ImagePosition.Y));
+
+                if (y > 0)
+                {
+                    y = 0;
+                }
+
+                CheckDelta = this.Height - (y + ImageFactorH);
+
+                if (CheckDelta > 0)
+                {
+                    y += CheckDelta;
+                }
+            }
+
+            //ImagePosition = new Point(x, y);
+
+            g.DrawImage(Image, x, y, ImageFactorW, ImageFactorH);
 
             Factor = factor;
         }
 
-        private sbyte GetBlocControl(Point point)
+        /*public void ScaleImage(float scale)
         {
-            sbyte IdBloc = 0;
-            for (sbyte y = 1; y <= 3; y++)
-            {
-                for (sbyte x = 1; x <= 3; x++)
-                {
-                    IdBloc++;
-                    if (point.X < x*(this.Width / 3) && point.Y < y*(this.Height / 3))
-                    {
-                        return IdBloc;
-                    }
-                }
-            }
+            ScaleImage(in scale, -1, -1);
+        }*/
 
-            return -1;
-        }
-
-        public void ScaleImage(ushort scale)
+        public void ScaleImage(in float scale, int xPixelWidth, int yPixelHeight)
         {
-            ScaleImage(in scale, Point.Empty);
-        }
-
-        public void ScaleImage(in ushort scale, Point PointFactor)
-        {
-            DrawImageScale(this.CreateGraphics(), scale, in PointFactor);
+            DrawImageScale(this.CreateGraphics(), scale, in xPixelWidth, in yPixelHeight);
         }
 
         public Bitmap GetBitmapResized()
@@ -280,7 +236,7 @@ namespace Sky_multi_Viewer
 
         private void This_Resize(object sender, EventArgs e)
         {
-            Factor = 100;
+            Factor = 1.0f;
             ImageFactorW = 0;
             ImageFactorH = 0;
         }
@@ -385,13 +341,13 @@ namespace Sky_multi_Viewer
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (Factor == 100)
+            if (Factor == 1.0f)
             {
                 DrawImage(e.Graphics);
             }
             else
             {
-                DrawImageScale(e.Graphics, Factor, Point.Empty);
+                DrawImageScale(e.Graphics, Factor, this.Width / 2 - ImageFactorW / 2, this.Height / 2 - ImageFactorH / 2);
             }
             base.OnPaint(e);
         }

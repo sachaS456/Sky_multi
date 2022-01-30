@@ -27,8 +27,8 @@ namespace Sky_multi_Core.VlcWrapper
 {
     public sealed partial class VlcMediaPlayer : IDisposable
     {
-        private readonly VlcInstance myVlcInstance;
-        private readonly VlcMediaPlayerInstance myMediaPlayerInstance;
+        private readonly VlcInstance myVlcInstance = null;
+        private readonly VlcMediaPlayerInstance myMediaPlayerInstance = null;
         private VlcMedia myCurrentMedia;
         private HardwareAccelerationType HardwareAcceleration_ = HardwareAccelerationType.d3d11;
 

@@ -176,9 +176,9 @@ namespace Sky_multi
             if (CropImage.Visible == true)
             {
                 this.Refresh();
-                CropImage.RectangleMax = new System.Drawing.Rectangle(imageView1.ImagePosition.X, imageView1.ImagePosition.Y, imageView1.ImageWidth, imageView1.ImageHeight);
-                CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
-                CropImage.Location = imageView1.ImagePosition;
+                CropImage.RectangleMax = new System.Drawing.Rectangle(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6, imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
+                CropImage.Size = new Size(imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
+                CropImage.Location = new Point(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6);
             }
         }
 
@@ -199,9 +199,9 @@ namespace Sky_multi
 
         private void button2_Click(object sender, EventArgs e)
         {
-            CropImage.RectangleMax = new System.Drawing.Rectangle(imageView1.ImagePosition.X, imageView1.ImagePosition.Y, imageView1.ImageWidth, imageView1.ImageHeight);
-            CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
-            CropImage.Location = imageView1.ImagePosition;
+            CropImage.RectangleMax = new System.Drawing.Rectangle(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6, imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
+            CropImage.Size = new Size(imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
+            CropImage.Location = new Point(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6);
 
             CropImage.Visible = true;
             button3.Visible = true;
