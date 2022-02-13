@@ -1030,16 +1030,16 @@ namespace Sky_multi
                 {
                     if (DataSettings.Language == Language.French)
                     {
-                        Buttons = new string[4]
+                        Buttons = new string[5]
                         {
-                   "Imprimer", "Convertir image", "Définir en tant qu'arrière plan", "Faire pivoter l'image"
+                   "Imprimer", "Convertir image", "Définir en tant qu'arrière plan", "Faire pivoter l'image", "Modifier l'image"
                         };
                     }
                     else
                     {
-                        Buttons = new string[4]
+                        Buttons = new string[5]
                         {
-                   "Print", "Convert image", "Set as background", "Rotate image"
+                   "Print", "Convert image", "Set as background", "Rotate image", "Edit image"
                         };
                     }
                 }
@@ -1074,6 +1074,7 @@ namespace Sky_multi
                     menuDeroulantLink.SetButtonClique(1, new MouseEventHandler(ConvertImage));
                     menuDeroulantLink.SetButtonClique(2, new MouseEventHandler(DefineBackground));
                     menuDeroulantLink.SetButtonClique(3, new MouseEventHandler(RotateImage));
+                    menuDeroulantLink.SetButtonClique(4, new MouseEventHandler(EditImage));
                 }
 
                 menuDeroulantLink.Show();
@@ -2304,16 +2305,22 @@ namespace Sky_multi
 
             if (DataSettings.Language == Language.French)
             {
-                MenuDeroulantMore.NewPage(new string[4] { "Imprimer", "Convertir image", "Définir en tant qu'arrière plan", "Faire pivoter l'image" }, 
+                MenuDeroulantMore.NewPage(new string[5] { "Imprimer", "Convertir image", "Définir en tant qu'arrière plan", "Faire pivoter l'image", "Modifier l'image" }, 
                     new MouseEventHandler[4] { new MouseEventHandler(Print), new MouseEventHandler(ConvertImage), new MouseEventHandler(DefineBackground),
                     new MouseEventHandler(RotateImage)});
             }
             else
             {
-                MenuDeroulantMore.NewPage(new string[4] { "Print", "Convert image", "Set as background", "Rotate image" },
-                    new MouseEventHandler[4] { new MouseEventHandler(Print), new MouseEventHandler(ConvertImage), new MouseEventHandler(DefineBackground),
-                    new MouseEventHandler(RotateImage)});
+                MenuDeroulantMore.NewPage(new string[5] { "Print", "Convert image", "Set as background", "Rotate image", "Edit image" },
+                    new MouseEventHandler[5] { new MouseEventHandler(Print), new MouseEventHandler(ConvertImage), new MouseEventHandler(DefineBackground),
+                    new MouseEventHandler(RotateImage), new MouseEventHandler(EditImage)});
             }
+        }
+
+        private void EditImage(object sender, MouseEventArgs e)
+        {
+            ImageModifierDialog imageModifier = new ImageModifierDialog(multiMediaViewer.Image);
+            imageModifier.Show();
         }
 
         private void RotateImage(object sender, MouseEventArgs e)

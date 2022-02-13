@@ -120,7 +120,7 @@ namespace Sky_multi_Viewer
         {
             try
             {
-                imageView.DecodeImageFile(FilePath);
+                imageView.DecodeImageFile(in FilePath);
             }
             catch
             {
@@ -162,7 +162,7 @@ namespace Sky_multi_Viewer
             }
             set
             {
-                imageView.SetImage(value);
+                imageView.SetImage(in value);
             }
         }
 
@@ -174,6 +174,6 @@ namespace Sky_multi_Viewer
 
         //public void ScaleImage(ushort scale) => imageView.ScaleImage(scale);
 
-        public void DecodeImageFile(string FilePath) => imageView.DecodeImageFile(ref FilePath);
+        //public void DecodeImageFile(string FilePath) => imageView.DecodeImageFile(in FilePath);
     }
 }

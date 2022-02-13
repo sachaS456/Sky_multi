@@ -54,24 +54,14 @@ namespace Sky_multi_Viewer
             this.Resize += new EventHandler(This_Resize);
         }
 
-        public void DecodeImageFile(string FilePath)
-        {
-            DecodeImageFile(ref FilePath);
-        }
-
-        public void SetImage(Image image)
-        {
-            SetImage(ref image);
-        }
-
-        public void SetImage(ref Image image)
+        public void SetImage(in Image image)
         {
             this.SuspendLayout();
             if (Image != null)
             {
                 Image.Dispose();
             }
-            Image = image;
+            Image = new Bitmap(image);
             ImageWidth = Image.Width;
             ImageHeight = Image.Height;
             this.ResumeLayout(false);
@@ -89,7 +79,7 @@ namespace Sky_multi_Viewer
             this.Refresh();
         }
 
-        public void DecodeImageFile(ref string FilePath)
+        public void DecodeImageFile(in string FilePath)
         {
             if (!File.Exists(FilePath))
             {

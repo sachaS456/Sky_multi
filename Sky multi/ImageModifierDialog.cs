@@ -37,7 +37,7 @@ namespace Sky_multi
         private Sky_UI.Button button4;
         private RectangleResizer CropImage;
 
-        internal ImageModifierDialog(Bitmap bitmap)
+        internal ImageModifierDialog(Image bitmap)
         {
             InitializeComponent();
 
@@ -46,7 +46,7 @@ namespace Sky_multi
             CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
             CropImage.Visible = false;
             imageView1.Controls.Add(CropImage);
-            imageView1.SetImage(bitmap);
+            imageView1.SetImage(in bitmap);
         }
 
         private void InitializeComponent()

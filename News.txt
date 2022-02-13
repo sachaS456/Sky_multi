@@ -11,7 +11,8 @@ Changes between 3.0.x and 3.1.0:
 -DVD support
 -New animation for starting the application
 -.Net 5 upgrade to .Net 6
--GPL 2 license upgrade to GPL 3 
+-GPL 2 license upgrade to GPL 3
+-New feature that can crop image loaded in the application
 
 ----------------------------------
 
