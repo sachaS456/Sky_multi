@@ -2306,8 +2306,8 @@ namespace Sky_multi
             if (DataSettings.Language == Language.French)
             {
                 MenuDeroulantMore.NewPage(new string[5] { "Imprimer", "Convertir image", "Définir en tant qu'arrière plan", "Faire pivoter l'image", "Modifier l'image" }, 
-                    new MouseEventHandler[4] { new MouseEventHandler(Print), new MouseEventHandler(ConvertImage), new MouseEventHandler(DefineBackground),
-                    new MouseEventHandler(RotateImage)});
+                    new MouseEventHandler[5] { new MouseEventHandler(Print), new MouseEventHandler(ConvertImage), new MouseEventHandler(DefineBackground),
+                    new MouseEventHandler(RotateImage), new MouseEventHandler(EditImage)});
             }
             else
             {

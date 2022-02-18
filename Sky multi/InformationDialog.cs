@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using Sky_UI;
 using System.IO;
 using Sky_multi_Core.VlcWrapper;
+using System.Diagnostics;
 
 namespace Sky_multi
 {
@@ -40,6 +41,7 @@ namespace Sky_multi
         private Sky_UI.Rectangle rectangle4;
         private Panel panel1;
         private Sky_UI.Button buttonOK;
+        private LinkLabel linklabel1;
 
         internal InformationDialog(in string FileName, Language language, in string[] Version)
         {
@@ -210,6 +212,7 @@ namespace Sky_multi
             this.label1 = new System.Windows.Forms.Label();
             this.rectangle4 = new Sky_UI.Rectangle();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.linklabel1 = new LinkLabel();
             this.rectangle3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -266,13 +269,13 @@ namespace Sky_multi
             this.label2.TabIndex = 7;
             if (language == Language.French)
             {
-                this.label2.Text = "Version : " + version[5] + "\nDéveloppée par Sacha Himber\n\nSky multi est une application libre qui permet de lire\n" +
+                this.label2.Text = "Version : " + version[5] + "\nCopyright: © Himber Sacha 2022\nLicence: GPL 3\n\nSky multi est une application libre qui permet de lire\n" +
                     "des vidéos, des audios et des images il peut lire un grand\nnombre de format de fichier.\n\nLibrairies utilisés : Net " + version[0] +
                     ", Sky UI " + version[1] + ", \nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
             }
             else
             {
-                this.label2.Text = "Version : " + version[5] + "\n\nDeveloped by Sacha Himber\n\nSky multi is a free application that allows you to read\n" +
+                this.label2.Text = "Version : " + version[5] + "\n\nCopyright: © Himber Sacha 2022\nLicence: GPL 3\n\nSky multi is a free application that allows you to read\n" +
                     "videos, audios and pictures it can play a great\nnumber of file format.\n\nLibraries used : Net " + version[0] + ", Sky UI " + version[1] +
                     ",\nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
             }
@@ -339,6 +342,18 @@ namespace Sky_multi
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(293, 156);
             this.panel1.TabIndex = 11;
+            //
+            // linklabel1
+            //
+            this.linklabel1.AutoSize = true;
+            this.linklabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.linklabel1.LinkColor = System.Drawing.Color.CornflowerBlue;//.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.linklabel1.Location = new System.Drawing.Point(100, 251);
+            this.linklabel1.Name = "linklabel1";
+            this.linklabel1.Size = new System.Drawing.Size(100, 258);
+            this.linklabel1.TabIndex = 12;
+            this.linklabel1.Text = "COPYING";
+            this.linklabel1.LinkClicked += new LinkLabelLinkClickedEventHandler(linklabel1_LinkClicked);
             // 
             // InformationDialog
             // 
@@ -354,6 +369,7 @@ namespace Sky_multi
             this.Controls.Add(this.label1);
             this.Controls.Add(this.rectangle1);
             this.Controls.Add(this.buttonOK);
+            this.Controls.Add(this.linklabel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "InformationDialog";
@@ -367,6 +383,7 @@ namespace Sky_multi
             this.Controls.SetChildIndex(this.rectangle3, 0);
             this.Controls.SetChildIndex(this.rectangle4, 0);
             this.Controls.SetChildIndex(this.panel1, 0);
+            this.Controls.SetChildIndex(this.linklabel1, 0);
             this.rectangle3.ResumeLayout(false);
             this.rectangle3.PerformLayout();
             this.ResumeLayout(false);
@@ -377,6 +394,24 @@ namespace Sky_multi
         private void buttonOK_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void linklabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process process = new Process();
+            process.StartInfo.UseShellExecute = true;
+
+            if (File.Exists(Application.StartupPath + "COPYING.txt"))
+            {
+                process.StartInfo.FileName = Application.StartupPath + "COPYING.txt";;
+            }
+            else
+            {
+                process.StartInfo.FileName = "https://www.gnu.org/licenses/gpl-3.0.html";
+            }
+
+            process.Start();
+            process.Close();
         }
 
         private string EspaceNombre(double element)
@@ -413,15 +448,9 @@ namespace Sky_multi
                 ARetourner += i;
             }
 
-            /* Liberation de la mémoire */
+            /* Libération de la mémoire */
             chaineString.Clear();
             chaineModif.Clear();
-            elementString = string.Empty;
-
-            /* Liberation de la mémoire */
-            chaineString = null;
-            elementString = null;
-            chaineModif = null;
 
             return ARetourner;
         }

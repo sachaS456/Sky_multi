@@ -209,6 +209,7 @@ namespace Sky_multi
             button2.Visible = false;
 
             imageView1.CanZoom = false;
+            imageView1.ResetScale();
         }
 
         private void button3_Click(object sender, EventArgs e)

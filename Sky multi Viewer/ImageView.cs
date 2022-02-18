@@ -52,6 +52,7 @@ namespace Sky_multi_Viewer
 
             this.MouseWheel += new MouseEventHandler(This_MouseWheel);
             this.Resize += new EventHandler(This_Resize);
+            this.MouseDoubleClick += new MouseEventHandler(This_MouseDoubleClick);
         }
 
         public void SetImage(in Image image)
@@ -134,6 +135,18 @@ namespace Sky_multi_Viewer
             }
         }
 
+        private void This_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (Factor == 1.0f)
+            {
+                ScaleImage(2.5f, e.Location.X, e.Location.Y);
+            }
+            else
+            {
+                ScaleImage(1.0f, e.Location.X, e.Location.Y);
+            }
+        }
+
         private void DrawImageScale(in Graphics g, float factor, in int xPixelWidth, in int yPixelHeight)
         {
             if (CanZoom == false)
@@ -212,6 +225,12 @@ namespace Sky_multi_Viewer
         public void ScaleImage(in float scale, int xPixelWidth, int yPixelHeight)
         {
             DrawImageScale(this.CreateGraphics(), scale, in xPixelWidth, in yPixelHeight);
+        }
+
+        public void ResetScale()
+        {
+            Factor = 1.0f;
+            this.DrawImage(this.CreateGraphics());
         }
 
         public Bitmap GetBitmapResized()
