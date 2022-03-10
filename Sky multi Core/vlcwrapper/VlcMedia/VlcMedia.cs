@@ -27,7 +27,7 @@ namespace Sky_multi_Core.VlcWrapper
     public sealed partial class VlcMedia : IDisposable
     {
         internal readonly string[] optionsAdded;
-        private readonly VlcInstance VlcInstance;
+        internal readonly VlcInstance VlcInstance;
 
         internal VlcMedia(in VlcInstance vlcInstance, in FileInfo file, params string[] options)
             : this(CreateNewMediaFromPath(vlcInstance, file.FullName).AddOptionToMedia(options), vlcInstance)
@@ -71,6 +71,14 @@ namespace Sky_multi_Core.VlcWrapper
             if (MediaInstance == IntPtr.Zero)
             {
                 throw new ArgumentException("Media instance is not initialized.");
+            }
+        }
+
+        public VlcMediaList SubItem
+        {
+            get
+            {
+                return new VlcMediaList(VlcNative.libvlc_media_subitems(MediaInstance), VlcInstance);
             }
         }
 
