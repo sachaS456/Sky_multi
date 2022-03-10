@@ -7,7 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Sky_multi_Core_3_SH.pfx</AssemblyOriginatorKeyFile>
-    <Version>3.1.0</Version>
+    <Version>3.2.0</Version>
     <Authors>Sacha Himber</Authors>
     <Description>C'est un composant de Sky multi.</Description>
     <Copyright>Copyright ©  2022 Himber Sacha</Copyright>

@@ -86,17 +86,17 @@ namespace Sky_multi
 
             if (DataSettings.Language == Language.French)
             {
-                Buttons = new string[9]
+                Buttons = new string[10]
                 {
-                   "Ouvrir un fichier", "Ouvrir un DVD", "Renommer ce fichier", "Supprimer ce fichier", "Copier dans le presse papier", "Capture d'écran", "Lecture Audio et Vidéo",
+                   "Ouvrir un fichier", "Ouvrir un DVD", "Ouvrir un flux web", "Renommer ce fichier", "Supprimer ce fichier", "Copier dans le presse papier", "Capture d'écran", "Lecture Audio et Vidéo",
                    "Lecture Image", "Quitter"
                 };
             }
             else
             {
-                Buttons = new string[9]
+                Buttons = new string[10]
                 {
-                   "Open file", "Open DVD", "Rename this file", "Delete this file", "Copy to clipboard ", "Screenshot", "Audio and Video Playback ",
+                   "Open file", "Open DVD", "Open a web flux", "Rename this file", "Delete this file", "Copy to clipboard ", "Screenshot", "Audio and Video Playback ",
                    "Reading Image", "Leave"
                 };
             }
@@ -121,13 +121,14 @@ namespace Sky_multi
 
             MenuDeroulantMore.SetButtonClique(0, new MouseEventHandler(ButtonOpenFile_Click));
             MenuDeroulantMore.SetButtonClique(1, new MouseEventHandler(ButtonOpenDVD_Click));
-            MenuDeroulantMore.SetButtonClique(2, new MouseEventHandler(RenameFile_Click));
-            MenuDeroulantMore.SetButtonClique(3, new MouseEventHandler(DeleteFile_Click));
-            MenuDeroulantMore.SetButtonClique(4, new MouseEventHandler(CopyClipboard));
-            MenuDeroulantMore.SetButtonClique(5, new MouseEventHandler(ButtonScreenShot_Click));
-            MenuDeroulantMore.SetButtonClique(6, new MouseEventHandler(VideoAudioReader_Click));
-            MenuDeroulantMore.SetButtonClique(7, new MouseEventHandler(ImageReader_Click));
-            MenuDeroulantMore.SetButtonClique(8, new MouseEventHandler(Quitter_Click));
+            MenuDeroulantMore.SetButtonClique(2, new MouseEventHandler(ButtonOpenWebFlux_Click));
+            MenuDeroulantMore.SetButtonClique(3, new MouseEventHandler(RenameFile_Click));
+            MenuDeroulantMore.SetButtonClique(4, new MouseEventHandler(DeleteFile_Click));
+            MenuDeroulantMore.SetButtonClique(5, new MouseEventHandler(CopyClipboard));
+            MenuDeroulantMore.SetButtonClique(6, new MouseEventHandler(ButtonScreenShot_Click));
+            MenuDeroulantMore.SetButtonClique(7, new MouseEventHandler(VideoAudioReader_Click));
+            MenuDeroulantMore.SetButtonClique(8, new MouseEventHandler(ImageReader_Click));
+            MenuDeroulantMore.SetButtonClique(9, new MouseEventHandler(Quitter_Click));
 
             menuDeroulantLink.BackColor = Color.FromArgb(64, 64, 64);
             menuDeroulantLink.Border = 0;
@@ -1563,17 +1564,17 @@ namespace Sky_multi
 
                 if (DataSettings.Language == Language.French)
                 {
-                    Buttons = new string[8]
+                    Buttons = new string[10]
                     {
-                       "Ouvrir un fichier", "Renommer ce fichier", "Supprimer ce fichier", "Copier dans le presse papier", "Capture d'écran", "Lecture Audio et Vidéo",
+                       "Ouvrir un fichier", "Ouvrir un DVD", "Ouvrir un flux web", "Renommer ce fichier", "Supprimer ce fichier", "Copier dans le presse papier", "Capture d'écran", "Lecture Audio et Vidéo",
                        "Lecture Image", "Quitter"
                     };
                 }
                 else
                 {
-                    Buttons = new string[8]
+                    Buttons = new string[10]
                     {
-                       "Open file", "Rename this file", "Delete this file", "Copy to clipboard ", "Screenshot", "Audio and Video Playback ",
+                       "Open file", "Open DVD", "Open a web flux", "Rename this file", "Delete this file", "Copy to clipboard ", "Screenshot", "Audio and Video Playback ",
                        "Reading Image", "Leave"
                     };
                 }
@@ -1597,13 +1598,15 @@ namespace Sky_multi
                 this.Controls.SetChildIndex(this.MenuDeroulantMore, 0);
 
                 MenuDeroulantMore.SetButtonClique(0, new MouseEventHandler(ButtonOpenFile_Click));
-                MenuDeroulantMore.SetButtonClique(1, new MouseEventHandler(RenameFile_Click));
-                MenuDeroulantMore.SetButtonClique(2, new MouseEventHandler(DeleteFile_Click));
-                MenuDeroulantMore.SetButtonClique(3, new MouseEventHandler(CopyClipboard));
-                MenuDeroulantMore.SetButtonClique(4, new MouseEventHandler(ButtonScreenShot_Click));
-                MenuDeroulantMore.SetButtonClique(5, new MouseEventHandler(VideoAudioReader_Click));
-                MenuDeroulantMore.SetButtonClique(6, new MouseEventHandler(ImageReader_Click));
-                MenuDeroulantMore.SetButtonClique(7, new MouseEventHandler(Quitter_Click));
+                MenuDeroulantMore.SetButtonClique(1, new MouseEventHandler(ButtonOpenDVD_Click));
+                MenuDeroulantMore.SetButtonClique(2, new MouseEventHandler(ButtonOpenWebFlux_Click));
+                MenuDeroulantMore.SetButtonClique(3, new MouseEventHandler(RenameFile_Click));
+                MenuDeroulantMore.SetButtonClique(4, new MouseEventHandler(DeleteFile_Click));
+                MenuDeroulantMore.SetButtonClique(5, new MouseEventHandler(CopyClipboard));
+                MenuDeroulantMore.SetButtonClique(6, new MouseEventHandler(ButtonScreenShot_Click));
+                MenuDeroulantMore.SetButtonClique(7, new MouseEventHandler(VideoAudioReader_Click));
+                MenuDeroulantMore.SetButtonClique(8, new MouseEventHandler(ImageReader_Click));
+                MenuDeroulantMore.SetButtonClique(9, new MouseEventHandler(Quitter_Click));
 
             }
         }
@@ -1714,6 +1717,19 @@ namespace Sky_multi
                     multiMediaViewer.OpenDVD(dialog.DVDPath);
                 }
             }
+        }
+
+        private void ButtonOpenWebFlux_Click(object sender, EventArgs e)
+        {
+            /*using (WebFluxDialog dialog = new WebFluxDialog(DataSettings.Language))
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    
+                }
+            }*/
+
+            multiMediaViewer.VlcMediaPlayer.PlayStreaming("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
         }
 
         private void ButtonOpenFile_Click(object sender, EventArgs e)

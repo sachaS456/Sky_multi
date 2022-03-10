@@ -39,6 +39,7 @@ namespace Sky_multi_Viewer
         public int ImageWidth { get; private set; } = 0;
         public int ImageHeight { get; private set; } = 0;
         public bool CanZoom { get; set; } = true;
+        public bool CanAnimated { get; private set; } = false;
 
         private float Factor = 1.0f;
         private int ImageFactorW = 0;
@@ -58,13 +59,24 @@ namespace Sky_multi_Viewer
         public void SetImage(in Image image)
         {
             this.SuspendLayout();
+            if (CanAnimated)
+            {
+                ImageAnimator.StopAnimate(Image, new EventHandler(UpdateFrame));
+            }
+
             if (Image != null)
             {
                 Image.Dispose();
             }
+
             Image = new Bitmap(image);
             ImageWidth = Image.Width;
             ImageHeight = Image.Height;
+            CanAnimated = ImageAnimator.CanAnimate(Image);
+            if (CanAnimated)
+            {
+                ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+            }
             this.ResumeLayout(false);
             this.Refresh();
         }
@@ -72,10 +84,17 @@ namespace Sky_multi_Viewer
         public void RemoveImage()
         {
             this.SuspendLayout();
+
+            if (CanAnimated)
+            {
+                ImageAnimator.StopAnimate(Image, new EventHandler(UpdateFrame));
+            }
+
             Image.Dispose();
             Image = null;
             ImageWidth = 0;
             ImageHeight = 0;
+            CanAnimated = false;
             this.ResumeLayout(false);
             this.Refresh();
         }
@@ -87,11 +106,21 @@ namespace Sky_multi_Viewer
                 throw new FileNotFoundException();
             }
 
+            if (CanAnimated)
+            {
+                ImageAnimator.StopAnimate(Image, new EventHandler(UpdateFrame));
+            }
+
             try
             {
                 Image = Bitmap.FromFile(FilePath);
                 ImageWidth = Image.Width;
                 ImageHeight = Image.Height;
+                CanAnimated = ImageAnimator.CanAnimate(Image);
+                if (CanAnimated)
+                {
+                    ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+                }
                 this.Refresh();
                 return;
             }
@@ -102,6 +131,11 @@ namespace Sky_multi_Viewer
                     Image = RawDecoder.RawToBitmap(FilePath);
                     ImageWidth = Image.Width;
                     ImageHeight = Image.Height;
+                    CanAnimated = ImageAnimator.CanAnimate(Image);
+                    if (CanAnimated)
+                    {
+                        ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+                    }
                     this.Refresh();
                     return;
                 }
@@ -112,6 +146,11 @@ namespace Sky_multi_Viewer
                         Image = WebPDecoder.DecodeWebp(FilePath);
                         ImageWidth = Image.Width;
                         ImageHeight = Image.Height;
+                        CanAnimated = ImageAnimator.CanAnimate(Image);
+                        if (CanAnimated)
+                        {
+                            ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+                        }
                         this.Refresh();
                         return;
                     }
@@ -212,6 +251,11 @@ namespace Sky_multi_Viewer
 
             //ImagePosition = new Point(x, y);
 
+            if (CanAnimated == true)
+            {
+                ImageAnimator.UpdateFrames();
+            }
+
             g.DrawImage(Image, x, y, ImageFactorW, ImageFactorH);
 
             Factor = factor;
@@ -291,8 +335,18 @@ namespace Sky_multi_Viewer
 
             ImagePosition = new Point(x, y);
 
+            if (CanAnimated == true)
+            {
+                ImageAnimator.UpdateFrames();
+            }
+
             g.Clear(this.BackColor);
             g.DrawImage(Image, x, y, ImageWidth, ImageHeight);
+        }
+
+        private void UpdateFrame(object sender, EventArgs e)
+        {
+            this.Invalidate();
         }
 
         private void SimplifiedFractions(ref float num, ref float den)

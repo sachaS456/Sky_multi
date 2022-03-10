@@ -537,6 +537,19 @@ namespace Sky_multi_Core.VlcWrapper
             this.Play();
         }
 
+        public void SetMediaStreaming(string url, params string[] options)
+        {
+            VlcMedia media = new VlcMedia(in myVlcInstance, in url, options);
+            media.Parse();
+            SetMedia(media.SubItem[1]);
+        }
+
+        public void PlayStreaming(string url, params string[] options)
+        {
+            SetMediaStreaming(url, options);
+            Play();
+        }
+
         /// <summary>
         /// Toggle pause (no effect if there is no media) 
         /// </summary>
