@@ -20,6 +20,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace Sky_multi_Core.ImageReader
 {
@@ -79,13 +80,41 @@ namespace Sky_multi_Core.ImageReader
 
             Array.Resize(ref img.data, (int)img.data_size);
 
-            Marshal.Copy(ptr, img.data, 0, (int)img.data_size);
+            //Marshal.Copy(ptr, img.data, 0, (int)img.data_size);
+            //ArrayPtrToArrayByte(out img.data, in ptr, img.width, img.height);
+
+            unsafe
+            {
+                byte* srcScan0 = (byte*)ptr;
+                int srcStride = img.width * 3;
+                int index = 0;
+
+                byte* src = (byte*)0;
+
+                for (int y = 0; y < img.height; y++)
+                {
+                    src = srcScan0 + (y * srcStride);
+
+                    for (int x = 0; x < img.width; x++)
+                    {
+                        img.data[index] = src[0];
+                        img.data[index + 1] = src[2];
+                        img.data[index + 2] = src[1];
+
+                        index += 3;
+                        src += 3;
+                    }
+                }
+
+                srcScan0 = (byte*)0;
+                src = (byte*)0;
+            }
 
             RawDecoderCore.libraw_dcraw_clear_mem(ptr);
             ptr = IntPtr.Zero;
 
             // revers Colors Green and Blue
-            short index2 = 0;
+            /*short index2 = 0;
             for (int index = 0; index < img.data.Length; index++, index2++)
             {
                 if (index2 == 2)
@@ -96,7 +125,7 @@ namespace Sky_multi_Core.ImageReader
                     img.data[index - 1] = img.data[index];
                     img.data[index] = G;                  
                 }
-            }
+            }*/
 
             Bitmap bmp = new Bitmap(img.width, img.height, PixelFormat.Format24bppRgb);
             BitmapData bmd = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
@@ -104,6 +133,7 @@ namespace Sky_multi_Core.ImageReader
             bmp.UnlockBits(bmd);
 
             bmd = null;
+            img.data = null;
             RawDecoderCore.libraw_close(handler);
             handler = IntPtr.Zero;
             GC.Collect();
