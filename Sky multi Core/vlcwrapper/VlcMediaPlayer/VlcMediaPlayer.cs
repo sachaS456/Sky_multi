@@ -541,7 +541,7 @@ namespace Sky_multi_Core.VlcWrapper
         {
             VlcMedia media = new VlcMedia(in myVlcInstance, in url, options);
             media.Parse();
-            SetMedia(media.SubItem[1]);
+            SetMedia(media.SubItem[0]);
         }
 
         public void PlayStreaming(string url, params string[] options)

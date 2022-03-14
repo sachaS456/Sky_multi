@@ -156,7 +156,22 @@ namespace Sky_multi_Viewer
                     }
                     catch
                     {
-                        throw new Exception("this is not a image");
+                        try
+                        {
+                            Image = BitmapHeifCoverter.OpenHeifFromPathToBitmap(FilePath);
+                            ImageWidth = Image.Width;
+                            ImageHeight = Image.Height;
+                            CanAnimated = ImageAnimator.CanAnimate(Image);
+                            if (CanAnimated)
+                            {
+                                ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+                            }
+                            this.Refresh();
+                        }
+                        catch
+                        {
+                            throw new Exception("this is not a image or image not supported!");
+                        }
                     }
                 }
             }
