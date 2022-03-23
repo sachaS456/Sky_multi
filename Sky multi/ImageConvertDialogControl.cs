@@ -43,6 +43,9 @@ namespace Sky_multi
         private Sky_UI.Button ButtonFormatConvertTIF = new Sky_UI.Button();
         private Sky_UI.Button ButtonFormatConvertBMP = new Sky_UI.Button();
         private Sky_UI.Button ButtonFormatConvertWEBP = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertHEIF = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertHEIC = new Sky_UI.Button();
+        private Sky_UI.Button ButtonFormatConvertAVIF = new Sky_UI.Button();
 
         internal string FormatString { set; get; } = string.Empty;
 
@@ -185,6 +188,27 @@ namespace Sky_multi
             ButtonFormatConvertWEBP.MouseClick += new MouseEventHandler(ButtonFormatConvertWEBP_MouseClick);
             ButtonFormatConvertWEBP.borderRadius = 5;
             this.Controls.Add(ButtonFormatConvertWEBP);
+
+            ButtonFormatConvertHEIF.Text = ".heif";
+            ButtonFormatConvertHEIF.Location = new Point(140, 80);
+            ButtonFormatConvertHEIF.Size = new Size(40, 25);
+            ButtonFormatConvertHEIF.MouseClick += new MouseEventHandler(ButtonFormatConvertHEIF_MouseClick);
+            ButtonFormatConvertHEIF.borderRadius = 5;
+            this.Controls.Add(ButtonFormatConvertHEIF);
+
+            ButtonFormatConvertHEIC.Text = ".heic";
+            ButtonFormatConvertHEIC.Location = new Point(185, 80);
+            ButtonFormatConvertHEIC.Size = new Size(40, 25);
+            ButtonFormatConvertHEIC.MouseClick += new MouseEventHandler(ButtonFormatConvertHEIC_MouseClick);
+            ButtonFormatConvertHEIC.borderRadius = 5;
+            this.Controls.Add(ButtonFormatConvertHEIC);
+
+            ButtonFormatConvertAVIF.Text = ".avif";
+            ButtonFormatConvertAVIF.Location = new Point(230, 80);
+            ButtonFormatConvertAVIF.Size = new Size(40, 25);
+            ButtonFormatConvertAVIF.MouseClick += new MouseEventHandler(ButtonFormatConvertAVIF_MouseClick);
+            ButtonFormatConvertAVIF.borderRadius = 5;
+            this.Controls.Add(ButtonFormatConvertAVIF);
         }
 
         private void ButtonFormatConvertPNG_MouseClick(object sender, MouseEventArgs e)
@@ -230,6 +254,21 @@ namespace Sky_multi
         private void ButtonFormatConvertWEBP_MouseClick(object sender, MouseEventArgs e)
         {
             LabelFormatConvert.Text = ".webp";
+        }
+
+        private void ButtonFormatConvertHEIF_MouseClick(object sender, MouseEventArgs e)
+        {
+            LabelFormatConvert.Text = ".heif";
+        }
+
+        private void ButtonFormatConvertHEIC_MouseClick(object sender, MouseEventArgs e)
+        {
+            LabelFormatConvert.Text = ".heic";
+        }
+
+        private void ButtonFormatConvertAVIF_MouseClick(object sender, MouseEventArgs e)
+        {
+            LabelFormatConvert.Text = ".avif";
         }
 
         private void This_Resize(object sender, EventArgs e)

@@ -76,63 +76,59 @@ namespace Sky_multi_Core.ImageReader
             return outputImage;
         }
 
-        private static unsafe Bitmap CreateEightBitImageWithAlpha(HeifImage heifImage, bool premultiplied)
+        private static unsafe byte[] CreateArrayEightBitImageWithAlpha(IntPtr Scan0, int srcStride, int Width, int Height, bool premultiplied)
         {
-            var heifPlaneData = heifImage.GetPlane(HeifChannel.Interleaved);
-
-            byte* srcScan0 = (byte*)heifPlaneData.Scan0;
-            int srcStride = heifPlaneData.Stride;
+            byte* srcScan0 = (byte*)Scan0;
+            byte* src;
 
             List<byte> Buffer = new List<byte>();
 
-            for (int y = 0; y < heifImage.Height; y++)
+            for (int y = 0; y < Height; y++)
             {
-                byte* src = srcScan0 + (y * srcStride);
+                src = srcScan0 + (y * srcStride);
 
-                for (int x = 0; x < heifImage.Width; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     //Color pixel = heifImage.GetPixel(x, y);
 
                     if (premultiplied)
                     {
-                        byte alpha = src[3];
-
-                        switch (alpha)
+                        switch (src[3]) // alpha
                         {
                             case 0:
                                 //image.SetPixel(x, y, Color.FromArgb(0, 0, 0));
-                                Buffer.Add(src[3]);
-                                Buffer.Add(0);
-                                Buffer.Add(0);
-                                Buffer.Add(0);
+                                Buffer.Add(0);// Blue
+                                Buffer.Add(0);// Green
+                                Buffer.Add(0);// Red
+                                Buffer.Add(src[3]);// Alpha
                                 break;
 
                             case 255:
                                 //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
-                                Buffer.Add(src[3]);
-                                Buffer.Add(src[2]);
-                                Buffer.Add(src[1]);
-                                Buffer.Add(src[0]);
+                                Buffer.Add(src[2]);// B
+                                Buffer.Add(src[1]);// G
+                                Buffer.Add(src[0]);// R
+                                Buffer.Add(src[3]);// Alpha
                                 break;
 
                             default:
                                 //image.SetPixel(x, y, Color.FromArgb((byte)Math.Min(MathF.Round(src[0] * 255f / alpha), 255), 
                                 //(byte)Math.Min(MathF.Round(src[1] * 255f / alpha), 255), 
                                 //(byte)Math.Min(MathF.Round(src[2] * 255f / alpha), 255)));
-                                Buffer.Add(src[3]);
-                                Buffer.Add((byte)Math.Min(MathF.Round(src[2] * 255f / alpha), 255));
-                                Buffer.Add((byte)Math.Min(MathF.Round(src[1] * 255f / alpha), 255));
-                                Buffer.Add((byte)Math.Min(MathF.Round(src[0] * 255f / alpha), 255));
+                                Buffer.Add((byte)Math.Min(MathF.Round(src[2] * 255f / src[3]), 255));// B
+                                Buffer.Add((byte)Math.Min(MathF.Round(src[1] * 255f / src[3]), 255));// G
+                                Buffer.Add((byte)Math.Min(MathF.Round(src[0] * 255f / src[3]), 255));// R
+                                Buffer.Add(src[3]);// Alpha
                                 break;
                         }
                     }
                     else
                     {
                         //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
-                        Buffer.Add(src[3]);
-                        Buffer.Add(src[2]);
-                        Buffer.Add(src[1]);
-                        Buffer.Add(src[0]);
+                        Buffer.Add(src[2]);// B
+                        Buffer.Add(src[1]);// G
+                        Buffer.Add(src[0]);// R
+                        Buffer.Add(src[3]);// Alpha
                     }
 
                     //image.SetPixel(x, y, Color.FromArgb(src[3], pixel.R, pixel.G, pixel.B));
@@ -141,28 +137,109 @@ namespace Sky_multi_Core.ImageReader
                 }
             }
 
+            srcScan0 = (byte*)0;
+            src = (byte*)0;
+
+            return Buffer.ToArray();
+        }
+
+        private static unsafe void CopyEightBitImageWithAlpha(IntPtr Scan0, int srcStride, int Width, int Height, bool premultiplied, IntPtr BufferPtr)
+        {
+            byte* srcScan0 = (byte*)Scan0;
+            byte* src;
+
+            byte* Buffer = (byte*)BufferPtr;
+            byte* src2;
+
+            for (int y = 0; y < Height; y++)
+            {
+                src = srcScan0 + (y * srcStride);
+                src2 = Buffer + (y * srcStride);
+
+                for (int x = 0; x < Width; x++)
+                {
+                    //Color pixel = heifImage.GetPixel(x, y);
+
+                    if (premultiplied)
+                    {
+                        switch (src[3]) // alpha
+                        {
+                            case 0:
+                                //image.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                                src2[0] = (0);// Blue
+                                src2[1] = (0);// Green
+                                src2[2] = (0);// Red
+                                src2[3] = (src[3]);// Alpha
+                                break;
+
+                            case 255:
+                                //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
+                                src2[0] = (src[2]);// B
+                                src2[1] = (src[1]);// G
+                                src2[2] = (src[0]);// R
+                                src2[3] = (src[3]);// Alpha
+                                break;
+
+                            default:
+                                //image.SetPixel(x, y, Color.FromArgb((byte)Math.Min(MathF.Round(src[0] * 255f / alpha), 255), 
+                                //(byte)Math.Min(MathF.Round(src[1] * 255f / alpha), 255), 
+                                //(byte)Math.Min(MathF.Round(src[2] * 255f / alpha), 255)));
+                                src2[0] = ((byte)MathF.Round((float)src[2] * src[3] / 255f));// B
+                                src2[1] = ((byte)MathF.Round((float)src[1] * src[3] / 255f));// G
+                                src2[2] = ((byte)MathF.Round((float)src[0] * src[3] / 255f));// R
+                                src2[3] = (src[3]);// Alpha
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
+                        src2[0] = (src[2]);// B
+                        src2[1] = (src[1]);// G
+                        src2[2] = (src[0]);// R
+                        src2[3] = (src[3]);// Alpha
+                    }
+
+                    //image.SetPixel(x, y, Color.FromArgb(src[3], pixel.R, pixel.G, pixel.B));
+
+                    src += 4;
+                    src2 += 4;
+                }
+            }
+
+            srcScan0 = (byte*)0;
+            src = (byte*)0;
+
+            Buffer = (byte*)0;
+            src2 = (byte*)0;
+        }
+
+        private static Bitmap CreateEightBitImageWithAlpha(HeifImage heifImage, bool premultiplied)
+        {
+            HeifPlaneData heifPlaneData = heifImage.GetPlane(HeifChannel.Interleaved);
+
+            byte[] Buffer = CreateArrayEightBitImageWithAlpha(heifPlaneData.Scan0, heifPlaneData.Stride, heifPlaneData.Width, heifPlaneData.Height, premultiplied);
+
             Bitmap bmp = new Bitmap(heifImage.Width, heifImage.Height, PixelFormat.Format32bppArgb);
             BitmapData bmd = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
-            Marshal.Copy(Buffer.ToArray(), 0, bmd.Scan0, heifImage.Width * heifImage.Height * 4);
+            Marshal.Copy(Buffer, 0, bmd.Scan0, heifImage.Width * heifImage.Height * 4);
             bmp.UnlockBits(bmd);
 
             return bmp;
         }
 
-        private static unsafe Bitmap CreateEightBitImageWithoutAlpha(HeifImage heifImage)
+        private static unsafe byte[] CreateArrayEightBitImageWithoutAlpha(IntPtr Scan0, int srcStride, int Width, int Height)
         {
-            var heifPlaneData = heifImage.GetPlane(HeifChannel.Interleaved);
-
-            byte* srcScan0 = (byte*)heifPlaneData.Scan0;
-            int srcStride = heifPlaneData.Stride;
+            byte* srcScan0 = (byte*)Scan0;
+            byte* src;
 
             List<byte> Buffer = new List<byte>();
 
-            for (int y = 0; y < heifImage.Height; y++)
+            for (int y = 0; y < Height; y++)
             {
-                byte* src = srcScan0 + (y * srcStride);
+                src = srcScan0 + (y * srcStride);
 
-                for (int x = 0; x < heifImage.Width; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
                     Buffer.Add(src[2]);
@@ -173,65 +250,105 @@ namespace Sky_multi_Core.ImageReader
                 }
             }
 
+            srcScan0 = (byte*)0;
+            src = (byte*)0;
+
+            return Buffer.ToArray();
+        }
+
+        private static unsafe void CopyEightBitImageWithoutAlpha(IntPtr Scan0, int srcStride, int Width, int Height, IntPtr BufferPtr)
+        {
+            byte* srcScan0 = (byte*)Scan0;
+            byte* src;
+
+            byte* Buffer = (byte*)BufferPtr;
+            byte* src2;
+
+            for (int y = 0; y < Height; y++)
+            {
+                src = srcScan0 + (y * srcStride);
+                src2 = Buffer + (y * srcStride);
+
+                for (int x = 0; x < Width; x++)
+                {
+                    //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
+                    src2[2] = (src[2]);
+                    src2[1] = (src[1]);
+                    src2[0] = (src[0]);
+
+                    src += 3;
+                    src2 += 3;
+                }
+            }
+
+            srcScan0 = (byte*)0;
+            src = (byte*)0;
+
+            Buffer = (byte*)0;
+            src2 = (byte*)0;
+        }
+
+        private static Bitmap CreateEightBitImageWithoutAlpha(HeifImage heifImage)
+        {
+            HeifPlaneData heifPlaneData = heifImage.GetPlane(HeifChannel.Interleaved);
+
+            byte[] Buffer = CreateArrayEightBitImageWithoutAlpha(heifPlaneData.Scan0, heifPlaneData.Stride, heifPlaneData.Width, heifPlaneData.Height);
+
             Bitmap bmp = new Bitmap(heifImage.Width, heifImage.Height, PixelFormat.Format24bppRgb);
             BitmapData bmd = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
-            Marshal.Copy(Buffer.ToArray(), 0, bmd.Scan0, heifImage.Width * heifImage.Height * 3);
+            Marshal.Copy(Buffer, 0, bmd.Scan0, heifImage.Width * heifImage.Height * 3);
             bmp.UnlockBits(bmd);
 
             return bmp;
         }
 
-        private static unsafe Bitmap CreateSixteenBitImageWithAlpha(HeifImage heifImage, bool premultiplied, int bitDepth)
+        private static unsafe int[] CreateArraySixteenBitImageWithAlpha(IntPtr Scan0, int srcStride, int Width, int Height, bool premultiplied, int bitDepth)
         {
-            var heifPlaneData = heifImage.GetPlane(HeifChannel.Interleaved);
-
-            byte* srcScan0 = (byte*)heifPlaneData.Scan0;
-            int srcStride = heifPlaneData.Stride;
+            byte* srcScan0 = (byte*)Scan0;
 
             int maxChannelValue = (1 << bitDepth) - 1;
             float maxChannelValueFloat = maxChannelValue;
+            ushort* src;
 
-            List<short> Buffer = new List<short>();
+            List<int> Buffer = new List<int>();
 
-            for (int y = 0; y < heifImage.Height; y++)
+            for (int y = 0; y < Height; y++)
             {
-                short* src = (short*)(srcScan0 + (y * srcStride));
+                src = (ushort*)(srcScan0 + (y * srcStride));
 
-                for (int x = 0; x < heifImage.Width; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     //var pixel = heifImage.GetPixel(x, y);
 
                     if (premultiplied)
                     {
-                        short alpha = src[3];
-
-                        if (alpha == maxChannelValue)
+                        if (src[3] == maxChannelValue)
                         {
                             //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
-                            Buffer.Add(src[3]);
                             Buffer.Add(src[2]);
                             Buffer.Add(src[1]);
                             Buffer.Add(src[0]);
+                            Buffer.Add(src[3]);
                         }
                         else
                         {
-                            switch (alpha)
+                            switch (src[3])
                             {
                                 case 0:
                                     //image.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                                    Buffer.Add(0);
+                                    Buffer.Add(0);
+                                    Buffer.Add(0);
                                     Buffer.Add(src[3]);
-                                    Buffer.Add(0);
-                                    Buffer.Add(0);
-                                    Buffer.Add(0);
                                     break;
                                 default:
                                     //image.SetPixel(x, y, Color.FromArgb((ushort)Math.Min(MathF.Round(src[0] * maxChannelValueFloat / alpha), maxChannelValue),
                                     //(ushort)Math.Min(MathF.Round(src[1] * maxChannelValueFloat / alpha), maxChannelValue), 
                                     //(ushort)Math.Min(MathF.Round(src[2] * maxChannelValueFloat / alpha), maxChannelValue)));
+                                    Buffer.Add((ushort)Math.Min(MathF.Round(src[2] * maxChannelValueFloat / src[3]), maxChannelValue));
+                                    Buffer.Add((ushort)Math.Min(MathF.Round(src[1] * maxChannelValueFloat / src[3]), maxChannelValue));
+                                    Buffer.Add((ushort)Math.Min(MathF.Round(src[0] * maxChannelValueFloat / src[3]), maxChannelValue));
                                     Buffer.Add(src[3]);
-                                    Buffer.Add((short)Math.Min(MathF.Round(src[2] * maxChannelValueFloat / alpha), maxChannelValue));
-                                    Buffer.Add((short)Math.Min(MathF.Round(src[1] * maxChannelValueFloat / alpha), maxChannelValue));
-                                    Buffer.Add((short)Math.Min(MathF.Round(src[0] * maxChannelValueFloat / alpha), maxChannelValue));
                                     break;
                             }
                         }
@@ -239,10 +356,10 @@ namespace Sky_multi_Core.ImageReader
                     else
                     {
                         //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
-                        Buffer.Add(src[3]);
                         Buffer.Add(src[2]);
                         Buffer.Add(src[1]);
                         Buffer.Add(src[0]);
+                        Buffer.Add(src[3]);
                     }
                     //image.SetPixel(x, y, Color.FromArgb(src[3], pixel.R, pixel.G, pixel.B));
 
@@ -250,28 +367,38 @@ namespace Sky_multi_Core.ImageReader
                 }
             }
 
+            srcScan0 = (byte*)0;
+            src = (ushort*)0;
+
+            return Buffer.ToArray();
+        }
+
+        private static Bitmap CreateSixteenBitImageWithAlpha(HeifImage heifImage, bool premultiplied, int bitDepth)
+        {
+            HeifPlaneData heifPlaneData = heifImage.GetPlane(HeifChannel.Interleaved);
+
+            int[] Buffer = CreateArraySixteenBitImageWithAlpha(heifPlaneData.Scan0, heifPlaneData.Stride, heifPlaneData.Width, heifPlaneData.Height, premultiplied, bitDepth);
+
             Bitmap bmp = new Bitmap(heifImage.Width, heifImage.Height, PixelFormat.Format64bppArgb);
             BitmapData bmd = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
-            Marshal.Copy(Buffer.ToArray(), 0, bmd.Scan0, heifImage.Width * heifImage.Height * 4);
+            Marshal.Copy(Buffer, 0, bmd.Scan0, heifImage.Width * heifImage.Height * 4);
             bmp.UnlockBits(bmd);
 
             return bmp;
         }
 
-        private static unsafe Bitmap CreateSixteenBitImageWithoutAlpha(HeifImage heifImage)
+        private static unsafe int[] CreateArraySixteenBitImageWithoutAlpha(IntPtr Scan0, int srcStride, int Width, int Height)
         {
-            var heifPlaneData = heifImage.GetPlane(HeifChannel.Interleaved);
+            byte* srcScan0 = (byte*)Scan0;
+            ushort* src;
 
-            byte* srcScan0 = (byte*)heifPlaneData.Scan0;
-            int srcStride = heifPlaneData.Stride;
+            List<int> Buffer = new List<int>();
 
-            List<short> Buffer = new List<short>();
-
-            for (int y = 0; y < heifImage.Height; y++)
+            for (int y = 0; y < Height; y++)
             {
-                short* src = (short*)(srcScan0 + (y * srcStride));
+                src = (ushort*)(srcScan0 + (y * srcStride));
 
-                for (int x = 0; x < heifImage.Width; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     //image.SetPixel(x, y, Color.FromArgb(src[0], src[1], src[2]));
                     Buffer.Add(src[2]);
@@ -282,12 +409,89 @@ namespace Sky_multi_Core.ImageReader
                 }
             }
 
+            srcScan0 = (byte*)0;
+            src = (ushort*)0;
+
+            return Buffer.ToArray();
+        }
+
+        private static Bitmap CreateSixteenBitImageWithoutAlpha(HeifImage heifImage)
+        {
+            HeifPlaneData heifPlaneData = heifImage.GetPlane(HeifChannel.Interleaved);
+
+            int[] Buffer = CreateArraySixteenBitImageWithoutAlpha(heifPlaneData.Scan0, heifPlaneData.Stride, heifPlaneData.Width, heifPlaneData.Height);
+
             Bitmap bmp = new Bitmap(heifImage.Width, heifImage.Height, PixelFormat.Format48bppRgb);
             BitmapData bmd = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
-            Marshal.Copy(Buffer.ToArray(), 0, bmd.Scan0, heifImage.Width * heifImage.Height * 3);
+            Marshal.Copy(Buffer, 0, bmd.Scan0, heifImage.Width * heifImage.Height * 3);
             bmp.UnlockBits(bmd);
 
             return bmp;
+        }
+
+
+        public static void EncodeHeif(Bitmap bitmap, string Path)
+        {
+            Encode(in bitmap, in Path, HeifCompressionFormat.Hevc);
+        }
+
+        public static void EncodeAvif(Bitmap bitmap, string Path)
+        {
+            Encode(in bitmap, in Path, HeifCompressionFormat.Av1);
+        }
+
+        private static void Encode(in Bitmap bitmap, in string Path, HeifCompressionFormat format)
+        {
+            if (LibHeifInfo.HaveEncoder(format) == false)
+            {
+                throw new Exception("Encodeur Not Found!");
+            }
+
+            if (string.IsNullOrEmpty(Path) == true)
+            {
+                throw new Exception("Path is null!");
+            }
+
+            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+
+            HeifContext heifContext = new HeifContext();
+            HeifEncoder encoder = heifContext.GetEncoder(format);
+            HeifPlaneData heifPlaneData;
+            HeifImage image;
+
+            switch (bitmap.PixelFormat)
+            {
+                case PixelFormat.Format24bppRgb:
+
+                    image = new HeifImage(bitmap.Width, bitmap.Height, HeifColorspace.Rgb, HeifChroma.InterleavedRgb24);
+                    image.AddPlane(HeifChannel.Interleaved, image.Width, image.Height, 8);
+                    heifPlaneData = image.GetPlane(HeifChannel.Interleaved);
+                    CopyEightBitImageWithoutAlpha(bitmapData.Scan0, bitmapData.Stride, bitmapData.Width, bitmapData.Height, heifPlaneData.Scan0);
+                    heifContext.EncodeImage(image, encoder);
+                    heifContext.WriteToFile(Path);
+                    image.Dispose();
+                    break;
+
+                case PixelFormat.Format32bppArgb:
+                    image = new HeifImage(bitmap.Width, bitmap.Height, HeifColorspace.Rgb, HeifChroma.InterleavedRgba32);
+                    image.AddPlane(HeifChannel.Interleaved, image.Width, image.Height, 8);
+                    heifPlaneData = image.GetPlane(HeifChannel.Interleaved);
+                    CopyEightBitImageWithAlpha(bitmapData.Scan0, bitmapData.Stride, bitmapData.Width, bitmapData.Height, false, heifPlaneData.Scan0);
+                    heifContext.EncodeImage(image, encoder);
+                    heifContext.WriteToFile(Path);
+                    image.Dispose();
+                    break;
+
+                default:
+                    bitmap.UnlockBits(bitmapData);
+                    encoder.Dispose();
+                    heifContext.Dispose();
+                    throw new Exception("format is not supported!");
+            }
+
+            bitmap.UnlockBits(bitmapData);
+            encoder.Dispose();
+            heifContext.Dispose();
         }
     }
 }

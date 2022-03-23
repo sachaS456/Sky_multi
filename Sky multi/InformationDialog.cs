@@ -271,13 +271,13 @@ namespace Sky_multi
             {
                 this.label2.Text = "Version : " + version[5] + "\nCopyright: © Himber Sacha 2022\nLicence: GPL 3\n\nSky multi est une application libre qui permet de lire\n" +
                     "des vidéos, des audios et des images il peut lire un grand\nnombre de format de fichier.\n\nLibrairies utilisés : Net " + version[0] +
-                    ", Sky UI " + version[1] + ", \nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
+                    ", Sky UI " + version[1] + ", LibVlc " + version[2] + ",\nLibRaw " + version[3] + ", LibWebp " + version[4] + ", LibHeif " + version[6] + ".";
             }
             else
             {
                 this.label2.Text = "Version : " + version[5] + "\n\nCopyright: © Himber Sacha 2022\nLicence: GPL 3\n\nSky multi is a free application that allows you to read\n" +
                     "videos, audios and pictures it can play a great\nnumber of file format.\n\nLibraries used : Net " + version[0] + ", Sky UI " + version[1] +
-                    ",\nLibVlc " + version[2] + ", LibRaw " + version[3] + ", LibWebp " + version[4] + ".";
+                    ",\nLibVlc " + version[2] + ", LibRaw " + version[3] + ",\nLibWebp " + version[4] + ", LibHeif " + version[6] + ".";
             }
             // 
             // rectangle3

@@ -1659,14 +1659,15 @@ namespace Sky_multi
 
         private void ShowInformationDialog()
         {
-            string[] Version = new string[6]
+            string[] Version = new string[7]
             {
                 Environment.Version.ToString(),
                 progressBar.ProductVersion,
                 VlcMediaPlayer.VlcVersionNumber.ToString(),
                 RawDecoder.LibRawVersionNumber.ToString(),
                 WebPDecoder.GetDecoderVersion(),
-                this.ProductVersion
+                this.ProductVersion,
+                Sky_multi_Core.ImageReader.Heif.LibHeifInfo.Version.ToString()
             };
 
             if (MediaLoaded != string.Empty)
@@ -1949,8 +1950,8 @@ namespace Sky_multi
 
                     if (multiMediaViewer.ItIsAImage == true)
                     {
-                        multiMediaViewer.BackgroundImage.Dispose();
-                        multiMediaViewer.BackgroundImage = null;
+                        multiMediaViewer.Image.Dispose();
+                        multiMediaViewer.Image = null;
                     }
                     else
                     {
@@ -2007,8 +2008,8 @@ namespace Sky_multi
                 {
                     if (multiMediaViewer.ItIsAImage == true)
                     {
-                        multiMediaViewer.BackgroundImage.Dispose();
-                        multiMediaViewer.BackgroundImage = null;
+                        multiMediaViewer.Image.Dispose();
+                        multiMediaViewer.Image = null;
                     }
                     else
                     {
@@ -2402,7 +2403,7 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.BackgroundImage.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
                             break;
 
                         case ".jpg":
@@ -2414,7 +2415,7 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.BackgroundImage.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
                             break;
 
                         case ".jpeg":
@@ -2426,7 +2427,7 @@ namespace Sky_multi
                             {
                                
                             }*/
-                            multiMediaViewer.BackgroundImage.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
                             break;
 
                         case ".ico":
@@ -2438,7 +2439,7 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.BackgroundImage.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Icon);
+                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Icon);
                             break;
 
                         case ".gif":
@@ -2450,7 +2451,7 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.BackgroundImage.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Gif);
+                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Gif);
                             break;
 
                         case ".tiff":
@@ -2462,7 +2463,7 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.BackgroundImage.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
+                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
                             break;
 
                         case ".tif":
@@ -2474,7 +2475,7 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.BackgroundImage.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
+                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
                             break;
 
                         case ".bmp":
@@ -2486,7 +2487,7 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.BackgroundImage.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Bmp);
+                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Bmp);
                             break;
 
                         case ".webp":
@@ -2499,6 +2500,18 @@ namespace Sky_multi
                                 
                             }*/
                             WebPEncoder.EncodeWebp((Bitmap)multiMediaViewer.BackgroundImage, dialog.FileName);
+                            break;
+
+                        case ".heif":
+                            BitmapHeifCoverter.EncodeHeif((Bitmap)multiMediaViewer.Image, dialog.FileName);
+                            break;
+
+                        case ".heic":
+                            BitmapHeifCoverter.EncodeHeif((Bitmap)multiMediaViewer.Image, dialog.FileName);
+                            break;
+
+                        case ".avif":
+                            BitmapHeifCoverter.EncodeAvif((Bitmap)multiMediaViewer.Image, dialog.FileName);
                             break;
 
                         default:

@@ -44,6 +44,8 @@ namespace Sky_multi_Viewer
         private float Factor = 1.0f;
         private int ImageFactorW = 0;
         private int ImageFactorH = 0;
+        private ImageViewD2D1 ImageViewD2D1;
+        private bool UseD2D1_ = false;
 
         public ImageView()
         {
@@ -54,6 +56,44 @@ namespace Sky_multi_Viewer
             this.MouseWheel += new MouseEventHandler(This_MouseWheel);
             this.Resize += new EventHandler(This_Resize);
             this.MouseDoubleClick += new MouseEventHandler(This_MouseDoubleClick);
+        }
+
+        public bool UseD2D1
+        {
+            set
+            {
+                if (UseD2D1_ == value)
+                {
+                    return;
+                }
+
+                UseD2D1_ = value;
+
+                if (UseD2D1_ == true)
+                {
+                    ImageViewD2D1 = new ImageViewD2D1();
+                    ImageViewD2D1.Location = new Point(0, 0);
+                    ImageViewD2D1.Size = this.Size;
+                    ImageViewD2D1.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Top;
+                    ImageViewD2D1.BringToFront();
+                    this.Controls.Add(ImageViewD2D1);
+
+                    if (Image != null)
+                    {
+                        ImageViewD2D1.SetBitmap((Bitmap)Image);
+                    }
+                }
+                else
+                {
+                    this.Controls.Remove(ImageViewD2D1);
+                    ImageViewD2D1.Dispose();
+                    ImageViewD2D1 = null;
+                }
+            }
+            get
+            {
+                return UseD2D1_;
+            }
         }
 
         public void SetImage(in Image image)
@@ -69,14 +109,27 @@ namespace Sky_multi_Viewer
                 Image.Dispose();
             }
 
-            Image = new Bitmap(image);
-            ImageWidth = Image.Width;
-            ImageHeight = Image.Height;
-            CanAnimated = ImageAnimator.CanAnimate(Image);
-            if (CanAnimated)
+            if (image == null)
             {
-                ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+                Image = null;
             }
+            else
+            {
+                Image = new Bitmap(image);
+                ImageWidth = Image.Width;
+                ImageHeight = Image.Height;
+                CanAnimated = ImageAnimator.CanAnimate(Image);
+                if (CanAnimated)
+                {
+                    ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+                }
+
+                if (UseD2D1)
+                {
+                    ImageViewD2D1.SetBitmap((Bitmap)Image);
+                }
+            }
+
             this.ResumeLayout(false);
             this.Refresh();
         }
@@ -121,6 +174,10 @@ namespace Sky_multi_Viewer
                 {
                     ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
                 }
+                if (UseD2D1)
+                {
+                    ImageViewD2D1.SetBitmap((Bitmap)Image);
+                }
                 this.Refresh();
                 return;
             }
@@ -135,6 +192,10 @@ namespace Sky_multi_Viewer
                     if (CanAnimated)
                     {
                         ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+                    }
+                    if (UseD2D1)
+                    {
+                        ImageViewD2D1.SetBitmap((Bitmap)Image);
                     }
                     this.Refresh();
                     return;
@@ -151,6 +212,10 @@ namespace Sky_multi_Viewer
                         {
                             ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
                         }
+                        if (UseD2D1)
+                        {
+                            ImageViewD2D1.SetBitmap((Bitmap)Image);
+                        }
                         this.Refresh();
                         return;
                     }
@@ -165,6 +230,10 @@ namespace Sky_multi_Viewer
                             if (CanAnimated)
                             {
                                 ImageAnimator.Animate(Image, new EventHandler(UpdateFrame));
+                            }
+                            if (UseD2D1)
+                            {
+                                ImageViewD2D1.SetBitmap((Bitmap)Image);
                             }
                             this.Refresh();
                         }
@@ -419,14 +488,18 @@ namespace Sky_multi_Viewer
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (Factor == 1.0f)
+            if (UseD2D1 == false)
             {
-                DrawImage(e.Graphics);
+                if (Factor == 1.0f)
+                {
+                    DrawImage(e.Graphics);
+                }
+                else
+                {
+                    DrawImageScale(e.Graphics, Factor, this.Width / 2 - ImageFactorW / 2, this.Height / 2 - ImageFactorH / 2);
+                }
             }
-            else
-            {
-                DrawImageScale(e.Graphics, Factor, this.Width / 2 - ImageFactorW / 2, this.Height / 2 - ImageFactorH / 2);
-            }
+
             base.OnPaint(e);
         }
     }
