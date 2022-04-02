@@ -1,4 +1,17 @@
-﻿
+﻿Changes between 3.1.0 and 3.1.1:
+----------------------------------
+
+-Fixed an issue that made the window resizable during a blur effect
+-Fixed an issue in the update system
+-Fixed an issue that allowed to activate full screen with a double right click
+-Fixed an issue that removed the open with DVD button when saving settings
+-Fixed an issue that displayed an error message during an image conversion
+-Fixed an issue that displayed an error message when renaming an image file
+-Fixed an issue that displayed an error message when deleting an image file
+-Fixed an issue that incorrectly displayed video preview timecode
+
+----------------------------------
+
 Changes between 3.0.1 and 3.1.0:
 ----------------------------------
 

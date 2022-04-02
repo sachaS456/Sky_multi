@@ -62,9 +62,18 @@ namespace Sky_multi_Viewer
             {
                 Image.Dispose();
             }
-            Image = new Bitmap(image);
-            ImageWidth = Image.Width;
-            ImageHeight = Image.Height;
+
+            if (image == null)
+            {
+                Image = null;
+            }
+            else
+            {
+                Image = new Bitmap(image);
+                ImageWidth = Image.Width;
+                ImageHeight = Image.Height;
+            }
+
             this.ResumeLayout(false);
             this.Refresh();
         }

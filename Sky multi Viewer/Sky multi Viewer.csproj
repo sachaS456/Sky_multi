@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <RootNamespace>Sky_multi_Viewer</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>3.1.0</Version>
+    <Version>3.1.1</Version>
     <Authors>Sacha Himber</Authors>
     <NeutralLanguage>fr-FR</NeutralLanguage>
     <Copyright>Copyright © 2022 Himber Sacha</Copyright>
