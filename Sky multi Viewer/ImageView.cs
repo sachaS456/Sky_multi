@@ -75,6 +75,10 @@ namespace Sky_multi_Viewer
                     ImageViewD2D1.Location = new Point(0, 0);
                     ImageViewD2D1.Size = this.Size;
                     ImageViewD2D1.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Top;
+                    ImageViewD2D1.MouseDown += new MouseEventHandler(ImageViewD2D1_MouseDown);
+                    ImageViewD2D1.MouseUp += new MouseEventHandler(ImageViewD2D1_MouseUp);
+                    ImageViewD2D1.MouseClick += new MouseEventHandler(ImageViewD2D1_MouseClick);
+                    ImageViewD2D1.MouseMove += new MouseEventHandler(ImageViewD2D1_MouseMove);
                     ImageViewD2D1.BringToFront();
                     this.Controls.Add(ImageViewD2D1);
 
@@ -94,6 +98,26 @@ namespace Sky_multi_Viewer
             {
                 return UseD2D1_;
             }
+        }
+
+        private void ImageViewD2D1_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnMouseDown(e);
+        }
+
+        private void ImageViewD2D1_MouseUp(object sender, MouseEventArgs e)
+        {
+            OnMouseUp(e);
+        }
+
+        private void ImageViewD2D1_MouseClick(object sender, MouseEventArgs e)
+        {
+            OnMouseClick(e);
+        }
+
+        private void ImageViewD2D1_MouseMove(object sender, MouseEventArgs e)
+        {
+            OnMouseMove(e);
         }
 
         public void SetImage(in Image image)
@@ -157,6 +181,12 @@ namespace Sky_multi_Viewer
             if (!File.Exists(FilePath))
             {
                 throw new FileNotFoundException();
+            }
+
+            if (UseD2D1)
+            {
+                ImageViewD2D1.DecodeImageFromFile(in FilePath);
+                return;
             }
 
             if (CanAnimated)
