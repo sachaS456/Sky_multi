@@ -45,7 +45,7 @@ namespace Sky_multi_Viewer
             imageView.Size = this.Size;
             imageView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             imageView.Visible = false;
-            imageView.UseD2D1 = false;
+            imageView.UseD2D1 = true;
             this.Controls.Add(imageView);
 
             imageView.MouseClick += new MouseEventHandler(MouseClickEvent);
