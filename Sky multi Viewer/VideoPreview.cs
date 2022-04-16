@@ -35,7 +35,7 @@ namespace Sky_multi_Viewer
         public VideoPreview()
         {
             this.BackColor = Color.FromArgb(64, 64, 64);
-            this.Size = new Size(128, 86);
+            this.Size = new Size(128, 95);
 
             this.VideoView = new VideoView();
             ((System.ComponentModel.ISupportInitialize)(this.VideoView)).BeginInit();
@@ -55,7 +55,7 @@ namespace Sky_multi_Viewer
             this.labeTime.AutoSize = true;
             this.labeTime.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             this.labeTime.ForeColor = Color.FromArgb(224, 224, 224);
-            this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 72);
+            this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 65);
 
             ((System.ComponentModel.ISupportInitialize)(this.VideoView)).EndInit();
             this.Controls.Add(this.VideoView);
@@ -71,7 +71,7 @@ namespace Sky_multi_Viewer
             VideoView.Time = VlcTime;
             VideoView.SetPause(true);
             labeTime.Text = ConvertVlcTimeToString(VlcTime);
-            this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 72);
+            this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 65);
         }
 
         private string ConvertVlcTimeToString(long VlcTime)
@@ -104,7 +104,7 @@ namespace Sky_multi_Viewer
             {
                 VideoView.Time = VlcTime;
                 labeTime.Text = ConvertVlcTimeToString(VlcTime);
-                this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 72);
+                this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 65);
                 //CanSetTime++;
                 //return;
             }

@@ -36,12 +36,11 @@ namespace Sky_multi_Viewer
     {
         private readonly ID2D1Factory7 factory7;
         private readonly ID2D1HwndRenderTarget hwndRender;
-
-        private readonly Color4 bgcolor = new(0.1f, 0.1f, 0.1f, 1.0f);
-
         private readonly List<ID2D1Bitmap1> bitmapD2D1;
+        private readonly List<IWICBitmap> WICBitmaps;
         private readonly List<ushort> FrameDelay;
-        private IWICImagingFactory2 ImagingFactory = new IWICImagingFactory2();
+        private readonly IWICImagingFactory2 ImagingFactory;        
+        private readonly Color4 bgcolor = new(0.1f, 0.1f, 0.1f, 1.0f);
         private SizeI PixelSize;
 
         public PointF ImagePosition { get; private set; } = PointF.Empty;
@@ -54,7 +53,9 @@ namespace Sky_multi_Viewer
         {
             factory7 = D2D1.D2D1CreateFactory<ID2D1Factory7>();
             bitmapD2D1 = new List<ID2D1Bitmap1>();
+            WICBitmaps = new List<IWICBitmap>();
             FrameDelay = new List<ushort>();
+            ImagingFactory = new IWICImagingFactory2();
 
             HwndRenderTargetProperties properties = new HwndRenderTargetProperties();
             properties.Hwnd = this.Handle;
@@ -62,9 +63,14 @@ namespace Sky_multi_Viewer
             properties.PixelSize = PixelSize;
             properties.PresentOptions = PresentOptions.Immediately;
 
-            hwndRender = factory7.CreateHwndRenderTarget(new RenderTargetProperties(), properties);
+            hwndRender = factory7.CreateHwndRenderTarget(new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, 
+                Vortice.DCommon.AlphaMode.Premultiplied)), properties);
             hwndRender.AntialiasMode = AntialiasMode.Aliased;
             StartShowFrames();
+
+            /*this.SetStyle(ControlStyles.ResizeRedraw, true);
+            this.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer, true);
+            this.UpdateStyles();*/
         }
 
         private ID2D1Bitmap1 BitmapD2D1FromBitmapGDI(in Bitmap bitmap)
@@ -72,7 +78,109 @@ namespace Sky_multi_Viewer
             IWICBitmap WICBitmap = ImagingFactory.CreateBitmapFromHBITMAP(bitmap.GetHbitmap(), (IntPtr)0, BitmapAlphaChannelOption.UsePremultipliedAlpha);
             IWICFormatConverter converter = ImagingFactory.CreateFormatConverter();
             converter.Initialize(WICBitmap, PixelFormat.Format32bppPBGRA, BitmapDitherType.None, null, 1f, BitmapPaletteType.FixedWebPalette);
-            return new ID2D1Bitmap1(hwndRender.CreateBitmapFromWicBitmap(converter, new BitmapProperties()).NativePointer);
+            WICBitmaps.Add(ImagingFactory.CreateBitmapFromSource(converter, BitmapCreateCacheOption.CacheOnLoad));
+            return new ID2D1Bitmap1(hwndRender.CreateBitmapFromWicBitmap(converter, 
+                new BitmapProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied))).NativePointer);
+        }
+
+        public void EncodeBitmap(string Path, string Format)
+        {
+            /*IWICBitmap iWICBitmap = ImagingFactory.CreateBitmap((int)bitmapD2D1[0].Size.Width, (int)bitmapD2D1[0].Size.Height, PixelFormat.Format32bppPBGRA, BitmapCreateCacheOption.CacheOnLoad);
+
+            RenderTargetProperties rtProps = new RenderTargetProperties();
+            rtProps.PixelFormat = new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied);
+            rtProps.Type = RenderTargetType.Default;
+            rtProps.Usage = RenderTargetUsage.None;
+
+            ID2D1RenderTarget d2D1RenderTarget = factory7.CreateWicBitmapRenderTarget(iWICBitmap, rtProps);
+            d2D1RenderTarget.BeginDraw();
+            //d2D1RenderTarget.Clear(Colors.White);
+            d2D1RenderTarget.DrawBitmap(bitmapD2D1[0]);//, new Rect(0, 0, bitmapD2D1[0].Size.Width, bitmapD2D1[0].Size.Height), 1.0f, Vortice.Direct2D1.BitmapInterpolationMode.Linear, null);
+            d2D1RenderTarget.EndDraw();*/
+
+            IWICBitmapEncoder BitmapEncoder;
+            IWICBitmapLock bmpLock;
+
+            switch (Format)
+            {
+                case ".png":
+                    BitmapEncoder = ImagingFactory.CreateEncoder(ContainerFormatGuids.Png);
+                    break;
+
+                case ".jpg":
+                    BitmapEncoder = ImagingFactory.CreateEncoder(ContainerFormatGuids.Jpeg);
+                    break;
+
+                case ".jpeg":
+                    BitmapEncoder = ImagingFactory.CreateEncoder(ContainerFormatGuids.Jpeg);
+                    break;
+
+                case ".gif":
+                    BitmapEncoder = ImagingFactory.CreateEncoder(ContainerFormatGuids.Gif);
+                    break;
+
+                case ".bmp":
+                    BitmapEncoder = ImagingFactory.CreateEncoder(ContainerFormatGuids.Bmp);
+                    break;
+
+                case ".ico":
+                    BitmapEncoder = ImagingFactory.CreateEncoder(ContainerFormatGuids.Ico);
+                    break;
+
+                case ".tiff":
+                    BitmapEncoder = ImagingFactory.CreateEncoder(ContainerFormatGuids.Tiff);
+                    break;
+
+                case ".tif":
+                    BitmapEncoder = ImagingFactory.CreateEncoder(ContainerFormatGuids.Tiff);
+                    break;
+
+                case ".webp":
+                    bmpLock = WICBitmaps[0].Lock(BitmapLockFlags.Read);
+                    WebPEncoder.EncodeWebp(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, Path, true);
+                    bmpLock.Dispose();
+                    return;
+
+                case ".heif":
+                    bmpLock = WICBitmaps[0].Lock(BitmapLockFlags.Read);
+                    BitmapHeifConverter.EncodeHeif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, Path);
+                    bmpLock.Dispose();
+                    return;
+
+                case ".heic":
+                    bmpLock = WICBitmaps[0].Lock(BitmapLockFlags.Read);
+                    BitmapHeifConverter.EncodeHeif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, Path);
+                    bmpLock.Dispose();
+                    return;
+
+                case ".avif":
+                    bmpLock = WICBitmaps[0].Lock(BitmapLockFlags.Read);
+                    BitmapHeifConverter.EncodeAvif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, Path);
+                    bmpLock.Dispose();
+                    return;
+
+                default:
+                    throw new Exception("This format for the conversion is not supported!");
+            }
+
+            IWICStream stream = ImagingFactory.CreateStream();
+            stream.Initialize(Path, System.IO.FileAccess.Write);
+
+            BitmapEncoder.Initialize(stream, BitmapEncoderCacheOption.NoCache);
+
+            IWICBitmapFrameEncode bitmapFrameEncode = BitmapEncoder.CreateNewFrame(out SharpGen.Runtime.Win32.IPropertyBag2 IEncdoderOptions);
+            bitmapFrameEncode.Initialize();
+            bitmapFrameEncode.SetSize(WICBitmaps[0].Size);
+            bitmapFrameEncode.SetPixelFormat(PixelFormat.Format32bppPBGRA);
+            bitmapFrameEncode.WriteSource(WICBitmaps[0]);
+            bitmapFrameEncode.Commit();
+
+            BitmapEncoder.Commit();
+            stream.Commit(SharpGen.Runtime.Win32.CommitFlags.Default);
+
+            BitmapEncoder.Dispose();
+            bitmapFrameEncode.Dispose();
+            stream.Dispose();
         }
 
         private async void StartShowFrames()
@@ -115,23 +223,42 @@ namespace Sky_multi_Viewer
             ResetBitmap();
             FrameCount = bitmapDecoder.FrameCount;
 
-            for (int i = 0; i < bitmapDecoder.FrameCount; i++)
+            if (bitmapDecoder.FrameCount <= 1)
             {
                 converter = ImagingFactory.CreateFormatConverter();
-                converter.Initialize(bitmapDecoder.GetFrame(i), PixelFormat.Format32bppPBGRA, BitmapDitherType.None, null, 1f, BitmapPaletteType.FixedWebPalette);
+                converter.Initialize(bitmapDecoder.GetFrame(0), PixelFormat.Format32bppPBGRA, BitmapDitherType.None, null, 1f, BitmapPaletteType.FixedWebPalette);
+                WICBitmaps.Add(ImagingFactory.CreateBitmapFromSource(converter, BitmapCreateCacheOption.CacheOnLoad));
 
-                ushort value = (ushort)(bitmapDecoder.GetFrame(i).MetadataQueryReader.GetMetadataByName(@"/grctlext/Delay").Value);
-                value *= 10;
-
-                /*if (value < 90)
-                {
-                    value = 90;
-                }*/
-
-                ID2D1Bitmap image = hwndRender.CreateBitmapFromWicBitmap(converter, new BitmapProperties());
+                ID2D1Bitmap image = hwndRender.CreateBitmapFromWicBitmap(converter, 
+                    new BitmapProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied)));
                 bitmapD2D1.Add(new ID2D1Bitmap1(image.NativePointer));
-                FrameDelay.Add(value);
+                converter.Dispose();
             }
+            else
+            {
+                for (int i = 0; i < bitmapDecoder.FrameCount; i++)
+                {
+                    converter = ImagingFactory.CreateFormatConverter();
+                    converter.Initialize(bitmapDecoder.GetFrame(i), PixelFormat.Format32bppPBGRA, BitmapDitherType.None, null, 1f, BitmapPaletteType.FixedWebPalette);
+                    WICBitmaps.Add(ImagingFactory.CreateBitmapFromSource(converter, BitmapCreateCacheOption.CacheOnLoad));
+
+                    ushort value = (ushort)(bitmapDecoder.GetFrame(i).MetadataQueryReader.GetMetadataByName(@"/grctlext/Delay").Value);
+                    value *= 10;
+
+                    /*if (value < 90)
+                    {
+                        value = 90;
+                    }*/
+
+                    ID2D1Bitmap image = hwndRender.CreateBitmapFromWicBitmap(converter, 
+                        new BitmapProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied)));
+                    bitmapD2D1.Add(new ID2D1Bitmap1(image.NativePointer));
+                    FrameDelay.Add(value);
+                    converter.Dispose();
+                }
+            }
+
+            bitmapDecoder.Dispose();
         }
 
         public void DecodeImageFromFile(in string Path)
@@ -146,7 +273,6 @@ namespace Sky_multi_Viewer
                 {
                     ResetBitmap();
                     bitmapD2D1.Add(BitmapD2D1FromBitmapGDI(RawDecoder.RawToBitmap(Path)));
-                    return;
                 }
                 catch
                 {
@@ -154,14 +280,13 @@ namespace Sky_multi_Viewer
                     {
                         ResetBitmap();
                         bitmapD2D1.Add(BitmapD2D1FromBitmapGDI(WebPDecoder.DecodeWebp(Path)));
-                        return;
                     }
                     catch
                     {
                         try
                         {
                             ResetBitmap();
-                            bitmapD2D1.Add(BitmapD2D1FromBitmapGDI(BitmapHeifCoverter.OpenHeifFromPathToBitmap(Path)));
+                            bitmapD2D1.Add(BitmapD2D1FromBitmapGDI(BitmapHeifConverter.OpenHeifFromPathToBitmap(Path)));
                         }
                         catch
                         {
@@ -180,17 +305,19 @@ namespace Sky_multi_Viewer
             bitmapD2D1.Add(BitmapD2D1FromBitmapGDI(in bitmap));
         }
 
-        private void ResetBitmap()
+        public void ResetBitmap()
         {
             if (bitmapD2D1 != null)
             {
                 for (int index = 0; index < bitmapD2D1.Count; index++)
                 {
                     bitmapD2D1[index].Dispose();
+                    WICBitmaps[index].Dispose();
                 }
 
                 bitmapD2D1.Clear();
                 FrameDelay.Clear();
+                WICBitmaps.Clear();
             }
 
             FrameCount = 0;
@@ -199,10 +326,14 @@ namespace Sky_multi_Viewer
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            hwndRender.Resize(new SizeI(Width, Height));
             DrawImage();
-
             base.OnPaint(e);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            hwndRender.Resize(new SizeI(Width, Height));
+            base.OnResize(e);
         }
 
         private void DrawImage(bool Clear = true)
@@ -302,6 +433,36 @@ namespace Sky_multi_Viewer
                         den = den / i;
                         i--;
                     }
+                }
+            }
+        }
+
+        public Vortice.Mathematics.Size ImageSize
+        {
+            get
+            {
+                if (bitmapD2D1 == null || bitmapD2D1.Count == 0 || bitmapD2D1[0] == null)
+                {
+                    return Vortice.Mathematics.Size.Empty;
+                }
+                else
+                {
+                    return bitmapD2D1[0].Size;
+                }
+            }
+        }
+
+        public string PixelFormatString
+        {
+            get
+            {
+                if (bitmapD2D1 == null || bitmapD2D1.Count == 0 || bitmapD2D1[0] == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return bitmapD2D1[0].PixelFormat.Format.ToString();
                 }
             }
         }

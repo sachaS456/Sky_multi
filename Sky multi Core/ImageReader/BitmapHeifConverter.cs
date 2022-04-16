@@ -28,7 +28,7 @@ using Sky_multi_Core.ImageReader.Heif;
 
 namespace Sky_multi_Core.ImageReader
 {
-    public static class BitmapHeifCoverter
+    public static class BitmapHeifConverter
     {
         public static Bitmap OpenHeifFromPathToBitmap(string Path)
         {
@@ -456,6 +456,58 @@ namespace Sky_multi_Core.ImageReader
         public static void EncodeAvif(Bitmap bitmap, string Path)
         {
             Encode(in bitmap, in Path, HeifCompressionFormat.Av1);
+        }
+
+        public static void EncodeHeif(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, string Path)
+        {
+            Encode(Scan0, Stride, Width, Height, alpha, in Path, HeifCompressionFormat.Hevc);
+        }
+
+        public static void EncodeAvif(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, string Path)
+        {
+            Encode(Scan0, Stride, Width, Height, alpha, in Path, HeifCompressionFormat.Av1);
+        }
+
+        private static void Encode(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, in string Path, HeifCompressionFormat format)
+        {
+            if (LibHeifInfo.HaveEncoder(format) == false)
+            {
+                throw new Exception("Encodeur Not Found!");
+            }
+
+            if (string.IsNullOrEmpty(Path) == true)
+            {
+                throw new Exception("Path is null!");
+            }
+
+            HeifContext heifContext = new HeifContext();
+            HeifEncoder encoder = heifContext.GetEncoder(format);
+            HeifPlaneData heifPlaneData;
+            HeifImage image;
+
+            if (alpha)
+            {
+                image = new HeifImage(Width, Height, HeifColorspace.Rgb, HeifChroma.InterleavedRgba32);
+                image.AddPlane(HeifChannel.Interleaved, image.Width, image.Height, 8);
+                heifPlaneData = image.GetPlane(HeifChannel.Interleaved);
+                CopyEightBitImageWithAlpha(Scan0, Stride, Width, Height, false, heifPlaneData.Scan0);
+                heifContext.EncodeImage(image, encoder);
+                heifContext.WriteToFile(Path);
+                image.Dispose();
+            }
+            else
+            {
+                image = new HeifImage(Width, Height, HeifColorspace.Rgb, HeifChroma.InterleavedRgb24);
+                image.AddPlane(HeifChannel.Interleaved, image.Width, image.Height, 8);
+                heifPlaneData = image.GetPlane(HeifChannel.Interleaved);
+                CopyEightBitImageWithoutAlpha(Scan0, Stride, Width, Height, heifPlaneData.Scan0);
+                heifContext.EncodeImage(image, encoder);
+                heifContext.WriteToFile(Path);
+                image.Dispose();
+            }
+
+            encoder.Dispose();
+            heifContext.Dispose();
         }
 
         private static void Encode(in Bitmap bitmap, in string Path, HeifCompressionFormat format)

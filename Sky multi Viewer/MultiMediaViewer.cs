@@ -155,17 +155,24 @@ namespace Sky_multi_Viewer
             ItIsAImage = true;
         }
 
-        public Image Image
+        public ImageData Image
         {
             get
             {
-                return imageView.Image;
-            }
-            set
-            {
-                imageView.SetImage(in value);
+                if (imageView.UseD2D1)
+                {
+                    return imageView.ImageDataD2D1;
+                }
+                else
+                {
+                    return new ImageData(imageView.Image.Width, imageView.Image.Height, imageView.Image.PixelFormat.ToString());
+                }
             }
         }
+
+        public void SetImage(Image image) => imageView.SetImage(in image);
+        public void DisposeImage() => imageView.DisposeImage();
+        public void EncodeImageLoaded(string DestPath, string Format) => imageView.EncodeImage(DestPath, Format);
 
         public void RotateImage()
         {

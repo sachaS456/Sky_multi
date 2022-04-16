@@ -253,7 +253,7 @@ namespace Sky_multi_Viewer
                     {
                         try
                         {
-                            Image = BitmapHeifCoverter.OpenHeifFromPathToBitmap(FilePath);
+                            Image = BitmapHeifConverter.OpenHeifFromPathToBitmap(FilePath);
                             ImageWidth = Image.Width;
                             ImageHeight = Image.Height;
                             CanAnimated = ImageAnimator.CanAnimate(Image);
@@ -272,6 +272,91 @@ namespace Sky_multi_Viewer
                             throw new Exception("this is not a image or image not supported!");
                         }
                     }
+                }
+            }
+        }
+
+        public ImageData ImageDataD2D1
+        {
+            get
+            {
+                return new ImageData((int)ImageViewD2D1.ImageSize.Width, (int)ImageViewD2D1.ImageSize.Height, ImageViewD2D1.PixelFormatString);
+            }
+        }
+
+        public void DisposeImage()
+        {
+            if (UseD2D1)
+            {
+                ImageViewD2D1.ResetBitmap();
+            }
+            else
+            {
+                Image.Dispose();
+                Image = null;
+            }
+        }
+
+        public void EncodeImage(string DestPath, string Format)
+        {
+            if (UseD2D1_)
+            {
+                ImageViewD2D1.EncodeBitmap(DestPath, Format);
+            }
+            else
+            {
+                switch (Format)
+                {
+                    case ".png":
+                        Image.Save(DestPath, System.Drawing.Imaging.ImageFormat.Png);
+                        break;
+
+                    case ".jpg":
+                        Image.Save(DestPath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        break;
+
+                    case ".jpeg":
+                        Image.Save(DestPath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        break;
+
+                    case ".ico":
+                        Image.Save(DestPath, System.Drawing.Imaging.ImageFormat.Icon);
+                        break;
+
+                    case ".gif":
+                        Image.Save(DestPath, System.Drawing.Imaging.ImageFormat.Gif);
+                        break;
+
+                    case ".tiff":
+                        Image.Save(DestPath, System.Drawing.Imaging.ImageFormat.Tiff);
+                        break;
+
+                    case ".tif":
+                        Image.Save(DestPath, System.Drawing.Imaging.ImageFormat.Tiff);
+                        break;
+
+                    case ".bmp":
+                        Image.Save(DestPath, System.Drawing.Imaging.ImageFormat.Bmp);
+                        break;
+
+                    case ".webp":
+                        WebPEncoder.EncodeWebp((Bitmap)Image, DestPath);
+                        break;
+
+                    case ".heif":
+                        BitmapHeifConverter.EncodeHeif((Bitmap)Image, DestPath);
+                        break;
+
+                    case ".heic":
+                        BitmapHeifConverter.EncodeHeif((Bitmap)Image, DestPath);
+                        break;
+
+                    case ".avif":
+                        BitmapHeifConverter.EncodeAvif((Bitmap)Image, DestPath);
+                        break;
+
+                    default:
+                        throw new Exception("This format for the conversion is not supported!");
                 }
             }
         }

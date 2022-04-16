@@ -67,7 +67,6 @@ namespace Sky_multi_Core.ImageReader
                 Marshal.Copy(unmanagedData, rawWebP, 0, size);
 
                 File.WriteAllBytes(Path, rawWebP);
-                return;
             }
             catch (Exception ex) 
             { 
@@ -79,6 +78,41 @@ namespace Sky_multi_Core.ImageReader
                 if (bmpData != null)
                     bmp.UnlockBits(bmpData);
 
+                //Free memory
+                if (unmanagedData != IntPtr.Zero)
+                    WebPFree(unmanagedData);
+            }
+        }
+
+        public static void EncodeWebp(IntPtr Scan0, int Stride, int Width, int Height, string Path, bool alpha)
+        {
+            IntPtr unmanagedData = IntPtr.Zero;
+
+            try
+            {
+                int size;
+
+                if (alpha == false)
+                {
+                    size = WebPEncodeLosslessBGR(Scan0, Width, Height, Stride, out unmanagedData);
+                }
+                else
+                {
+                    size = WebPEncodeLosslessBGRA(Scan0, Width, Height, Stride, out unmanagedData);
+                }
+
+                //Copy image compress data to output array
+                byte[] rawWebP = new byte[size];
+                Marshal.Copy(unmanagedData, rawWebP, 0, size);
+
+                File.WriteAllBytes(Path, rawWebP);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "\r\nIn WebP.EncodeLossless (Simple)");
+            }
+            finally
+            {
                 //Free memory
                 if (unmanagedData != IntPtr.Zero)
                     WebPFree(unmanagedData);

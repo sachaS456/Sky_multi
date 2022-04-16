@@ -205,11 +205,6 @@ namespace Sky_multi
                 {
                     this.KeyPreview = false;
 
-                    if (MediaLoaded != string.Empty && multiMediaViewer.ItIsAImage == false)
-                    {
-                        multiMediaViewer.SetPause(true);
-                    }
-
                     do
                     {
                         await Task.Delay(10);
@@ -251,11 +246,6 @@ namespace Sky_multi
                 if (await Sky_Updater.Update.CheckUpdateAsync("Sky multi", CurrentVersion))
                 {
                     this.KeyPreview = false;
-
-                    if (MediaLoaded != string.Empty && multiMediaViewer.ItIsAImage == false)
-                    {
-                        multiMediaViewer.SetPause(true);
-                    }
 
                     do
                     {
@@ -565,7 +555,7 @@ namespace Sky_multi
             this.multiMediaViewer.ItIsPicture += new Sky_multi_Viewer.EventMediaTypedHandler(multiMediaViewer_ItIsPicture);
             this.multiMediaViewer.ItIsAudioOrVideo += new Sky_multi_Viewer.EventMediaTypedHandler(multiMediaViewer_ItIsAudioOrVideo);
             this.multiMediaViewer.MouseClick += new MouseEventHandler(multiMediaViewer_MouseClick);
-            this.multiMediaViewer.DoubleClick += new EventHandler(multiMediaViewer_DoubleClick);
+            this.multiMediaViewer.MouseDoubleClick += new MouseEventHandler(multiMediaViewer_MouseDoubleClick);
             // 
             // progressBar
             // 
@@ -573,13 +563,13 @@ namespace Sky_multi
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.progressBar.Color = System.Drawing.Color.Orange;
-            this.progressBar.Location = new System.Drawing.Point(15, 8);
+            this.progressBar.Location = new System.Drawing.Point(15, 5);
             this.progressBar.MouseClick = null;
             this.progressBar.MouseDown = null;
             this.progressBar.MouseMove = null;
             this.progressBar.MouseUp = null;
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(621, 5);
+            this.progressBar.Size = new System.Drawing.Size(621, 7);
             this.progressBar.TabIndex = 5;
             this.progressBar.Text = "progressBar1";
             this.progressBar.ValuePourcentages = 100;
@@ -1681,7 +1671,7 @@ namespace Sky_multi
                 else
                 {
                     new InformationDialog(in MediaLoaded, multiMediaViewer.Image.Width + "x" + multiMediaViewer.Image.Height,
-                        multiMediaViewer.Image.PixelFormat.ToString(), DataSettings.Language, in Version).Show();
+                        multiMediaViewer.Image.PixelFormat, DataSettings.Language, in Version).Show();
                 }
             }
             else
@@ -1845,6 +1835,14 @@ namespace Sky_multi
 
         private void BlurMainForm()
         {
+            this.Redimensionnable = false;
+            this.ButtonMaximizedVisible = false;
+
+            if (MediaLoaded != string.Empty && multiMediaViewer.ItIsAImage == false)
+            {
+                multiMediaViewer.SetPause(true);
+            }
+
             Bitmap b = new Bitmap(this.ClientRectangle.Width, this.ClientRectangle.Height);
             Graphics.FromImage(b).CopyFromScreen(this.Location.X + Border, this.Location.Y + 20, 0, 0, new Size(this.ClientRectangle.Size.Width - Border, this.ClientRectangle.Size.Height - Border),
                 CopyPixelOperation.SourceCopy);
@@ -1874,6 +1872,9 @@ namespace Sky_multi
                 Effect.GaussianBlurRemove(ref b);
                 c.BackgroundImage = b;
             }*/
+
+            this.Redimensionnable = true;
+            this.ButtonMaximizedVisible = true;
 
             this.Controls.Remove(c);
             c.BackgroundImage = null;
@@ -1951,8 +1952,7 @@ namespace Sky_multi
 
                     if (multiMediaViewer.ItIsAImage == true)
                     {
-                        multiMediaViewer.Image.Dispose();
-                        multiMediaViewer.Image = null;
+                        multiMediaViewer.DisposeImage();
                     }
                     else
                     {
@@ -2009,8 +2009,7 @@ namespace Sky_multi
                 {
                     if (multiMediaViewer.ItIsAImage == true)
                     {
-                        multiMediaViewer.Image.Dispose();
-                        multiMediaViewer.Image = null;
+                        multiMediaViewer.DisposeImage();
                     }
                     else
                     {
@@ -2038,8 +2037,7 @@ namespace Sky_multi
                 {
                     if (multiMediaViewer.ItIsAImage == true)
                     {
-                        multiMediaViewer.BackgroundImage.Dispose();
-                        multiMediaViewer.BackgroundImage = null;
+                        multiMediaViewer.DisposeImage();
                     }
                     else
                     {
@@ -2337,8 +2335,8 @@ namespace Sky_multi
 
         private void EditImage(object sender, MouseEventArgs e)
         {
-            ImageModifierDialog imageModifier = new ImageModifierDialog(multiMediaViewer.Image);
-            imageModifier.Show();
+            //ImageModifierDialog imageModifier = new ImageModifierDialog(multiMediaViewer.Image);
+            //imageModifier.Show();
         }
 
         private void RotateImage(object sender, MouseEventArgs e)
@@ -2393,7 +2391,7 @@ namespace Sky_multi
                 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    switch (ImageConvertDialogControl.GetNewFormat)
+                    /*switch (ImageConvertDialogControl.GetNewFormat)
                     {
                         case ".png":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2404,8 +2402,8 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
-                            break;
+                            //multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                            /*break;
 
                         case ".jpg":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2416,8 +2414,8 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
-                            break;
+                            //multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                            /*break;
 
                         case ".jpeg":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2428,8 +2426,8 @@ namespace Sky_multi
                             {
                                
                             }*/
-                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
-                            break;
+                            //multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                            /*break;
 
                         case ".ico":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2440,8 +2438,8 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Icon);
-                            break;
+                            //multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Icon);
+                            /*break;
 
                         case ".gif":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2452,8 +2450,8 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Gif);
-                            break;
+                            //multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Gif);
+                            /*break;
 
                         case ".tiff":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2464,8 +2462,8 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
-                            break;
+                            //multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
+                            /*break;
 
                         case ".tif":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2476,8 +2474,8 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
-                            break;
+                            //multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
+                            /*break;
 
                         case ".bmp":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2488,8 +2486,8 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Bmp);
-                            break;
+                            //multiMediaViewer.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Bmp);
+                            /*break;
 
                         case ".webp":
                             /*if (multiMediaViewer.RawImage == true)
@@ -2500,19 +2498,19 @@ namespace Sky_multi
                             {
                                 
                             }*/
-                            WebPEncoder.EncodeWebp((Bitmap)multiMediaViewer.BackgroundImage, dialog.FileName);
-                            break;
+                            //WebPEncoder.EncodeWebp((Bitmap)multiMediaViewer.Image, dialog.FileName);
+                            /*break;
 
                         case ".heif":
-                            BitmapHeifCoverter.EncodeHeif((Bitmap)multiMediaViewer.Image, dialog.FileName);
+                            //BitmapHeifCoverter.EncodeHeif((Bitmap)multiMediaViewer.Image, dialog.FileName);
                             break;
 
                         case ".heic":
-                            BitmapHeifCoverter.EncodeHeif((Bitmap)multiMediaViewer.Image, dialog.FileName);
+                            //BitmapHeifCoverter.EncodeHeif((Bitmap)multiMediaViewer.Image, dialog.FileName);
                             break;
 
                         case ".avif":
-                            BitmapHeifCoverter.EncodeAvif((Bitmap)multiMediaViewer.Image, dialog.FileName);
+                            //BitmapHeifCoverter.EncodeAvif((Bitmap)multiMediaViewer.Image, dialog.FileName);
                             break;
 
                         default:
@@ -2525,7 +2523,9 @@ namespace Sky_multi
                                 MessageBox.Show("This format for the conversion is not supported!", "Sky multi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                             return;
-                    }
+                    }*/
+
+                    multiMediaViewer.EncodeImageLoaded(dialog.FileName, ImageConvertDialogControl.GetNewFormat);
 
                     ImageConvertDialogControl.Close();
                     ImageConvertDialogControl = null;
@@ -2811,7 +2811,7 @@ namespace Sky_multi
 
                 if (multiMediaViewer.ItIsAImage == true)
                 {
-                    multiMediaViewer.BackgroundImage = null;
+                    multiMediaViewer.DisposeImage();
                 }
                 else
                 {
@@ -2883,7 +2883,7 @@ namespace Sky_multi
 
                 if (multiMediaViewer.ItIsAImage == true)
                 {
-                    multiMediaViewer.BackgroundImage = null;
+                    multiMediaViewer.DisposeImage();
                 }
                 else
                 {
@@ -3002,9 +3002,12 @@ namespace Sky_multi
             }
         }
 
-        private void multiMediaViewer_DoubleClick(object sender, EventArgs e)
+        private void multiMediaViewer_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            FullScreen_M();
+            if (e.Button == MouseButtons.Left)
+            {
+                FullScreen_M();
+            }
         }
 
         private void ButtonMediaRight_MouseEnter(object sender, EventArgs e)
