@@ -173,6 +173,9 @@ namespace Sky_multi_Viewer
         public void SetImage(Image image) => imageView.SetImage(in image);
         public void DisposeImage() => imageView.DisposeImage();
         public void EncodeImageLoaded(string DestPath, string Format) => imageView.EncodeImage(DestPath, Format);
+        //public List<Vortice.Direct2D1.ID2D1Bitmap1> GetImageWithHardwareAcceleration() => imageView.GetImageWithHardwareAcceleration();
+        public List<Vortice.WIC.IWICBitmap> GetImageWIC() => imageView.GetImageWIC();
+        public Image GetImageWithGDI() => imageView.GetImageWithGDI();
 
         public void RotateImage()
         {

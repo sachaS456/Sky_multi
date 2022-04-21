@@ -58,7 +58,7 @@ namespace Sky_multi
         private Control c = new Control();
         private ImageConvertDialogControl ImageConvertDialogControl = null;
         private SetTimeDialog SetTimeDialog = null;
-        private Sky_multi_Viewer.VideoPreview VideoPreview = new Sky_multi_Viewer.VideoPreview();
+        private Sky_multi_Viewer.VideoPreview VideoPreview;
         private Sky_UI.Button buttonSound = new Sky_UI.Button();
         private Sky_UI.Button buttonReadingSpeed = new Sky_UI.Button();
         private SoundVolumeControl SoundVolumeControl = null;
@@ -517,6 +517,7 @@ namespace Sky_multi
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.multiMediaViewer = new Sky_multi_Viewer.MultiMediaViewer();
+            this.VideoPreview = new Sky_multi_Viewer.VideoPreview();
             this.progressBar = new Sky_UI.ProgressBar();
             this.buttonPlay = new Sky_UI.Button();
             this.buttonMoreMinute = new Sky_UI.Button();
@@ -2019,7 +2020,12 @@ namespace Sky_multi
                     try
                     {
                         //File.Delete(MediaLoaded);
-                        Sky_multi_Core.RecycleBin.MoveFileToRB(MediaLoaded);
+                        Sky_multi_Core.RecycleBinMoveResult msg = Sky_multi_Core.RecycleBin.MoveFileToRB(MediaLoaded);
+
+                        if (msg.Success == false)
+                        {
+                            MessageBox.Show(msg.W32Exception.Message, "Sky multi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     catch
                     {
@@ -2047,7 +2053,12 @@ namespace Sky_multi
                     try
                     {
                         //File.Delete(MediaLoaded);
-                        Sky_multi_Core.RecycleBin.MoveFileToRB(MediaLoaded);
+                        Sky_multi_Core.RecycleBinMoveResult msg = Sky_multi_Core.RecycleBin.MoveFileToRB(MediaLoaded);
+
+                        if (msg.Success == false)
+                        {
+                            MessageBox.Show(msg.W32Exception.Message, "Sky multi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     catch
                     {
@@ -2335,8 +2346,8 @@ namespace Sky_multi
 
         private void EditImage(object sender, MouseEventArgs e)
         {
-            //ImageModifierDialog imageModifier = new ImageModifierDialog(multiMediaViewer.Image);
-            //imageModifier.Show();
+            ImageModifierDialog imageModifier = new ImageModifierDialog(multiMediaViewer.GetImageWIC()[0]);
+            imageModifier.Show();
         }
 
         private void RotateImage(object sender, MouseEventArgs e)

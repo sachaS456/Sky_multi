@@ -13,11 +13,11 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Sky_multi_Viewer_3_SH.pfx</AssemblyOriginatorKeyFile>
     <Platforms>AnyCPU;x64;x86;ARM64</Platforms>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Vortice.Direct2D1" Version="2.1.2" />
-    <PackageReference Include="Vortice.DirectInput" Version="2.1.2" />
   </ItemGroup>
 
   <ItemGroup>

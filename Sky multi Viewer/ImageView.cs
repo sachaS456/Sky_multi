@@ -26,6 +26,8 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Windows.Forms;
 using Sky_multi_Core.ImageReader;
+using Vortice.Direct2D1;
+using Vortice.WIC;
 
 namespace Sky_multi_Viewer
 {
@@ -35,10 +37,6 @@ namespace Sky_multi_Viewer
         public PixelOffsetMode PixelOffsetMode = PixelOffsetMode.HighQuality;
         public CompositingQuality CompositingQuality = CompositingQuality.HighQuality;
         public Image Image { get; private set; } = null;
-        public Point ImagePosition { get; private set; } = Point.Empty;
-        public int ImageWidth { get; private set; } = 0;
-        public int ImageHeight { get; private set; } = 0;
-        public bool CanZoom { get; set; } = true;
         public bool CanAnimated { get; private set; } = false;
 
         private float Factor = 1.0f;
@@ -74,6 +72,7 @@ namespace Sky_multi_Viewer
                     ImageViewD2D1 = new ImageViewD2D1();
                     ImageViewD2D1.Location = new Point(0, 0);
                     ImageViewD2D1.Size = this.Size;
+                    ImageViewD2D1.BackColor = this.BackColor;
                     ImageViewD2D1.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Top;
                     ImageViewD2D1.MouseDown += new MouseEventHandler(ImageViewD2D1_MouseDown);
                     ImageViewD2D1.MouseUp += new MouseEventHandler(ImageViewD2D1_MouseUp);
@@ -85,6 +84,7 @@ namespace Sky_multi_Viewer
                     if (Image != null)
                     {
                         ImageViewD2D1.SetBitmap((Bitmap)Image);
+                        SetImage((Image)null);
                     }
                 }
                 else
@@ -97,6 +97,99 @@ namespace Sky_multi_Viewer
             get
             {
                 return UseD2D1_;
+            }
+        }
+
+        private Point ImagePosition_ = Point.Empty;
+
+        public Point ImagePosition
+        {
+            get
+            {
+                if (UseD2D1_)
+                {
+                    return new Point((int)ImageViewD2D1.ImagePosition.X, (int)ImageViewD2D1.ImagePosition.Y);
+                }
+                else
+                {
+                    return ImagePosition_;
+                }
+            }
+
+            private set
+            {
+                ImagePosition_ = value;
+            }
+        }
+
+        private int ImageWidth_ = 0;
+
+        public int ImageWidth
+        {
+            get
+            {
+                if (UseD2D1_)
+                {
+                    return (int)ImageViewD2D1.ImageWidth;
+                }
+                else
+                {
+                    return ImageWidth_;
+                }
+            }
+
+            private set
+            {
+                ImageWidth_ = value;
+            }
+        }
+        private int ImageHeight_ = 0;
+
+        public int ImageHeight
+        {
+            get
+            {
+                if (UseD2D1_)
+                {
+                    return (int)ImageViewD2D1.ImageHeight;
+                }
+                else
+                {
+                    return ImageHeight_;
+                }
+            }
+
+            private set
+            {
+                ImageWidth_ = value;
+            }
+        }
+        private bool CanZoom_ = true;
+
+        public bool CanZoom
+        {
+            get
+            {
+                if (UseD2D1_)
+                {
+                    return ImageViewD2D1.CanZoom;
+                }
+                else
+                {
+                    return CanZoom_;
+                }
+            }
+
+            set
+            {
+                if (UseD2D1_)
+                {
+                    ImageViewD2D1.CanZoom = value;
+                }
+                else
+                {
+                    CanZoom_ = value;
+                }
             }
         }
 
@@ -120,8 +213,75 @@ namespace Sky_multi_Viewer
             OnMouseMove(e);
         }
 
+        /*public List<ID2D1Bitmap1> GetImageWithHardwareAcceleration()
+        {
+            if (UseD2D1_ == false)
+            {
+                throw new Exception("You must set 'UseD2D1_' on True!");
+            }
+
+            return ImageViewD2D1.GetBitmap();
+        }*/
+
+        public List<IWICBitmap> GetImageWIC()
+        {
+            if (UseD2D1_ == false)
+            {
+                throw new Exception("You must set 'UseD2D1_' on True!");
+            }
+
+            return ImageViewD2D1.GetWICBitmap();
+        }
+
+        public Image GetImageWithGDI()
+        {
+            if (UseD2D1_ == true)
+            {
+                throw new Exception("You must set 'UseD2D1_' on False!");
+            }
+
+            return Image;
+        }
+
+        public void SetImage(in byte[] Data, int stride, int width, int height)
+        {
+            if (UseD2D1_)
+            {
+                ImageViewD2D1.SetBitmap(in Data, stride, width, height);
+            }
+            else
+            {
+                IntPtr dataPtr;
+                unsafe
+                {
+                    fixed (byte* dataP = Data)
+                    {
+                        dataPtr = (IntPtr)dataP;
+                    }
+                }
+
+                Bitmap bmp = new Bitmap(width, height, stride, System.Drawing.Imaging.PixelFormat.Format32bppArgb, dataPtr);
+                SetImage(bmp);
+            }
+        }
+
+        public void SetImage(in IWICBitmap iWICBitmap)
+        {
+            if (UseD2D1_ == false)
+            {
+                throw new Exception("You must set 'UseD2D1_' on True!");
+            }
+
+            ImageViewD2D1.SetBitmap(iWICBitmap);
+        }
+
         public void SetImage(in Image image)
         {
+            if (UseD2D1_ == true)
+            {
+                throw new Exception("You must set 'UseD2D1_' on False!");
+            }
+
             this.SuspendLayout();
             if (CanAnimated)
             {
@@ -363,25 +523,31 @@ namespace Sky_multi_Viewer
 
         private void This_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (e.Delta < 0)
+            if (UseD2D1_ == false)
             {
-                ScaleImage(Factor - 0.25f, e.Location.X, e.Location.Y);
-            }
-            else
-            {
-                ScaleImage(Factor + 0.25f, e.Location.X, e.Location.Y);
+                if (e.Delta < 0)
+                {
+                    ScaleImage(Factor - 0.25f, e.Location.X, e.Location.Y);
+                }
+                else
+                {
+                    ScaleImage(Factor + 0.25f, e.Location.X, e.Location.Y);
+                }
             }
         }
 
         private void This_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (Factor == 1.0f)
+            if (UseD2D1_ == false)
             {
-                ScaleImage(2.5f, e.Location.X, e.Location.Y);
-            }
-            else
-            {
-                ScaleImage(1.0f, e.Location.X, e.Location.Y);
+                if (Factor == 1.0f)
+                {
+                    ScaleImage(2.5f, e.Location.X, e.Location.Y);
+                }
+                else
+                {
+                    ScaleImage(1.0f, e.Location.X, e.Location.Y);
+                }
             }
         }
 
@@ -467,13 +633,28 @@ namespace Sky_multi_Viewer
 
         public void ScaleImage(in float scale, int xPixelWidth, int yPixelHeight)
         {
-            DrawImageScale(this.CreateGraphics(), scale, in xPixelWidth, in yPixelHeight);
+            if (UseD2D1_ == false)
+            {
+                DrawImageScale(this.CreateGraphics(), scale, in xPixelWidth, in yPixelHeight);
+            }
+            else
+            {
+                ImageViewD2D1.ScaleImage(in scale, xPixelWidth, yPixelHeight);
+            }
         }
 
         public void ResetScale()
         {
             Factor = 1.0f;
-            this.DrawImage(this.CreateGraphics());
+
+            if (UseD2D1_ == false)
+            {
+                this.DrawImage(this.CreateGraphics());
+            }
+            else
+            {
+                ImageViewD2D1.ResetScale();
+            }
         }
 
         public Bitmap GetBitmapResized()

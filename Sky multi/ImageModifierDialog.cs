@@ -25,6 +25,9 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using Sky_UI;
+using Vortice.Direct2D1;
+using Vortice.WIC;
+using System.Runtime.InteropServices;
 
 namespace Sky_multi
 {
@@ -47,6 +50,19 @@ namespace Sky_multi
             CropImage.Visible = false;
             imageView1.Controls.Add(CropImage);
             imageView1.SetImage(in bitmap);
+        }
+
+        internal ImageModifierDialog(IWICBitmap iWICBitmap)
+        {
+            InitializeComponent();
+
+            CropImage = new RectangleResizer();
+            CropImage.Location = imageView1.ImagePosition;
+            CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
+            CropImage.Visible = false;
+            imageView1.Controls.Add(CropImage);
+
+            imageView1.SetImage(in iWICBitmap);
         }
 
         private void InitializeComponent()
@@ -87,6 +103,7 @@ namespace Sky_multi
             this.imageView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.imageView1.TabIndex = 4;
             this.imageView1.Text = "imageView1";
+            this.imageView1.UseD2D1 = true;
             // 
             // button2
             // 
@@ -188,12 +205,47 @@ namespace Sky_multi
             {
                 dialog.Filter = "Images png| *.png |Images jpeg| *.jpeg; *.jpg |Images bmp| *.bmp |Images ico| *.ico |Images gif| *.gif |Images tiff| *.tiff; *.tif";
                 
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (imageView1.UseD2D1 == false)
                 {
-                    imageView1.Image.Save(dialog.FileName);
-                }
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        imageView1.Image.Save(dialog.FileName);
+                    }
 
-                dialog.Dispose();
+                    dialog.Dispose();
+                }
+                else
+                {
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        switch (dialog.FilterIndex)
+                        {
+                            case 0:
+                                imageView1.EncodeImage(dialog.FileName, ".png");
+                                break;
+
+                            case 1:
+                                imageView1.EncodeImage(dialog.FileName, ".jpeg");
+                                break;
+
+                            case 2:
+                                imageView1.EncodeImage(dialog.FileName, ".bmp");
+                                break;
+
+                            case 3:
+                                imageView1.EncodeImage(dialog.FileName, ".ico");
+                                break;
+
+                            case 4:
+                                imageView1.EncodeImage(dialog.FileName, ".gif");
+                                break;
+
+                            case 5:
+                                imageView1.EncodeImage(dialog.FileName, ".tiff");
+                                break;
+                        }
+                    }
+                }
             }
         }
 
@@ -204,6 +256,7 @@ namespace Sky_multi
             CropImage.Location = new Point(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6);
 
             CropImage.Visible = true;
+            CropImage.BringToFront();
             button3.Visible = true;
             button4.Visible = true;
             button2.Visible = false;
@@ -218,8 +271,19 @@ namespace Sky_multi
             button4.Visible = false;
             button2.Visible = true;
 
-            float CoefImageW = (float)imageView1.Image.Width / imageView1.ImageWidth;
-            float CoefImageH = (float)imageView1.Image.Height / imageView1.ImageHeight;
+            float CoefImageW;
+            float CoefImageH;
+
+            if (imageView1.UseD2D1)
+            {
+                CoefImageW = (float)imageView1.ImageDataD2D1.Width / imageView1.ImageWidth;
+                CoefImageH = (float)imageView1.ImageDataD2D1.Height / imageView1.ImageHeight;
+            }
+            else
+            {
+                CoefImageW = (float)imageView1.Image.Width / imageView1.ImageWidth;
+                CoefImageH = (float)imageView1.Image.Height / imageView1.ImageHeight;
+            }
 
             float x = (CropImage.LocationSelectedArea.X - imageView1.ImagePosition.X) * CoefImageW;
             float width = CropImage.SelectedArea.Width * CoefImageW;
@@ -235,19 +299,51 @@ namespace Sky_multi
 
         private void SetCropImage(int x, int y, int width, int height)
         {
-            Bitmap NewBitmap = new Bitmap(width, height);
-            Bitmap bitmap = imageView1.GetBitmap();
-
-            for (int indexX = 0; indexX < width; indexX++)
+            if (imageView1.UseD2D1 == false)
             {
+                Bitmap NewBitmap = new Bitmap(width, height);
+                Bitmap bitmap = imageView1.GetBitmap();
+
+                for (int indexX = 0; indexX < width; indexX++)
+                {
+                    for (int indexY = 0; indexY < height; indexY++)
+                    {
+                        NewBitmap.SetPixel(indexX, indexY, bitmap.GetPixel(indexX + x, indexY + y));
+                    }
+                }
+
+                bitmap.Dispose();
+                imageView1.SetImage(NewBitmap);
+            }
+            else
+            {
+                IWICBitmap iWICBitmap = imageView1.GetImageWIC()[0];
+                IWICBitmapLock iWICBitmapLock = iWICBitmap.Lock(BitmapLockFlags.Read | BitmapLockFlags.Write);
+
+                IntPtr DataPtr = iWICBitmapLock.Data.DataPointer;
+
+                int Size = iWICBitmap.Size.Width * iWICBitmap.Size.Height * 4;
+                int stride = iWICBitmap.Size.Width * 4;
+                byte[] Data = new byte[Size];
+
+                Marshal.Copy(DataPtr, Data, 0, Size);
+
+                Size = width * height * 4;
+                int NewStride = width * 4;
+                byte[] NewData = new byte[Size];
+
+                iWICBitmapLock.Dispose();
+
                 for (int indexY = 0; indexY < height; indexY++)
                 {
-                    NewBitmap.SetPixel(indexX, indexY, bitmap.GetPixel(indexX + x, indexY + y));
+                    for (int indexX = 0; indexX < width * 4; indexX++)
+                    {
+                        NewData[indexY * NewStride + indexX] = Data[((indexY * stride) + (y * stride)) + (indexX + x * 4)];
+                    }
                 }
-            }
 
-            bitmap.Dispose();
-            imageView1.SetImage(NewBitmap);
+                imageView1.SetImage(NewData, NewStride, width, height);
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)

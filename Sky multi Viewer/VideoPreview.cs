@@ -57,11 +57,11 @@ namespace Sky_multi_Viewer
             this.labeTime.ForeColor = Color.FromArgb(224, 224, 224);
             this.labeTime.Location = new Point(this.Width / 2 - labeTime.Width / 2, 65);
 
-            ((System.ComponentModel.ISupportInitialize)(this.VideoView)).EndInit();
             this.Controls.Add(this.VideoView);
             this.Controls.Add(this.labeTime);
             this.Controls.SetChildIndex(this.VideoView, 0);
             this.Controls.SetChildIndex(this.labeTime, 0);
+            ((System.ComponentModel.ISupportInitialize)(this.VideoView)).EndInit();
         }
 
         public void LoadMedia(string Media, long VlcTime)

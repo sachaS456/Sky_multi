@@ -5,6 +5,9 @@ Changes between 3.1.x and 3.2.0:
 -Add support for animated image
 -Add support for Heif, Heic and Avif image
 -You can convert image to Heif, Heic and Avif format
+-Add support hardware acceleration for display images with Direct2D
+-Update libwebp 1.2.1 to 1.2.2
+(-Crash fixed when starting the application) in development
 
 ----------------------------------
 
