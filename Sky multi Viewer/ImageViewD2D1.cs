@@ -43,6 +43,9 @@ namespace Sky_multi_Viewer
         private readonly IWICImagingFactory2 ImagingFactory;        
         private readonly Color4 bgcolor = new(0.1f, 0.1f, 0.1f, 1.0f);
         private SizeI PixelSize;
+        private short Rotation = 0;
+        private int XZoom = 0;
+        private int YZoom = 0;
 
         public PointF ImagePosition { get; private set; } = PointF.Empty;
         public float ImageWidth { get; private set; } = 0;
@@ -406,6 +409,19 @@ namespace Sky_multi_Viewer
             return RWICBitmaps;
         }
 
+        public void RotateImage()
+        {
+            Rotation += 90;
+            if (Rotation >= 360)
+            {
+                Rotation = 0;
+            }
+
+            System.Numerics.Matrix3x2 Rotate = D2D1.D2D1MakeRotateMatrix(Rotation, new System.Numerics.Vector2(this.Width / 2, this.Height / 2));
+            hwndRender.Transform = Rotate;
+            DrawImage(true);
+        }
+
         public void ResetBitmap()
         {
             if (bitmapD2D1 != null)
@@ -433,7 +449,7 @@ namespace Sky_multi_Viewer
             }
             else
             {
-                DrawImageScale(Factor, this.Width / 2 - ImageFactorW / 2, this.Height / 2 - ImageFactorH / 2);
+                DrawImageScale(Factor, XZoom, YZoom);
             }
 
             base.OnPaint(e);
@@ -500,6 +516,9 @@ namespace Sky_multi_Viewer
             {
                 return;
             }
+
+            XZoom = xPixelWidth;
+            YZoom = yPixelHeight;
 
             ImageFactorW = (int)(ImageWidth * factor);
             ImageFactorH = (int)(ImageHeight * factor);

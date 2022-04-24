@@ -49,6 +49,7 @@ namespace Sky_multi
             CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
             CropImage.Visible = false;
             imageView1.Controls.Add(CropImage);
+            imageView1.UseD2D1 = false;
             imageView1.SetImage(in bitmap);
         }
 
@@ -61,7 +62,7 @@ namespace Sky_multi
             CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
             CropImage.Visible = false;
             imageView1.Controls.Add(CropImage);
-
+            imageView1.UseD2D1 = true;
             imageView1.SetImage(in iWICBitmap);
         }
 

@@ -45,7 +45,6 @@ namespace Sky_multi_Viewer
             imageView.Size = this.Size;
             imageView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             imageView.Visible = false;
-            imageView.UseD2D1 = true;
             this.Controls.Add(imageView);
 
             imageView.MouseClick += new MouseEventHandler(MouseClickEvent);
@@ -176,11 +175,19 @@ namespace Sky_multi_Viewer
         //public List<Vortice.Direct2D1.ID2D1Bitmap1> GetImageWithHardwareAcceleration() => imageView.GetImageWithHardwareAcceleration();
         public List<Vortice.WIC.IWICBitmap> GetImageWIC() => imageView.GetImageWIC();
         public Image GetImageWithGDI() => imageView.GetImageWithGDI();
+        public void RotateImage() => imageView.RotateImage();
 
-        public void RotateImage()
+        public bool UseD2D1ForImageView
         {
-            imageView.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-            imageView.Refresh();
+            get
+            {
+                return imageView.UseD2D1;
+            }
+
+            set
+            {
+                imageView.UseD2D1 = value;
+            }
         }
 
         //public void ScaleImage(ushort scale) => imageView.ScaleImage(scale);

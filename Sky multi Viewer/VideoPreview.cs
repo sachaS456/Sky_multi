@@ -23,10 +23,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.ComponentModel;
 
 namespace Sky_multi_Viewer
 {
-    public sealed class VideoPreview : Control
+    public sealed class VideoPreview : Control, ISupportInitialize
     {
         private VideoView VideoView;
         private Label labeTime = new Label();
@@ -38,7 +39,6 @@ namespace Sky_multi_Viewer
             this.Size = new Size(128, 95);
 
             this.VideoView = new VideoView();
-            ((System.ComponentModel.ISupportInitialize)(this.VideoView)).BeginInit();
 
             this.VideoView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.VideoView.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
@@ -61,6 +61,15 @@ namespace Sky_multi_Viewer
             this.Controls.Add(this.labeTime);
             this.Controls.SetChildIndex(this.VideoView, 0);
             this.Controls.SetChildIndex(this.labeTime, 0);
+        }
+
+        public void BeginInit()
+        {
+            ((System.ComponentModel.ISupportInitialize)(this.VideoView)).BeginInit();
+        }
+
+        public void EndInit()
+        {
             ((System.ComponentModel.ISupportInitialize)(this.VideoView)).EndInit();
         }
 

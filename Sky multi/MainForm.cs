@@ -80,6 +80,7 @@ namespace Sky_multi
             Panel1Region = panel1.Region;
 
             multiMediaViewer.HardwareAcceleration = DataSettings.HardwareAcceleration;
+            multiMediaViewer.UseD2D1ForImageView = DataSettings.DisplayImagesWithDirec2D;
             VideoPreview.HardwareAcceleration = DataSettings.HardwareAcceleration;
 
             string[] Buttons;
@@ -532,6 +533,7 @@ namespace Sky_multi
             this.ButtonMediaRight = new Sky_UI.Button();
             this.ButtonMediaLeft = new Sky_UI.Button();
             ((System.ComponentModel.ISupportInitialize)(this.multiMediaViewer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VideoPreview)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -853,10 +855,10 @@ namespace Sky_multi
             this.Controls.SetChildIndex(this.VideoPreview, 0);
             this.ClientSize = new System.Drawing.Size(658, 480);
             ((System.ComponentModel.ISupportInitialize)(this.multiMediaViewer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VideoPreview)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
-
         }
 
         private void This_KeyDown(object sender, KeyEventArgs e)
@@ -1547,6 +1549,7 @@ namespace Sky_multi
                 SaveSettings(this.DataSettings);
 
                 multiMediaViewer.HardwareAcceleration = DataSettings.HardwareAcceleration;
+                multiMediaViewer.UseD2D1ForImageView = DataSettings.DisplayImagesWithDirec2D;
                 VideoPreview.HardwareAcceleration = DataSettings.HardwareAcceleration;
 
                 MenuDeroulantMore.Dispose();
@@ -2346,7 +2349,17 @@ namespace Sky_multi
 
         private void EditImage(object sender, MouseEventArgs e)
         {
-            ImageModifierDialog imageModifier = new ImageModifierDialog(multiMediaViewer.GetImageWIC()[0]);
+            ImageModifierDialog imageModifier;
+
+            if (DataSettings.DisplayImagesWithDirec2D == true)
+            {
+                imageModifier = new ImageModifierDialog(multiMediaViewer.GetImageWIC()[0]);
+            }
+            else
+            {
+                imageModifier = new ImageModifierDialog(multiMediaViewer.GetImageWithGDI());
+            }
+
             imageModifier.Show();
         }
 

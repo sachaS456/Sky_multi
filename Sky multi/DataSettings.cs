@@ -32,6 +32,7 @@ namespace Sky_multi
         public bool VideoPreviewOnSetTime { get; set; } = true;
         public bool UsingDefinitionMax { get; set; } = false;
         public bool WhenVideoSetFullScreen { get; set; } = false;
+        public bool DisplayImagesWithDirec2D { get; set; } = false;
         public EndMediaAction EndMedia { get; set; } = EndMediaAction.ReadMultimediaNext;
         public Language Language { get; set; }
         public Sky_multi_Core.VlcWrapper.HardwareAccelerationType HardwareAcceleration { get; set; } = Sky_multi_Core.VlcWrapper.HardwareAccelerationType.d3d11;
