@@ -803,6 +803,21 @@ namespace Sky_multi_Viewer
             return new Size(imagewith, imageheight);
         }
 
+        /*public ID2D1HwndRenderTarget hwndRender
+        {
+            get
+            {
+                if (UseD2D1 == true)
+                {
+                    return ImageViewD2D1.hwndRender;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }*/
+
         protected override void OnPaint(PaintEventArgs e)
         {
             if (UseD2D1 == false)

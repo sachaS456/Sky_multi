@@ -27,6 +27,7 @@ using System.IO;
 using Sky_UI;
 using Vortice.Direct2D1;
 using Vortice.WIC;
+using Vortice.Mathematics;
 using System.Runtime.InteropServices;
 
 namespace Sky_multi
@@ -40,13 +41,22 @@ namespace Sky_multi
         private Sky_UI.Button button4;
         private RectangleResizer CropImage;
 
+        private readonly ID2D1Factory7 factory7;
+        private readonly ID2D1HwndRenderTarget hwndRender;
+        private ID2D1Bitmap ID2D1Bitmap;
+        private readonly IWICImagingFactory2 imagingFactory2;
+        private SizeI PixelSize;
+        private float ImageWidth = 0;
+        private float ImageHeight = 0;
+        private readonly Color4 bgcolor;
+
         internal ImageModifierDialog(Image bitmap)
         {
             InitializeComponent();
 
             CropImage = new RectangleResizer();
             CropImage.Location = imageView1.ImagePosition;
-            CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
+            CropImage.Size = new System.Drawing.Size(imageView1.ImageWidth, imageView1.ImageHeight);
             CropImage.Visible = false;
             imageView1.Controls.Add(CropImage);
             imageView1.UseD2D1 = false;
@@ -59,11 +69,33 @@ namespace Sky_multi
 
             CropImage = new RectangleResizer();
             CropImage.Location = imageView1.ImagePosition;
-            CropImage.Size = new Size(imageView1.ImageWidth, imageView1.ImageHeight);
+            CropImage.Size = new System.Drawing.Size(imageView1.ImageWidth, imageView1.ImageHeight);
             CropImage.Visible = false;
             imageView1.Controls.Add(CropImage);
             imageView1.UseD2D1 = true;
             imageView1.SetImage(in iWICBitmap);
+
+            factory7 = D2D1.D2D1CreateFactory<ID2D1Factory7>();
+            HwndRenderTargetProperties properties = new HwndRenderTargetProperties();
+            properties.Hwnd = CropImage.Handle;
+            PixelSize = new SizeI(Screen.FromHandle(this.Handle).Bounds.Width, Screen.FromHandle(this.Handle).Bounds.Height);
+            properties.PixelSize = PixelSize;
+            properties.PresentOptions = PresentOptions.Immediately;
+
+            hwndRender = factory7.CreateHwndRenderTarget(new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm,
+                Vortice.DCommon.AlphaMode.Premultiplied)), properties);
+            hwndRender.AntialiasMode = AntialiasMode.Aliased;
+            bgcolor = new(0.1f, 0.1f, 0.1f, 1.0f);
+
+            CropImage.Resize += new EventHandler(CropImage_Resize);
+
+            imagingFactory2 = new IWICImagingFactory2();
+            IWICFormatConverter converter = imagingFactory2.CreateFormatConverter();
+            converter.Initialize(iWICBitmap, PixelFormat.Format32bppPBGRA, BitmapDitherType.None, null, 1f, BitmapPaletteType.FixedWebPalette);
+            iWICBitmap = imagingFactory2.CreateBitmapFromSource(converter, BitmapCreateCacheOption.CacheOnLoad);
+
+            ID2D1Bitmap = hwndRender.CreateBitmapFromWicBitmap(iWICBitmap, new BitmapProperties(
+                new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied)));
         }
 
         private void InitializeComponent()
@@ -104,7 +136,6 @@ namespace Sky_multi
             this.imageView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.imageView1.TabIndex = 4;
             this.imageView1.Text = "imageView1";
-            this.imageView1.UseD2D1 = true;
             // 
             // button2
             // 
@@ -195,8 +226,114 @@ namespace Sky_multi
             {
                 this.Refresh();
                 CropImage.RectangleMax = new System.Drawing.Rectangle(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6, imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
-                CropImage.Size = new Size(imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
+                CropImage.Size = new System.Drawing.Size(imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
                 CropImage.Location = new Point(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6);
+            }
+        }
+
+        private void CropImage_Resize(object sender, EventArgs e)
+        {
+            hwndRender.Resize(new SizeI(CropImage.Width, CropImage.Height));
+            DrawImage(true);
+            this.Invalidate();
+        }
+
+        private void DrawImage(bool Clear = true)
+        {
+            if (ID2D1Bitmap == null)
+            {
+                return;
+            }
+
+            bool isresize = false;
+
+            if (ImageWidth > imageView1.Width || ID2D1Bitmap.Size.Width > imageView1.Width)
+            {
+                Vortice.Mathematics.Size resize = ResizeImageW(ID2D1Bitmap.Size.Width, ID2D1Bitmap.Size.Height);
+                ImageWidth = resize.Width;
+                ImageHeight = resize.Height;
+                isresize = true;
+            }
+            else
+            {
+                ImageWidth = ID2D1Bitmap.Size.Width;
+            }
+
+            if (ImageHeight > imageView1.Height || ID2D1Bitmap.Size.Height > imageView1.Height && isresize == false)
+            {
+                Vortice.Mathematics.Size resize = ResizeImageH(ID2D1Bitmap.Size.Width, ID2D1Bitmap.Size.Height);
+                ImageWidth = resize.Width;
+                ImageHeight = resize.Height;
+            }
+            else if (isresize == false)
+            {
+                ImageHeight = (int)ID2D1Bitmap.Size.Height;
+            }
+
+            float x = imageView1.Width / 2 - ImageWidth / 2 - CropImage.Location.X;
+            float y = imageView1.Height / 2 - ImageHeight / 2 - CropImage.Location.Y;
+
+            hwndRender.BeginDraw();
+
+            if (Clear)
+            {
+                hwndRender.Clear(bgcolor);
+            }
+
+            hwndRender.DrawBitmap(ID2D1Bitmap, new Rect(x, y, ImageWidth, ImageHeight), 1.0f, Vortice.Direct2D1.BitmapInterpolationMode.Linear, null);
+            hwndRender.EndDraw();
+        }
+
+        private Vortice.Mathematics.Size ResizeImageW(float imagewith, float imageheight)
+        {
+            float rw = imagewith;
+            float rh = imageheight;
+
+            SimplifiedFractions(ref rw, ref rh);
+
+            imagewith = imageView1.Width;
+            imageheight = (int)(float)((float)(imageView1.Width / rw) * rh);
+            return new Vortice.Mathematics.Size(imagewith, imageheight);
+        }
+
+        private Vortice.Mathematics.Size ResizeImageH(float imagewith, float imageheight)
+        {
+            float rw = imagewith;
+            float rh = imageheight;
+
+            SimplifiedFractions(ref rw, ref rh);
+
+            imageheight = imageView1.Height;
+            imagewith = (int)(float)((float)(imageView1.Height / rh) * rw);
+            return new Vortice.Mathematics.Size(imagewith, imageheight);
+        }
+
+        private void SimplifiedFractions(ref float num, ref float den)
+        {
+            int remNum, remDen, counter;
+
+            if (num > den)
+            {
+                counter = (int)den;
+            }
+            else
+            {
+                counter = (int)num;
+            }
+
+            for (int i = 2; i <= counter; i++)
+            {
+                remNum = (int)num % i;
+                if (remNum == 0)
+                {
+                    remDen = (int)den % i;
+                    if (remDen == 0)
+                    {
+                        num = num / i;
+                        den = den / i;
+                        i--;
+                    }
+                }
             }
         }
 
@@ -250,20 +387,26 @@ namespace Sky_multi
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
             CropImage.RectangleMax = new System.Drawing.Rectangle(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6, imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
-            CropImage.Size = new Size(imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
+            CropImage.Size = new System.Drawing.Size(imageView1.ImageWidth + 14, imageView1.ImageHeight + 14);
             CropImage.Location = new Point(imageView1.ImagePosition.X - 6, imageView1.ImagePosition.Y - 6);
 
             CropImage.Visible = true;
             CropImage.BringToFront();
+
+
             button3.Visible = true;
             button4.Visible = true;
             button2.Visible = false;
 
             imageView1.CanZoom = false;
             imageView1.ResetScale();
+
+            await Task.Delay(10);
+            DrawImage(false);
+            this.Invalidate();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -354,6 +497,20 @@ namespace Sky_multi
             button2.Visible = true;
             CropImage.Visible = false;
             imageView1.CanZoom = true;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (this != null && this.Disposing == false && this.IsDisposed == false && CropImage != null && imageView1 != null)
+            {
+                if (CropImage.Visible = true && imageView1.UseD2D1)
+                {
+                    DrawImage(false);
+                    CropImage.DrawBorder();
+                }
+            }
+
+            base.OnPaint(e);
         }
     }
 }

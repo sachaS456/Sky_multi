@@ -486,6 +486,19 @@ namespace Sky_multi
             }
         }
 
+        public void DrawBorder()
+        {
+            this.ResizeButtonBottom.Refresh();
+            this.ResizeButtonBottomLeft.Refresh();
+            this.ResizeButtonBottomRight.Refresh();
+            this.ResizeButtonTop.Refresh();
+            this.ResizeButtonTopLeft.Refresh();
+            this.ResizeButtonTopRight.Refresh();
+            this.ResizeButtonRight.Refresh();
+            this.ResizeButtonLeft.Refresh();
+            Sky_UI.Border.DrawRoundRectangle(new Pen(Color.FromArgb(100, 255, 255, 255), 5), 6, 6, Width - 14, Height - 14, 0, this.CreateGraphics());
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Sky_UI.Border.DrawRoundRectangle(new Pen(Color.FromArgb(100, 255, 255, 255), 5), 6, 6, Width - 14, Height - 14, 0, e.Graphics);

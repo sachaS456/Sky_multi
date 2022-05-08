@@ -43,7 +43,6 @@ namespace Sky_multi_Viewer
         private readonly IWICImagingFactory2 ImagingFactory;        
         private readonly Color4 bgcolor = new(0.1f, 0.1f, 0.1f, 1.0f);
         private SizeI PixelSize;
-        private short Rotation = 0;
         private int XZoom = 0;
         private int YZoom = 0;
 
@@ -411,14 +410,17 @@ namespace Sky_multi_Viewer
 
         public void RotateImage()
         {
-            Rotation += 90;
-            if (Rotation >= 360)
+            for (int index = 0; index < WICBitmaps.Count; index++)
             {
-                Rotation = 0;
+                IWICBitmapFlipRotator iWICBitmapFlipRotator = ImagingFactory.CreateBitmapFlipRotator();
+                iWICBitmapFlipRotator.Initialize(WICBitmaps[index], BitmapTransformOptions.Rotate90);
+                WICBitmaps[index] = ImagingFactory.CreateBitmapFromSource(iWICBitmapFlipRotator, BitmapCreateCacheOption.CacheOnLoad);
+                bitmapD2D1[index] = new ID2D1Bitmap1(hwndRender.CreateBitmapFromWicBitmap(WICBitmaps[index], new BitmapProperties(
+                    new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied))).NativePointer);
             }
 
-            System.Numerics.Matrix3x2 Rotate = D2D1.D2D1MakeRotateMatrix(Rotation, new System.Numerics.Vector2(this.Width / 2, this.Height / 2));
-            hwndRender.Transform = Rotate;
+            //System.Numerics.Matrix3x2 Rotate = D2D1.D2D1MakeRotateMatrix(Rotation, new System.Numerics.Vector2(this.Width / 2, this.Height / 2));
+            //hwndRender.Transform = Rotate;
             DrawImage(true);
         }
 
