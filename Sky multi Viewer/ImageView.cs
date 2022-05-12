@@ -100,7 +100,12 @@ namespace Sky_multi_Viewer
                 {
                     if (ImageViewD2D1 != null)
                     {
-                        SetImage(GetBitmapGDIFromBitmapWIC(ImageViewD2D1.GetWICBitmap()[0]));
+                        List<IWICBitmap> images = ImageViewD2D1.GetWICBitmap();
+
+                        if (images.Count > 0)
+                        {
+                            SetImage(GetBitmapGDIFromBitmapWIC(images[0]));
+                        }
 
                         ImageViewD2D1.ResetBitmap();
                         ImageViewD2D1.Visible = false;

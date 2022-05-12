@@ -50,9 +50,44 @@ namespace Sky_multi
         private float ImageHeight = 0;
         private readonly Color4 bgcolor;
 
-        internal ImageModifierDialog(Image bitmap)
+        internal ImageModifierDialog(Image bitmap, bool UseD2D1 = false)
         {
             InitializeComponent();
+
+            if (UseD2D1)
+            {
+                CropImage = new RectangleResizer();
+                CropImage.Location = imageView1.ImagePosition;
+                CropImage.Size = new System.Drawing.Size(imageView1.ImageWidth, imageView1.ImageHeight);
+                CropImage.Visible = false;
+                imageView1.Controls.Add(CropImage);
+                imageView1.UseD2D1 = true;
+
+                factory7 = D2D1.D2D1CreateFactory<ID2D1Factory7>();
+                HwndRenderTargetProperties properties = new HwndRenderTargetProperties();
+                properties.Hwnd = CropImage.Handle;
+                PixelSize = new SizeI(Screen.FromHandle(this.Handle).Bounds.Width, Screen.FromHandle(this.Handle).Bounds.Height);
+                properties.PixelSize = PixelSize;
+                properties.PresentOptions = PresentOptions.Immediately;
+
+                hwndRender = factory7.CreateHwndRenderTarget(new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm,
+                    Vortice.DCommon.AlphaMode.Premultiplied)), properties);
+                hwndRender.AntialiasMode = AntialiasMode.Aliased;
+                bgcolor = new(0.1f, 0.1f, 0.1f, 1.0f);
+
+                CropImage.Resize += new EventHandler(CropImage_Resize);
+
+                imagingFactory2 = new IWICImagingFactory2();
+                IWICFormatConverter converter = imagingFactory2.CreateFormatConverter();
+                IWICBitmap iWICBitmap = imagingFactory2.CreateBitmapFromHBITMAP(((Bitmap)bitmap).GetHbitmap(), (IntPtr)0, BitmapAlphaChannelOption.UsePremultipliedAlpha);
+                converter.Initialize(iWICBitmap, PixelFormat.Format32bppPBGRA, BitmapDitherType.None, null, 1f, BitmapPaletteType.FixedWebPalette);
+                iWICBitmap = imagingFactory2.CreateBitmapFromSource(converter, BitmapCreateCacheOption.CacheOnLoad);
+
+                imageView1.SetImage(in iWICBitmap);
+                ID2D1Bitmap = hwndRender.CreateBitmapFromWicBitmap(iWICBitmap, new BitmapProperties(
+                    new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied)));
+                return;
+            }
 
             CropImage = new RectangleResizer();
             CropImage.Location = imageView1.ImagePosition;
@@ -462,7 +497,7 @@ namespace Sky_multi
             else
             {
                 IWICBitmap iWICBitmap = imageView1.GetImageWIC()[0];
-                IWICBitmapLock iWICBitmapLock = iWICBitmap.Lock(BitmapLockFlags.Read | BitmapLockFlags.Write);
+                IWICBitmapLock iWICBitmapLock = iWICBitmap.Lock(BitmapLockFlags.Read);
 
                 IntPtr DataPtr = iWICBitmapLock.Data.DataPointer;
 
@@ -487,6 +522,9 @@ namespace Sky_multi
                 }
 
                 imageView1.SetImage(NewData, NewStride, width, height);
+
+                ID2D1Bitmap = hwndRender.CreateBitmapFromWicBitmap(imageView1.GetImageWIC()[0], new BitmapProperties(
+                    new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied)));
             }
         }
 
@@ -503,7 +541,7 @@ namespace Sky_multi
         {
             if (this != null && this.Disposing == false && this.IsDisposed == false && CropImage != null && imageView1 != null)
             {
-                if (CropImage.Visible = true && imageView1.UseD2D1)
+                if (CropImage.Visible == true && imageView1.UseD2D1)
                 {
                     DrawImage(false);
                     CropImage.DrawBorder();
