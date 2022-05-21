@@ -1,14 +1,29 @@
 ﻿
-Changes between 3.1.x and 3.2.0:
+Changes between 3.1.1 and 3.2.0:
 ----------------------------------
 
 -Add support for animated image
 -Add support for Heif, Heic and Avif image
 -You can convert image to Heif, Heic and Avif format
 -Add support hardware acceleration for display images with Direct2D
+-You can display images with direct2D or GDI
 -Update libwebp 1.2.1 to 1.2.2
-(-Crash fixed when starting the application) in development
+-Crash fixed when starting the application
 -Update libvlc 3.0.16 to 3.0.17.4
+
+----------------------------------
+
+Changes between 3.1.0 and 3.1.1:
+----------------------------------
+
+-Fixed an issue that made the window resizable during a blur effect
+-Fixed an issue in the update system
+-Fixed an issue that allowed to activate full screen with a double right click
+-Fixed an issue that removed the open with DVD button when saving settings
+-Fixed an issue that displayed an error message during an image conversion
+-Fixed an issue that displayed an error message when renaming an image file
+-Fixed an issue that displayed an error message when deleting an image file
+-Fixed an issue that incorrectly displayed video preview timecode
 
 ----------------------------------
 

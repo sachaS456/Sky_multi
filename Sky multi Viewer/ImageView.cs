@@ -276,6 +276,19 @@ namespace Sky_multi_Viewer
             }
         }
 
+        public void SetImage(in IntPtr Data, int stride, int width, int height)
+        {
+            if (UseD2D1_)
+            {
+                ImageViewD2D1.SetBitmap(in Data, stride, width, height);
+            }
+            else
+            {
+                Bitmap bmp = new Bitmap(width, height, stride, System.Drawing.Imaging.PixelFormat.Format32bppArgb, Data);
+                SetImage(bmp);
+            }
+        }
+
         public void SetImage(in IWICBitmap iWICBitmap)
         {
             if (UseD2D1_ == false)

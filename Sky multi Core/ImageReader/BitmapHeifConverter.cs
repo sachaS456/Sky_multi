@@ -458,17 +458,17 @@ namespace Sky_multi_Core.ImageReader
             Encode(in bitmap, in Path, HeifCompressionFormat.Av1);
         }
 
-        public static void EncodeHeif(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, string Path)
+        public static void EncodeHeif(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, bool premultiplied, string Path)
         {
-            Encode(Scan0, Stride, Width, Height, alpha, in Path, HeifCompressionFormat.Hevc);
+            Encode(Scan0, Stride, Width, Height, alpha, premultiplied, in Path, HeifCompressionFormat.Hevc);
         }
 
-        public static void EncodeAvif(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, string Path)
+        public static void EncodeAvif(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, bool premultiplied, string Path)
         {
-            Encode(Scan0, Stride, Width, Height, alpha, in Path, HeifCompressionFormat.Av1);
+            Encode(Scan0, Stride, Width, Height, alpha, premultiplied, in Path, HeifCompressionFormat.Av1);
         }
 
-        private static void Encode(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, in string Path, HeifCompressionFormat format)
+        private static void Encode(IntPtr Scan0, int Stride, int Width, int Height, bool alpha, bool premultiplied, in string Path, HeifCompressionFormat format)
         {
             if (LibHeifInfo.HaveEncoder(format) == false)
             {
@@ -490,7 +490,7 @@ namespace Sky_multi_Core.ImageReader
                 image = new HeifImage(Width, Height, HeifColorspace.Rgb, HeifChroma.InterleavedRgba32);
                 image.AddPlane(HeifChannel.Interleaved, image.Width, image.Height, 8);
                 heifPlaneData = image.GetPlane(HeifChannel.Interleaved);
-                CopyEightBitImageWithAlpha(Scan0, Stride, Width, Height, false, heifPlaneData.Scan0);
+                CopyEightBitImageWithAlpha(Scan0, Stride, Width, Height, premultiplied, heifPlaneData.Scan0);
                 heifContext.EncodeImage(image, encoder);
                 heifContext.WriteToFile(Path);
                 image.Dispose();

@@ -381,6 +381,27 @@ namespace Sky_multi
             int Y;
             bool MouseShow = true;
 
+            while (multiMediaViewer.ControlLoaded == false)
+            {
+                await Task.Delay(10);
+
+                if (buttonFullScreen.Visible == true)
+                {
+                    buttonFullScreen.Height = 0;
+                    buttonInfo.Height = 0;
+                    buttonMore.Height = 0;
+                    buttonSettings.Height = 0;
+                    ButtonMediaRight.Width = 0;
+                    ButtonMediaRight.Location = new Point(this.Width - Border, ButtonMediaRight.Location.Y);
+                    ButtonMediaLeft.Width = 0;
+
+                    buttonFullScreen.Visible = false;
+                    buttonInfo.Visible = false;
+                    buttonMore.Visible = false;
+                    buttonSettings.Visible = false;
+                }
+            }
+
             while (multiMediaViewer != null && this != null)
             {
                 X = Cursor.Position.X;
@@ -1077,6 +1098,11 @@ namespace Sky_multi
 
         private void buttonSound_Click(object sender, EventArgs e)
         {
+            if (multiMediaViewer.ControlLoaded == false)
+            {
+                return;
+            }
+
             if (SoundVolumeControl == null)
             {
                 SoundVolumeControl = new SoundVolumeControl(multiMediaViewer.Audio.Volume, multiMediaViewer.Audio.IsMute, DataSettings.Language);
@@ -1118,6 +1144,11 @@ namespace Sky_multi
 
         private void buttonReadingSpeed_Click(object sender, EventArgs e)
         {
+            if (multiMediaViewer.ControlLoaded == false)
+            {
+                return;
+            }
+
             if (ChoiceSpeed == null)
             {
                 ChoiceSpeed = new ChoiceSpeed(multiMediaViewer.Rate);
@@ -1689,7 +1720,12 @@ namespace Sky_multi
 
         private void buttonMore_Click(object sender, EventArgs e)
         {
-            this.BringToFront();
+            if (multiMediaViewer.ControlLoaded == false)
+            {
+                return;
+            }
+
+            MenuDeroulantMore.BringToFront();
             MenuDeroulantMore.Visible = true;
 
             if (MenuDeroulantMore.View == false)

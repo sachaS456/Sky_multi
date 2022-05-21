@@ -151,19 +151,19 @@ namespace Sky_multi_Viewer
 
                 case ".heif":
                     bmpLock = WICBitmaps[0].Lock(BitmapLockFlags.Read);
-                    BitmapHeifConverter.EncodeHeif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, Path);
+                    BitmapHeifConverter.EncodeHeif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, true, Path);
                     bmpLock.Dispose();
                     return;
 
                 case ".heic":
                     bmpLock = WICBitmaps[0].Lock(BitmapLockFlags.Read);
-                    BitmapHeifConverter.EncodeHeif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, Path);
+                    BitmapHeifConverter.EncodeHeif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, true, Path);
                     bmpLock.Dispose();
                     return;
 
                 case ".avif":
                     bmpLock = WICBitmaps[0].Lock(BitmapLockFlags.Read);
-                    BitmapHeifConverter.EncodeAvif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, Path);
+                    BitmapHeifConverter.EncodeAvif(bmpLock.Data.DataPointer, bmpLock.Stride, bmpLock.Size.Width, bmpLock.Size.Height, true, true, Path);
                     bmpLock.Dispose();
                     return;
 
@@ -342,6 +342,11 @@ namespace Sky_multi_Viewer
             }
 
             SetBitmap(ImagingFactory.CreateBitmapFromMemory(width, height, PixelFormat.Format32bppPBGRA, stride, Data.Length, DataPtr));
+        }
+
+        public void SetBitmap(in IntPtr Data, int stride, int width, int height)
+        {
+            SetBitmap(ImagingFactory.CreateBitmapFromMemory(width, height, PixelFormat.Format32bppPBGRA, stride, stride * height, Data));
         }
 
         /*public List<ID2D1Bitmap1> GetBitmap()

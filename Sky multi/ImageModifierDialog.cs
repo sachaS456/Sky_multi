@@ -81,9 +81,14 @@ namespace Sky_multi
                 IWICFormatConverter converter = imagingFactory2.CreateFormatConverter();
                 IWICBitmap iWICBitmap = imagingFactory2.CreateBitmapFromHBITMAP(((Bitmap)bitmap).GetHbitmap(), (IntPtr)0, BitmapAlphaChannelOption.UsePremultipliedAlpha);
                 converter.Initialize(iWICBitmap, PixelFormat.Format32bppPBGRA, BitmapDitherType.None, null, 1f, BitmapPaletteType.FixedWebPalette);
-                iWICBitmap = imagingFactory2.CreateBitmapFromSource(converter, BitmapCreateCacheOption.CacheOnLoad);
+                iWICBitmap = imagingFactory2.CreateBitmapFromSource(iWICBitmap, BitmapCreateCacheOption.CacheOnLoad);
 
                 imageView1.SetImage(in iWICBitmap);
+
+                /*var bmpl = ((Bitmap)bitmap).LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                imageView1.SetImage(bmpl.Scan0, bmpl.Stride, bmpl.Width, bmpl.Height);*/
+
                 ID2D1Bitmap = hwndRender.CreateBitmapFromWicBitmap(iWICBitmap, new BitmapProperties(
                     new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied)));
                 return;
@@ -376,7 +381,8 @@ namespace Sky_multi
         {
             using (SaveFileDialog dialog = new SaveFileDialog())
             {
-                dialog.Filter = "Images png| *.png |Images jpeg| *.jpeg; *.jpg |Images bmp| *.bmp |Images ico| *.ico |Images gif| *.gif |Images tiff| *.tiff; *.tif";
+                dialog.Filter = "Images png| *.png |Images jpeg| *.jpeg; *.jpg |Images bmp| *.bmp |Images ico| *.ico |Images gif| *.gif |Images tiff| *.tiff; *.tif |";// +
+                    //"Images webp| *.webp |Images heif| *.heif; *.heic |Images av1| *.avif";
                 
                 if (imageView1.UseD2D1 == false)
                 {
@@ -416,6 +422,18 @@ namespace Sky_multi
                             case 5:
                                 imageView1.EncodeImage(dialog.FileName, ".tiff");
                                 break;
+
+                            /*case 6:
+                                imageView1.EncodeImage(dialog.FileName, ".webp");
+                                break;
+
+                            case 7:
+                                imageView1.EncodeImage(dialog.FileName, ".heif");
+                                break;
+
+                            case 8:
+                                imageView1.EncodeImage(dialog.FileName, ".avif");
+                                break;*/
                         }
                     }
                 }

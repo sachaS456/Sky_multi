@@ -52,8 +52,6 @@ namespace Sky_multi_Core.VlcWrapper
                     utf8Args[i] = buffer;
                 }
 
-                System.Threading.Thread.Sleep(10);
-
                 myVlcInstance = new VlcInstance(VlcNative.libvlc_new(utf8Args.Length, utf8Args));
                 myMediaPlayerInstance = new VlcMediaPlayerInstance(VlcNative.libvlc_media_player_new(myVlcInstance));
             }
